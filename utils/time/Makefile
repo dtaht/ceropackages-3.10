@@ -19,6 +19,8 @@ PKG_INSTALL:=1
 #PKG_FIXUP:=libtool
 PKG_REMOVE_FILES:=aclocal.m4 ltmain.sh
 
+# FIXME - SOMEHOW PASS -DHAVE_SYS_RESOURCE_H=1 into the configure or makefile
+
 PKG_BUILD_DEPENDS:=
 
 include $(INCLUDE_DIR)/package.mk

@@ -1,0 +1,28 @@
+*** resuse.h.orig	2011-04-17 18:40:50.917100566 -0600
+--- resuse.h	2011-04-17 18:47:01.742486443 -0600
+***************
+*** 31,42 ****
+  #endif
+  
+  #if HAVE_SYS_RUSAGE_H
+- /* This rusage structure measures nanoseconds instead of microseconds.  */
+- # define TV_MSEC tv_nsec / 1000000
+  # include <sys/rusage.h>
+  #else
+  # define TV_MSEC tv_usec / 1000
+! # if HAVE_WAIT3
+  #  include <sys/resource.h>
+  # else
+  /* Process resource usage structure.  */
+--- 31,41 ----
+  #endif
+  
+  #if HAVE_SYS_RUSAGE_H
+  # include <sys/rusage.h>
++ # define TV_MSEC tv_nsec / 1000000
+  #else
+  # define TV_MSEC tv_usec / 1000
+! # if HAVE_WAIT3 | HAVE_SYS_RESOURCE_H
+  #  include <sys/resource.h>
+  # else
+  /* Process resource usage structure.  */
