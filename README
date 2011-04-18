@@ -1,0 +1,14 @@
+Package Repository for the CeroWrt project
+
+This is a place to quickly spin up new packages for the CeroWrt, Uberwrt,
+ISCWrt, and Bismark projects.
+
+It will (one day) include:
+
+gnu time
+gnugol
+libjansson (pre-req for gnugol)
+nuttcp
+
+etc.
+
