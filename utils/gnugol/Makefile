@@ -8,15 +8,18 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnugol
 PKG_VERSION:=1.0-rc3
+PKG_REV:=b8bf784155b35faf8a8df46b47db98b30c6a7fe0
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://ftp.gnu.org/gnu/gnugol/
-PKG_MD5SUM:=e38d2b8b34b1ca259cf7b053caac32b3
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+PKG_SOURCE_URL:=git@github.com:dtaht/Gnugol.git
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_REV)
 
 PKG_INSTALL:=1
 
-PKG_BUILD_DEPENDS:=libjansson
+PKG_BUILD_DEPENDS:=libjansson libiconv
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -26,6 +29,12 @@ define Package/gnugol
   TITLE:=The GNU google/bing search utility
   URL:=http://gnugol.taht.net
 endef
+
+MAKE_FLAGS += \
+        DESTDIR="$(PKG_INSTALL_DIR)" \
+        BUILDDIR="$(PKG_BUILD_DIR)" \
+        LDLIBS+="$(LIBGCC_S)" \
+        WITHOUT_XATTR=1
 
 EXTRA_CFLAGS:=
 
