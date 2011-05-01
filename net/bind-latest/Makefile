@@ -193,4 +193,3 @@ $(eval $(call BuildPackage,bind-latest-dnssec))
 $(eval $(call BuildPackage,bind-latest-host))
 $(eval $(call BuildPackage,bind-latest-dig))
 $(eval $(call BuildPackage,bind-latest-devtools))
-
