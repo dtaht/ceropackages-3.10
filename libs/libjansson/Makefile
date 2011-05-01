@@ -17,7 +17,7 @@ PKG_FIXUP:=libtool
 PKG_INSTALL:=1
 PKG_LIBTOOL_PATHS:=. lib libextra
 
-#include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/package.mk
 
 define Package/libjansson/Default
   SECTION:=libs
@@ -29,8 +29,6 @@ endef
 define Package/libjansson/Default/description
  jansson is a lightweight json library
 endef
-
-
 
 CONFIGURE_ARGS+= \
 	--enable-shared \
