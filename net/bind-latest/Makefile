@@ -54,7 +54,8 @@ endef
 
 define Package/bind-latest-rndc
   $(call Package/bind-latest/Default)
-  TITLE+= administration tools (rndc and rndc-confgen only)
+  TITLE+= remote administration tools (rndc and rndc-confgen only)
+  HERE
 endef
 
 define Package/bind-latest-check
@@ -64,7 +65,7 @@ endef
 
 define Package/bind-latest-dnssec
   $(call Package/bind-latest/Default)
-  TITLE+= administration tools (dnssec-keygen and dnssec-signzone only)
+  TITLE+= DNSSEC administration tools
 endef
 
 define Package/bind-latest-host
@@ -75,6 +76,11 @@ endef
 define Package/bind-latest-dig
   $(call Package/bind-latest/Default)
   TITLE+= DNS excavation tool
+endef
+
+define Package/bind-latest-devtools
+  $(call Package/bind-latest/Default)
+  TITLE+= DNS developer tools
 endef
 
 export BUILD_CC="$(TARGET_CC)"
@@ -172,6 +178,11 @@ define Package/bind-latest-dig/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/dig $(1)/usr/bin/
 endef
 
+define Package/bind-latest-devtools/install
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/named-journalprint $(1)/usr/sbin/
+endef
+
 $(eval $(call BuildPackage,bind-latest-libs))
 $(eval $(call BuildPackage,bind-latest-server))
 $(eval $(call BuildPackage,bind-latest-client))
@@ -181,3 +192,4 @@ $(eval $(call BuildPackage,bind-latest-check))
 $(eval $(call BuildPackage,bind-latest-dnssec))
 $(eval $(call BuildPackage,bind-latest-host))
 $(eval $(call BuildPackage,bind-latest-dig))
+$(eval $(call BuildPackage,bind-latest-devtools))
