@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.8.0rc1
+PKG_VERSION:=9.8.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
 	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION)/$(PKG_SRC) \
 	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_MD5SUM:=b4537cbae38b2daef36775bf49f33db9
+PKG_MD5SUM:=e802ac97ca419c2ddfc043509bcb17bc
 
 PKG_FIXUP:=libtool
 
