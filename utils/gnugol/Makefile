@@ -31,6 +31,7 @@ define Package/gnugol
 endef
 
 MAKE_FLAGS += \
+	CC="$(TARGETCC)" \
         DESTDIR="$(PKG_INSTALL_DIR)" \
         BUILDDIR="$(PKG_BUILD_DIR)" \
         LDLIBS+="$(LIBGCC_S)" \
