@@ -1,0 +1,36 @@
+Index: bind9/lib/bind9/check.c
+===================================================================
+RCS file: /proj/cvs/prod/bind9/lib/bind9/check.c,v
+retrieving revision 1.125.14.2
+diff -u -r1.125.14.2 check.c
+--- bind9/lib/bind9/check.c	11 Mar 2011 17:20:39 -0000	1.125.14.2
++++ bind9/lib/bind9/check.c	4 May 2011 16:35:24 -0000
+@@ -2089,6 +2089,7 @@
+ 	cfg_aclconfctx_t actx;
+ 	const cfg_obj_t *obj;
+ 	isc_boolean_t enablednssec, enablevalidation;
++	const char *valstr = NULL;
+ 
+ 	/*
+ 	 * Check that all zone statements are syntactically correct and
+@@ -2216,12 +2217,18 @@
+ 		(void)cfg_map_get(config, "dnssec-validation", &obj);
+ 	if (obj == NULL)
+ 		enablevalidation = ISC_FALSE;	/* XXXMPA Change for 9.5. */
+-	else
++	else if (cfg_obj_isboolean(obj)) {
+ 		enablevalidation = cfg_obj_asboolean(obj);
++		valstr = "yes";
++	} else {
++		enablevalidation = ISC_TRUE;
++		valstr = "auto";
++	}
+ 
+ 	if (enablevalidation && !enablednssec)
+ 		cfg_obj_log(obj, logctx, ISC_LOG_WARNING,
+-			    "'dnssec-validation yes;' and 'dnssec-enable no;'");
++			    "'dnssec-validation %s;' and 'dnssec-enable no;'",
++			    valstr);
+ 
+ 	/*
+ 	 * Check trusted-keys and managed-keys.
