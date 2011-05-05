@@ -93,6 +93,8 @@ CONFIGURE_ARGS += \
 	--with-libtool \
 	--with-libxml2=no \
 	--enable-epoll=yes \
+	--with-rlimtype="long int" \
+	--with-gost=no \
 
 CONFIGURE_VARS += \
 	BUILD_CC="$(TARGET_CC)" \
