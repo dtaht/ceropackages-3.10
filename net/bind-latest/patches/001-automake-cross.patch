@@ -1,27 +1,38 @@
 Index: bind9/configure.in
 ===================================================================
 RCS file: /proj/cvs/prod/bind9/configure.in,v
-retrieving revision 1.512.8.1
-diff -u -r1.512.8.1 configure.in
---- bind9/configure.in	3 Feb 2011 05:50:05 -0000	1.512.8.1
-+++ bind9/configure.in	4 May 2011 02:00:02 -0000
-@@ -699,7 +699,14 @@
+retrieving revision 1.525
+diff -u -r1.525 configure.in
+--- bind9/configure.in	19 Apr 2011 22:30:52 -0000	1.525
++++ bind9/configure.in	5 May 2011 05:48:14 -0000
+@@ -701,7 +701,25 @@
  		[AC_MSG_RESULT(yes)
  		have_gost="yes"],
  		[AC_MSG_RESULT(no)
 -		have_gost="no"])
 +		have_gost="no"],
-+		[
-+		AC_ARG_WITH(gost, , have_gost="$withval", have_gost="no")
-+		case $have_gost in
-+		yes|no) ;;
-+		*) AC_MSG_ERROR([--with-gost must be yes or no]) ;;
++		[AC_MSG_RESULT(using --with-gost)])
++		AC_ARG_WITH(gost, , with_gost="$withval", with_gost="auto")
++		case "$with_gost" in
++		yes)
++		    case "$have_gost" in
++		    no)  AC_MSG_ERROR([gost not supported]) ;;
++		    *)  have_gost=yes ;;
++		    esac
++		    ;;
++		no)
++		    have_gost=no ;;
++		*)
++		    case "$have_gost" in
++		    yes|no) ;;
++		    *) AC_MSG_ERROR([need --with-gost=[[yes or no]]]) ;;
++		    esac
++		    ;;
 +		esac
-+		AC_MSG_RESULT(cannot determine whether gost works when cross compiling - assuming $have_gost)])
  		case $have_gost in
  		yes)
  			OPENSSL_GOST="yes"
-@@ -1821,10 +1828,8 @@
+@@ -1845,10 +1863,8 @@
  	ISC_EXTRA_OBJS="$ISC_EXTRA_OBJS inet_ntop.$O"
  	ISC_EXTRA_SRCS="$ISC_EXTRA_SRCS inet_ntop.c"
  	ISC_PLATFORM_NEEDNTOP="#define ISC_PLATFORM_NEEDNTOP 1"],
@@ -34,7 +45,7 @@ diff -u -r1.512.8.1 configure.in
  
  
  # On NetBSD 1.4.2 and maybe others, inet_pton() incorrectly accepts
-@@ -1846,14 +1851,10 @@
+@@ -1870,14 +1886,10 @@
  	ISC_EXTRA_OBJS="$ISC_EXTRA_OBJS inet_pton.$O"
  	ISC_EXTRA_SRCS="$ISC_EXTRA_SRCS inet_pton.c"
  	ISC_PLATFORM_NEEDPTON="#define ISC_PLATFORM_NEEDPTON 1"],
@@ -50,7 +61,7 @@ diff -u -r1.512.8.1 configure.in
  
  AC_SUBST(ISC_PLATFORM_NEEDNTOP)
  AC_SUBST(ISC_PLATFORM_NEEDPTON)
-@@ -2357,8 +2358,9 @@
+@@ -2381,8 +2393,9 @@
  ],[AC_MSG_ERROR(this cannot happen)])
  ],[AC_MSG_ERROR(this cannot happen)])
  ],[
@@ -62,7 +73,7 @@ diff -u -r1.512.8.1 configure.in
  ])
  AC_SUBST(ISC_PLATFORM_RLIMITTYPE)
  
-@@ -2567,27 +2569,22 @@
+@@ -2591,27 +2604,22 @@
  	[i[3456]86-*])
  		# XXX: some old x86 architectures actually do not support
  		#      (some of) these operations.  Do we need stricter checks?
