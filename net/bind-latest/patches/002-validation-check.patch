@@ -1,26 +1,28 @@
 Index: bind9/lib/bind9/check.c
-===================================================================
-RCS file: /proj/cvs/prod/bind9/lib/bind9/check.c,v
-retrieving revision 1.125.14.2
-diff -u -r1.125.14.2 check.c
---- bind9/lib/bind9/check.c	11 Mar 2011 17:20:39 -0000	1.125.14.2
-+++ bind9/lib/bind9/check.c	4 May 2011 16:35:24 -0000
-@@ -2089,6 +2089,7 @@
+diff -u bind9/lib/bind9/check.c:1.125 bind9/lib/bind9/check.c:1.125.14.4
+--- bind9/lib/bind9/check.c:1.125	Fri Jan  7 23:47:07 2011
++++ bind9/lib/bind9/check.c	Thu May  5 18:02:09 2011
+@@ -2078,6 +2089,7 @@
  	cfg_aclconfctx_t actx;
  	const cfg_obj_t *obj;
  	isc_boolean_t enablednssec, enablevalidation;
-+	const char *valstr = NULL;
++	const char *valstr = "no";
  
  	/*
  	 * Check that all zone statements are syntactically correct and
-@@ -2216,12 +2217,18 @@
- 		(void)cfg_map_get(config, "dnssec-validation", &obj);
+@@ -2203,14 +2215,21 @@
+ 		(void)cfg_map_get(voptions, "dnssec-validation", &obj);
  	if (obj == NULL)
- 		enablevalidation = ISC_FALSE;	/* XXXMPA Change for 9.5. */
+ 		(void)cfg_map_get(config, "dnssec-validation", &obj);
+-	if (obj == NULL)
+-		enablevalidation = ISC_FALSE;	/* XXXMPA Change for 9.5. */
 -	else
-+	else if (cfg_obj_isboolean(obj)) {
- 		enablevalidation = cfg_obj_asboolean(obj);
++	if (obj == NULL) {
++		enablevalidation = ISC_TRUE;
 +		valstr = "yes";
++	} else if (cfg_obj_isboolean(obj)) {
+ 		enablevalidation = cfg_obj_asboolean(obj);
++		valstr = enablevalidation ? "yes" : "no";
 +	} else {
 +		enablevalidation = ISC_TRUE;
 +		valstr = "auto";
