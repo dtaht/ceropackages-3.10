@@ -1,5 +1,5 @@
---- time-1.7/Makefile.in.orig	2011-05-06 16:05:42.958299682 -0600
-+++ time-1.7/Makefile.in	2011-05-06 16:06:52.349464192 -0600
+--- Makefile.in.orig	2011-05-06 16:05:42.958299682 -0600
++++ Makefile.in	2011-05-06 16:10:07.052710912 -0600
 @@ -114,16 +114,16 @@
  maintainer-clean-binPROGRAMS:
  
@@ -20,6 +20,19 @@
  	done
  
  .c.o:
+@@ -176,10 +176,10 @@
+ 	TEXINPUTS=$(srcdir):$$TEXINPUTS $(TEXI2DVI) $<
+ 
+ install-info: $(INFO_DEPS)
+-	$(mkinstalldirs) $(infodir)
++	$(mkinstalldirs) $(DESTDIR)/$(infodir)
+ 	for file in $(INFO_DEPS); do		\
+ 	  for ifile in `cd $(srcdir) && echo $$file*`; do \
+-	    $(INSTALL_DATA) $(srcdir)/$$ifile $(infodir)/$$ifile; \
++	    $(INSTALL_DATA) $(srcdir)/$$ifile $(DESTDIR)/$(infodir)/$$ifile; \
+ 	  done;					\
+ 	done
+ 
 @@ -279,7 +279,7 @@
  install-strip:
  	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
