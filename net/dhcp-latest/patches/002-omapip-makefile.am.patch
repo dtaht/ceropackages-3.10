@@ -1,6 +1,12 @@
---- dhcp4/omapip/Makefile.am.orig	2011-05-06 14:56:57.000256038 -0600
-+++ dhcp4/omapip/Makefile.am	2011-05-06 14:57:15.670582207 -0600
-@@ -9,6 +9,3 @@
+--- dhcp-4.2.1/omapip/Makefile.am.orig	2011-05-06 14:56:57.000256038 -0600
++++ dhcp-4.2.1/omapip/Makefile.am	2011-05-06 15:01:28.124925029 -0600
+@@ -1,5 +1,4 @@
+ lib_LIBRARIES = libomapi.a
+-noinst_PROGRAMS = svtest
+ 
+ libomapi_a_SOURCES = protocol.c buffer.c alloc.c result.c connection.c \
+ 		     errwarn.c listener.c dispatch.c generic.c support.c \
+@@ -9,6 +8,3 @@
  man_MANS = omapi.3
  EXTRA_DIST = $(man_MANS)
  
