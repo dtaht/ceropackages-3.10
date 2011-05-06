@@ -20,7 +20,7 @@ include $(INCLUDE_DIR)/package.mk
 # FIXME, need depends
 
 define KernelPackage/sfb
-  TITLE:=Stochastic Fair Blue
+  TITLE:=Stochastic Fair Blue Network queueing discipline
   URL:=http://www.pss.jussieu.fr/~jch/sfb
   CATEGORY:=Kernel
   FILES:=$(LINUX_DIR)/net/sched/sch_sfb.ko
