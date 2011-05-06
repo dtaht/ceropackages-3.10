@@ -86,7 +86,7 @@ export BUILD_CC="$(TARGET_CC)"
 
 CONFIGURE_ARGS += \
 	--enable-shared \
-	--enable-static \
+	--disable-static \
 	--with-randomdev="/dev/urandom" \
 	--disable-threads \
 	--with-openssl="$(STAGING_DIR)/usr" \
