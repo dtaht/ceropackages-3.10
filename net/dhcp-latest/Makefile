@@ -42,7 +42,7 @@ define Build/Configure
 		UNAME_S=Linux \
 		UNAME_M=$(ARCH) \
 		UNAME_R=2.6.38 \
-		./configure $(TARGET_CONFIGURE_OPTS)
+		./configure $(TARGET_CONFIGURE_OPTS) \
 	);
 endef
 
