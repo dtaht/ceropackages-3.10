@@ -32,14 +32,6 @@ define Package/time
   URL:=http://ftp.gnu.org/gnu/time/
 endef
 
-CONFIGURE_CMD =./configure
-
-#CONFIGURE_ARGS += 
-
-EXTRA_CFLAGS:=
-
-EXTRA_LDFLAGS:=
-
 define Build/InstallDev
 endef
 
