@@ -36,12 +36,6 @@ define Package/dhcp-latest-server
   TITLE+= server
 endef
 
-# NOTE THIS IS MIPS SPECIFIC RIGHT NOW
-
-#EXTRA_CFLAGS=-I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/unix/include/ \
-#-I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/pthreads/include/ \
-#-I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/mips/include \
-#-I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/dns/include
 EXTRA_CFLAGS=-I$(BUILD_DIR)/bind-9.8.0/lib/isc/unix/include/ \
 	-I$(BUILD_DIR)/bind-9.8.0/lib/isc/pthreads/include/ \
 	-I$(BUILD_DIR)/bind-9.8.0/lib/isc/$(ARCH)/include \
