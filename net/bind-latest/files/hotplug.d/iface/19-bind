@@ -1,0 +1,9 @@
+NAME=bind
+COMMAND=/usr/sbin/named
+
+[ "$ACTION" = "ifup" -a "$INTERFACE" = "wan" ] && {
+        [ -x $COMMAND ] && [ -r $CONFIG ] && {
+		killall named
+		/etc/init.d/named start
+        } &
+}
