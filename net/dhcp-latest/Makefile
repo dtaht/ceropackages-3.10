@@ -36,6 +36,8 @@ define Package/dhcp-latest-server
   TITLE+= server
 endef
 
+EXTRA_CFLAGS=-I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/unix/include/
+
 CONFIGURE_ARGS+= \
         --enable-shared \
         --disable-static \
