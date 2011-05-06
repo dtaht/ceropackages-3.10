@@ -1,5 +1,5 @@
---- Makefile.in.orig	2011-05-06 13:13:37.534268991 -0700
-+++ Makefile.in	2011-05-06 13:13:59.274268995 -0700
+--- dhcp4/Makefile.in.orig	2011-05-06 13:13:37.534268991 -0700
++++ dhcp4/Makefile.in	2011-05-06 13:13:59.274268995 -0700
 @@ -186,7 +186,7 @@
  	     util/bindvar.sh \
  	     bind/Makefile bind/bind.tar.gz bind/version.tmp 
