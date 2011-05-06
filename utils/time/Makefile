@@ -20,7 +20,6 @@ PKG_INSTALL:=1
 PKG_REMOVE_FILES:=aclocal.m4 ltmain.sh
 
 PKG_BUILD_DEPENDS:=
-EXTRA_MAKEFLAGS:=bindir=$(DESTDIR)/usr/bin
 
 include $(INCLUDE_DIR)/package.mk
 

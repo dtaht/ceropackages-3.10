@@ -1,0 +1,31 @@
+--- time-1.7/Makefile.in.orig	2011-05-06 16:05:42.958299682 -0600
++++ time-1.7/Makefile.in	2011-05-06 16:06:52.349464192 -0600
+@@ -114,16 +114,16 @@
+ maintainer-clean-binPROGRAMS:
+ 
+ install-binPROGRAMS: $(bin_PROGRAMS)
+-	$(mkinstalldirs) $(bindir)
++	$(mkinstalldirs) $(DESTDIR)/$(bindir)
+ 	list="$(bin_PROGRAMS)"; for p in $$list; do \
+ 	  if test -f $$p; then \
+-	    $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
++	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(bindir)/`echo $$p|sed '$(transform)'`; \
+ 	  else :; fi; \
+ 	done
+ 
+ uninstall-binPROGRAMS:
+ 	list="$(bin_PROGRAMS)"; for p in $$list; do \
+-	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
++	  rm -f $(DESTDIR)/$(bindir)/`echo $$p|sed '$(transform)'`; \
+ 	done
+ 
+ .c.o:
+@@ -279,7 +279,7 @@
+ install-strip:
+ 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+ installdirs:
+-	$(mkinstalldirs)  $(bindir) $(infodir)
++	$(mkinstalldirs)  $(DESTDIR)/$(bindir) $(infodir)
+ 
+ 
+ mostlyclean-generic:
