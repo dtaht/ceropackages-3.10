@@ -8,30 +8,30 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dhcp
-PKG_VERSION:=3.1.0
-PKG_RELEASE:=2
+PKG_VERSION:=4.2.1-P1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=ftp://ftp.isc.org/isc/dhcp/
-PKG_MD5SUM:=27d179a3c3fbef576566b456a1168246
+PKG_SOURCE_URL:=http://ftp.isc.org/isc/dhcp/
+PKG_MD5SUM:=22e6f1eff6d5cfe2621a06cc62ba5b70
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/dhcp/Default
+define Package/dhcp-latest/Default
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
-  TITLE:=ISC's DHCP
+  TITLE:=ISC's DHCP with v4 and v6 support
   URL:=https://www.isc.org/software/dhcp
 endef
 
-define Package/dhcp-relay
-  $(call Package/dhcp/Default)
+define Package/dhcp-latest-relay
+  $(call Package/dhcp-latest/Default)
   TITLE+= relay
 endef
 
-define Package/dhcp-server
-  $(call Package/dhcp/Default)
+define Package/dhcp-latest-server
+  $(call Package/dhcp-latest/Default)
   TITLE+= server
 endef
 
@@ -41,7 +41,7 @@ define Build/Configure
 	(cd $(PKG_BUILD_DIR) ; \
 		UNAME_S=Linux \
 		UNAME_M=$(ARCH) \
-		UNAME_R=2.6.23 \
+		UNAME_R=2.6.38 \
 		./configure \
 			--copts "$(TARGET_CFLAGS)" \
 	);
@@ -50,7 +50,7 @@ endef
 define Build/Compile
 	UNAME_S=Linux \
 	UNAME_M=$(ARCH) \
-	UNAME_R=2.6.23 \
+	UNAME_R=2.6.38 \
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
@@ -58,12 +58,12 @@ define Build/Compile
 endef
 
 
-define Package/dhcp-relay/install
+define Package/dhcp-latest-relay/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcrelay $(1)/usr/sbin/
 endef
 
-define Package/dhcp-server/install
+define Package/dhcp-latest-server/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_DIR) $(1)/usr/local/lib
@@ -74,5 +74,5 @@ define Package/dhcp-server/install
 	$(INSTALL_BIN) ./files/dhcpd.init $(1)/etc/init.d/dhcpd
 endef
 
-$(eval $(call BuildPackage,dhcp-relay))
-$(eval $(call BuildPackage,dhcp-server))
+$(eval $(call BuildPackage,dhcp-latest-relay))
+$(eval $(call BuildPackage,dhcp-latest-server))
