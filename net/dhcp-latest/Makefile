@@ -15,6 +15,8 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://ftp.isc.org/isc/dhcp/
 PKG_MD5SUM:=22e6f1eff6d5cfe2621a06cc62ba5b70
 
+BIND_VERSION:=bind-9.8.0
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/dhcp-latest/Default
@@ -36,10 +38,10 @@ define Package/dhcp-latest-server
   TITLE+= server
 endef
 
-EXTRA_CFLAGS=-I$(BUILD_DIR)/bind-9.8.0/lib/isc/unix/include/ \
-	-I$(BUILD_DIR)/bind-9.8.0/lib/isc/pthreads/include/ \
-	-I$(BUILD_DIR)/bind-9.8.0/lib/isc/$(ARCH)/include \
-	-I$(BUILD_DIR)/bind-9.8.0/lib/dns/include
+EXTRA_CFLAGS=-I$(BUILD_DIR)/$(BIND_VERSION)/lib/isc/unix/include/ \
+	-I$(BUILD_DIR)/$(BIND_VERSION)/lib/isc/pthreads/include/ \
+	-I$(BUILD_DIR)/$(BIND_VERSION)/lib/isc/$(ARCH)/include \
+	-I$(BUILD_DIR)/$(BIND_VERSION)/lib/dns/include
 
 CONFIGURE_ARGS+= \
         --enable-shared \
