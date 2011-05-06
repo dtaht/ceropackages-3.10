@@ -41,7 +41,8 @@ CONFIGURE_ARGS+= \
         --disable-static \
 	--localstatedir=/tmp \
 	--enable-delayed-ack \
-	ac_cv_file__dev_random=yes
+	ac_cv_file__dev_random=yes \
+	--with-libbind=/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/ \
 	UNAME_S=Linux \
 	UNAME_M=$(ARCH) \
 	UNAME_R=2.6.38
