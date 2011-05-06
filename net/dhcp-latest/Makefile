@@ -43,6 +43,10 @@ EXTRA_CFLAGS=-I$(BUILD_DIR)/$(BIND_VERSION)/lib/isc/unix/include/ \
 	-I$(BUILD_DIR)/$(BIND_VERSION)/lib/isc/$(ARCH)/include \
 	-I$(BUILD_DIR)/$(BIND_VERSION)/lib/dns/include
 
+# FIXME something like this would fix up all the files 
+# sed s#../bind#$(BUILD_DIR)/$(BIND_VERSION)#g ./dhcpctl/Makefile
+# but since we are not compiling statically, that doesn't work either
+
 CONFIGURE_ARGS+= \
         --enable-shared \
         --disable-static \
