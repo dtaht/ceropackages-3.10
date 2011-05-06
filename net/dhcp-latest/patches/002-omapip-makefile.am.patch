@@ -1,0 +1,9 @@
+--- dhcp4/omapip/Makefile.am.orig	2011-05-06 14:56:57.000256038 -0600
++++ dhcp4/omapip/Makefile.am	2011-05-06 14:57:15.670582207 -0600
+@@ -9,6 +9,3 @@
+ man_MANS = omapi.3
+ EXTRA_DIST = $(man_MANS)
+ 
+-svtest_SOURCES = test.c
+-svtest_LDADD = libomapi.a ../bind/lib/libdns.a ../bind/lib/libisc.a
+-
