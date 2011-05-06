@@ -19,9 +19,8 @@ PKG_INSTALL:=1
 #PKG_FIXUP:=libtool
 PKG_REMOVE_FILES:=aclocal.m4 ltmain.sh
 
-# FIXME - SOMEHOW PASS -DHAVE_SYS_RESOURCE_H=1 into the configure or makefile
-
 PKG_BUILD_DEPENDS:=
+EXTRA_MAKEFLAGS:=bindir=$(DESTDIR)/usr/bin
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -36,7 +35,7 @@ define Build/InstallDev
 endef
 
 define Package/time/install
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(DESTDIR)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/time $(1)/usr/bin/
 endef
 
