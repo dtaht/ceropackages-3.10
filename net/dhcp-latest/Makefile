@@ -39,6 +39,9 @@ endef
 CONFIGURE_ARGS+= \
         --enable-shared \
         --disable-static \
+	--localstatedir=/tmp \
+	--enable-delayed-ack \
+	ac_cv_file__dev_random=yes
 	UNAME_S=Linux \
 	UNAME_M=$(ARCH) \
 	UNAME_R=2.6.38
