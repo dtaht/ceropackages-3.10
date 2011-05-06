@@ -22,6 +22,7 @@ define Package/dhcp-latest/Default
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
   TITLE:=ISC's DHCP with v4 and v6 support
+  DEPENDS:=+bind-latest-libs
   URL:=https://www.isc.org/software/dhcp
 endef
 
@@ -35,15 +36,12 @@ define Package/dhcp-latest-server
   TITLE+= server
 endef
 
-
-define Build/Configure
-	# it's not GNU autoconf stuff
-	(cd $(PKG_BUILD_DIR) ; \
-		UNAME_S=Linux \
-		UNAME_M=$(ARCH) \
-		UNAME_R=2.6.38 \
-		./configure $(TARGET_CONFIGURE_OPTS) \
-	);
+CONFIGURE_ARGS+= \
+        --enable-shared \
+        --disable-static \
+	UNAME_S=Linux \
+	UNAME_M=$(ARCH) \
+	UNAME_R=2.6.38
 endef
 
 define Build/Compile
