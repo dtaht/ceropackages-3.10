@@ -60,18 +60,19 @@ CONFIGURE_ARGS+= \
 
 define Package/dhcp-latest-relay/install
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcrelay $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcprelay $(1)/usr/sbin/
 endef
 
 define Package/dhcp-latest-server/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/usr/local/lib
+	$(INSTALL_DIR) $(1)/usr/lib
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcpd $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/omshell $(1)/usr/bin/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/local/lib/*.a $(1)/usr/local/lib
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/dhcpd.init $(1)/etc/init.d/dhcpd
+	$(INSTALL_BIN) ./files/dhcpd6.init $(1)/etc/init.d/dhcpd6
 endef
 
 $(eval $(call BuildPackage,dhcp-latest-relay))
