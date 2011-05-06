@@ -38,7 +38,7 @@ endef
 
 # NOTE THIS IS MIPS SPECIFIC RIGHT NOW
 
-EXTRA_CFLAGS=-I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/unix/include/ -I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/pthreads/include/ -I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/mips -I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/
+EXTRA_CFLAGS=-I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/unix/include/ -I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/pthreads/include/ -I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/mips -I/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/dns/include
 
 CONFIGURE_ARGS+= \
         --enable-shared \
