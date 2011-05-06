@@ -1,0 +1,11 @@
+--- Makefile.in.orig	2011-05-06 13:13:37.534268991 -0700
++++ Makefile.in	2011-05-06 13:13:59.274268995 -0700
+@@ -186,7 +186,7 @@
+ 	     util/bindvar.sh \
+ 	     bind/Makefile bind/bind.tar.gz bind/version.tmp 
+ 
+-SUBDIRS = bind includes tests common dst omapip client dhcpctl relay server
++SUBDIRS = includes tests common dst omapip client dhcpctl relay server
+ nobase_include_HEADERS = dhcpctl/dhcpctl.h
+ all: all-recursive
+ 
