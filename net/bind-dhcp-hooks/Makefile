@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 define Package/bind-dhcp-hooks/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+bind-latest +dhcp-latest
+  DEPENDS:=+bind-latest-client +dhcp-latest
   TITLE:=bind-dhcp-hooks
   URL:=http://www.bufferbloat.net/projects/uberwrt
   SUBMENU:=Hooks for dynamic DNS for ipv4 and ipv6
