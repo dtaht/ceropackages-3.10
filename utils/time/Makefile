@@ -34,7 +34,6 @@ define Build/InstallDev
 endef
 
 define Package/time/install
-	$(INSTALL_DIR) $(DESTDIR)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/time $(1)/usr/bin/
 endef
 

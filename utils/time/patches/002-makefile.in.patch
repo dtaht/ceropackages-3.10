@@ -1,5 +1,5 @@
 --- time-1.7/Makefile.in.orig	2011-05-06 16:05:42.958299682 -0600
-+++ time-1.7/Makefile.in	2011-05-06 16:10:07.052710912 -0600
++++ time-1.7/Makefile.in	2011-05-06 16:13:50.506402172 -0600
 @@ -114,16 +114,16 @@
  maintainer-clean-binPROGRAMS:
  
@@ -38,7 +38,7 @@
  	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
  installdirs:
 -	$(mkinstalldirs)  $(bindir) $(infodir)
-+	$(mkinstalldirs)  $(DESTDIR)/$(bindir) $(infodir)
++	$(mkinstalldirs)  $(DESTDIR)/$(bindir) $(DESTDIR)/$(infodir)
  
  
  mostlyclean-generic:
