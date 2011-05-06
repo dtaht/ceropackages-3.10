@@ -47,16 +47,6 @@ CONFIGURE_ARGS+= \
 	UNAME_M=$(ARCH) \
 	UNAME_R=2.6.38
 
-define Build/Compile
-	UNAME_S=Linux \
-	UNAME_M=$(ARCH) \
-	UNAME_R=2.6.38 \
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		$(TARGET_CONFIGURE_OPTS) \
-		DESTDIR="$(PKG_INSTALL_DIR)" \
-		all install
-endef
-
 define Package/dhcp-latest-relay/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcrelay $(1)/usr/sbin/
