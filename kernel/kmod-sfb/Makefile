@@ -19,7 +19,7 @@ include $(INCLUDE_DIR)/package.mk
 
 # FIXME, need depends
 
-define KernelPackage/kmod-sfb
+define KernelPackage/sfb
   TITLE:="Stochastic Fair Blue"
   URL:=http://www.pss.jussieu.fr/~jch/sfb
   CATEGORY:=Kernel
@@ -28,16 +28,16 @@ define KernelPackage/kmod-sfb
   AUTOLOAD:=$(call AutoLoad,30,sch_sfb)
 endef
 
-define KernelPackage/kmod-sfb/description
+define KernelPackage/sfb/description
 The SFB qdisc
 endef
 
-define KernelPackage/kmod-sfb/build
+define KernelPackage/sfb/build
 	make KERNEL_SOURCE=$(LINUX_DIR)
 endef
 
-define KernelPackage/kmod-sfb/install
+define KernelPackage/sfb/install
 	$(CP) $(PKG_INSTALL_DIR)/sch_sfb.ko $(1)/lib/modules/net/sched/
 endef
 
-$(eval $(call KernelPackage,kmod-sfb))
+$(eval $(call KernelPackage,sfb))
