@@ -30,7 +30,7 @@ define KernelPackage/sch_sfb
   AUTOLOAD:=$(call AutoLoad,30,sch_sfb)
 endef
 
-define KernelPackage/sfb/description
+define KernelPackage/sch_sfb/description
   The SFB queuing disipline
 endef
 
@@ -53,4 +53,4 @@ define KernelPackage/sch_sfb/install
 	$(INSTALL_BIN) ./sch_sfb.ko $(1)/lib/modules/
 endef
 
-$(eval $(call KernelPackage,sfb))
+$(eval $(call KernelPackage,sch_sfb))
