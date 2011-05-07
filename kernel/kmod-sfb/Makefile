@@ -34,10 +34,10 @@ define KernelPackage/sch_sfb/description
   The SFB queuing disipline
 endef
 
-define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./* $(PKG_BUILD_DIR)/
-endef
+#define Build/Prepare
+#	mkdir -p $(PKG_BUILD_DIR)
+#	$(CP) ./* $(PKG_BUILD_DIR)/
+#endef
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
@@ -54,3 +54,4 @@ define KernelPackage/sch_sfb/install
 endef
 
 $(eval $(call KernelPackage,sch_sfb))
+
