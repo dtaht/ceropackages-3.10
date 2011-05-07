@@ -22,7 +22,7 @@ define KernelPackage/sch_sfb
   SUBMENU:=Other modules
   TITLE:=Stochastic Fair Blue Network queueing discipline
   URL:=http://www.pss.jussieu.fr/~jch/sfb
-  FILES:=$(PKG_BUILD_DIR)/sch_sfb.ko
+#  FILES:=$(PKG_BUILD_DIR)/sch_sfb.ko
   CATEGORY:=Kernel
   VERSION:=$(LINUX_VERSION)-$(LINUX_RELEASE)
   AUTOLOAD:=$(call AutoLoad,30,sch_sfb)
@@ -31,11 +31,16 @@ endef
 include $(INCLUDE_DIR)/kernel-defaults.mk
 
 define KernelPackage/sch_sfb/description
-
+  The SFB queuing discipline
 endef
 
 define Build/Compile
 	$(MAKE) $(KERNEL_MAKEOPTS) SUBDIRS="$(PKG_BUILD_DIR)" modules
+endef
+
+define KernelPackage/sfb/install
+	$(INSTALL_DIR) $(1)/lib/modules/
+	$(INSTALL_BIN) ./sch_sfb.ko $(1)/lib/modules/
 endef
 
 $(eval $(call KernelPackage,sch_sfb))
