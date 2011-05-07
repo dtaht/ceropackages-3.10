@@ -28,9 +28,9 @@ define Package/libjansson/Default
   URL:=http://www.digip.org/jansson/
 endef
 
-define Package/libjansson/Default/description
- jansson is a lightweight json library
-endef
+#define Package/libjansson/description
+# jansson is a lightweight json library
+#endef
 
 CONFIGURE_ARGS+= \
 	--enable-shared \
