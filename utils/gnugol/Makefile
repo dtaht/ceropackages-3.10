@@ -25,21 +25,16 @@ include $(INCLUDE_DIR)/package.mk
 
 define Package/gnugol
   SECTION:=utils
-  CATEGORY:=utils
+  CATEGORY:=Utilities
   TITLE:=The GNU google/bing search utility
   URL:=http://gnugol.taht.net
 endef
 
 MAKE_FLAGS += \
-	CC="$(TARGETCC)" \
         DESTDIR="$(PKG_INSTALL_DIR)" \
         BUILDDIR="$(PKG_BUILD_DIR)" \
         LDLIBS+="$(LIBGCC_S)" \
         WITHOUT_XATTR=1
-
-EXTRA_CFLAGS:=
-
-EXTRA_LDFLAGS:=
 
 define Build/InstallDev
 endef
