@@ -31,10 +31,11 @@ define Package/time
 endef
 
 define Build/InstallDev
+
 endef
 
 define Package/time/install
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/time $(1)/usr/bin/
+
 endef
 
 $(eval $(call BuildPackage,time))
