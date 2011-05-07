@@ -34,32 +34,8 @@ CONFIGURE_ARGS+= \
 	--enable-shared \
 	--disable-static 
 
-# XXX: AM_CFLAGS duplicates with CFLAGS
-MAKE_FLAGS:= \
-	AM_CFLAGS="" \
-
-TARGET_CFLAGS += $(FPIC)
-TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
-
-define Build/Configure
-	$(SED) 's,-I$$$${includedir},,g' $(PKG_BUILD_DIR)/configure
-	$(SED) 's,-L$$$${libdir},,g' $(PKG_BUILD_DIR)/configure
-	$(call Build/Configure/Default)
-endef
-
-define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include $(1)/usr/lib/pkgconfig
-	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/libjansson \
-		$(1)/usr/include/
-	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/liblibjansson{,-extra,-openssl}.{a,so*} \
-		$(1)/usr/lib/
-	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libjansson{,-extra}.pc \
-		$(1)/usr/lib/pkgconfig/
-endef
-
+#TARGET_CFLAGS += $(FPIC)
+#TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
 
 define Package/libjansson/install
 	$(INSTALL_DIR) $(1)/usr/lib
