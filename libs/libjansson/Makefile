@@ -5,6 +5,8 @@
 # See /LICENSE for more information.
 #
 
+include $(TOPDIR)/rules.mk
+
 PKG_NAME:=jansson
 PKG_VERSION:=2.0.1
 PKG_RELEASE:=1
