@@ -35,17 +35,17 @@ define KernelPackage/sch_sfb/description
 endef
 
 define Build/Prepare
-        mkdir -p $(PKG_BUILD_DIR)
-        $(CP) ./* $(PKG_BUILD_DIR)/
+	mkdir -p $(PKG_BUILD_DIR)
+	$(CP) ./* $(PKG_BUILD_DIR)/
 endef
 
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
-                CROSS_COMPILE="$(TARGET_CROSS)" \
-                ARCH="$(LINUX_KARCH)" \
-                SUBDIRS="$(PKG_BUILD_DIR)" \
-                EXTRA_CFLAGS="$(BUILDFLAGS)" \
-                modules
+		CROSS_COMPILE="$(TARGET_CROSS)" \
+		ARCH="$(LINUX_KARCH)" \
+		SUBDIRS="$(PKG_BUILD_DIR)" \
+		EXTRA_CFLAGS="$(BUILDFLAGS)" \
+		modules
 endef
 
 define KernelPackage/sch_sfb/install
