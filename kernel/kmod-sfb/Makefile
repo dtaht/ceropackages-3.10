@@ -19,25 +19,38 @@ include $(INCLUDE_DIR)/package.mk
 
 # FIXME, need depends
 
-define KernelPackage/sfb
+define KernelPackage/sch_sfb
+  SUBMENU:=Other modules
+# DEPENDS:=@TARGET_ar71xx
   TITLE:=Stochastic Fair Blue Network queueing discipline
   URL:=http://www.pss.jussieu.fr/~jch/sfb
   CATEGORY:=Kernel
-  FILES:=$(LINUX_DIR)/net/sched/sch_sfb.ko
+  FILES:=$(PKG_BUILD_DIR)/sch_sfb.ko
   VERSION:=$(LINUX_VERSION)-$(LINUX_RELEASE)
   AUTOLOAD:=$(call AutoLoad,30,sch_sfb)
 endef
 
 define KernelPackage/sfb/description
-The SFB queuing disipline
+  The SFB queuing disipline
 endef
 
-define KernelPackage/sfb/build
-	make KERNEL_SOURCE=$(LINUX_DIR)
+define Build/Prepare
+        mkdir -p $(PKG_BUILD_DIR)
+        $(CP) ./* $(PKG_BUILD_DIR)/
 endef
 
-define KernelPackage/sfb/install
-	$(CP) $(PKG_INSTALL_DIR)/sch_sfb.ko $(1)/lib/modules/net/sched/
+define Build/Compile
+        $(MAKE) -C "$(LINUX_DIR)" \
+                CROSS_COMPILE="$(TARGET_CROSS)" \
+                ARCH="$(LINUX_KARCH)" \
+                SUBDIRS="$(PKG_BUILD_DIR)" \
+                EXTRA_CFLAGS="$(BUILDFLAGS)" \
+                modules
+endef
+
+define KernelPackage/sch_sfb/install
+	$(INSTALL_DIR) $(1)/lib/modules/
+	$(INSTALL_BIN) ./sch_sfb.ko $(1)/lib/modules/
 endef
 
 $(eval $(call KernelPackage,sfb))
