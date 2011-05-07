@@ -25,7 +25,7 @@ include $(INCLUDE_DIR)/package.mk
 
 define Package/time
   SECTION:=utils
-  CATEGORY:=utils
+  CATEGORY:=Utilities
   TITLE:=The GNU time utility
   URL:=http://ftp.gnu.org/gnu/time/
 endef
