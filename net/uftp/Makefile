@@ -12,12 +12,8 @@ PKG_VERSION:=3.4.3
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar
-PKG_SOURCE_URL:=http://www.tcnj.edu/~bush/downloads/$(PKG_SOURCE)
+PKG_SOURCE_URL:=http://www.tcnj.edu/~bush/downloads/
 PKG_MD5SUM:=fbff338872847182627f29a9fab5788b
-
-PKG_INSTALL:=1
-PKG_FIXUP:=libtool
-PKG_REMOVE_FILES:=aclocal.m4 ltmain.sh
 
 include $(INCLUDE_DIR)/package.mk
 
