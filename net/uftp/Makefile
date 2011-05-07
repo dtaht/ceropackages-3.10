@@ -19,57 +19,35 @@ PKG_INSTALL:=1
 PKG_FIXUP:=libtool
 PKG_REMOVE_FILES:=aclocal.m4 ltmain.sh
 
-PKG_BUILD_DEPENDS:=libncurses
-
 include $(INCLUDE_DIR)/package.mk
 
 define Package/uftp
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libpthread
-  TITLE:=An interface daemon for GPS receivers (without libusb)
+  DEPENDS:=+libpthread +openssl
+  TITLE:=Multicast FTP daemon
   URL:=http://www.tcnj.edu/~bush/uftp.html
 endef
 
-CONFIGURE_CMD =./autogen.sh
-
-CONFIGURE_ARGS += \
-        --disable-dbus \
-        --disable-tsip \
-        --disable-fv18 \
-        --disable-tripmate \
-        --disable-earthmate \
-        --disable-itrax \
-        --disable-navcom \
-        --disable-ubx \
-        --disable-evermore \
-        --disable-ntrip \
-	--disable-libgpsmm \
-	--disable-garmin \
-        --without-x \
-
-EXTRA_CFLAGS:=
-
-EXTRA_LDFLAGS:=
+define Package/uftp/compile
+	make -f makefile
+endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/gps.h $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgps*.{a,so*} $(1)/usr/lib/
+
 endef
 
 define Package/uftp/install
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/uftp.config $(1)/etc/config/uftp
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/uftp.init $(1)/etc/init.d/uftp
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
-	$(INSTALL_DATA) ./files/uftp.hotplug $(1)/etc/hotplug.d/usb/20-uftp
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgps*.so* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/uftp $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/uftpd \
+			$(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/bin/uftp \
+			$(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/uftpproxyd \
+			$(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/uftp_keymgt \
+			$(1)/usr/sbin/
+
 endef
 
 $(eval $(call BuildPackage,uftp))
