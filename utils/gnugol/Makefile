@@ -30,7 +30,7 @@ define Package/gnugol
   URL:=http://gnugol.taht.net
 endef
 
-EXTRA_CFLAGS +=-I$(BUILD_DIR)/jansson-2.0.1/src/jansson.h
+EXTRA_CFLAGS +=-I$(BUILD_DIR)/jansson-2.0.1/src/
 
 MAKE_FLAGS += \
         DESTDIR="$(PKG_INSTALL_DIR)" \
