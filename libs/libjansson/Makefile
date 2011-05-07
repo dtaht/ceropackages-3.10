@@ -13,7 +13,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.digip.org/jansson/releases/
-PKG_MD5SUM:=f7a62be6977ef465b45781b53e8365e7
+PKG_MD5SUM:=1fcf45810adcb36eb77eea636091a61e
 
 PKG_FIXUP:=libtool
 PKG_INSTALL:=1
