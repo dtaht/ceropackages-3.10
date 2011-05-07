@@ -40,7 +40,7 @@ define Build/Prepare
 endef
 
 define Build/Compile
-        $(MAKE) -C "$(LINUX_DIR)" \
+	$(MAKE) -C "$(LINUX_DIR)" \
                 CROSS_COMPILE="$(TARGET_CROSS)" \
                 ARCH="$(LINUX_KARCH)" \
                 SUBDIRS="$(PKG_BUILD_DIR)" \
