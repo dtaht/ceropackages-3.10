@@ -22,7 +22,7 @@ define Package/debloat
 endef
 
 define Package/debloat/description
-  Reduce excessive TX queue lengths on devices (reduce bufferbloat)
+  Reduce excessive TXQUEUELEN on devices (reduce bufferbloat)
 endef
 
 define Build/Compile
@@ -32,10 +32,11 @@ define Build/Configure
 endef
 
 define Package/debloat/install
-	$(INSTALL_DIR) $(1)/lib/network
+	$(INSTALL_DIR) $(1)/lib/network $(1)/etc/hotplug.d/iface $(1)/etc/config
 	$(INSTALL_DATA) ./files/debloat.sh $(1)/lib/network/debloat.sh
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-	$(INSTALL_DATA) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/91-debloat
+	$(INSTALL_DATA) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/02-debloat
+	$(INSTALL_DATA) ./files/ipv6fe80fix.hotplug $(1)/etc/hotplug.d/iface/01-fe80fix
+	$(INSTALL_DATA) ./files/debloat.config $(1)/etc/config/debloat
 endef
 
 $(eval $(call BuildPackage,debloat))

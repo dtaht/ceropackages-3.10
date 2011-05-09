@@ -3,22 +3,15 @@
 # On starting an interface, set the txqueuelen to the right thing
 # If there is no explicit txqueuelen, set according to the default
 # ip link set wlan0 txqueuelen 7 
-# config_get wandev "$cfg" wan_device "$(find_6to4_wanif)"
+# FIXME: Allow per product default override
+
 if [ "$ACTION" = ifup ]; then
-	. /etc/functions.sh
-	include /lib/network
-	scan_interfaces
-	local cfg="$1"
-	get_wired_link_speed() {
-	}
-	get_wireless_link_speed() {
-	}
-	case $DEVICE in 
-		eth*) ;;
-		wlan*) ;;
-	esac
 	update_txqueuelen() {
 		ip link set $DEVICE txqueuelen $1
 	}
-	config_foreach update_txqueuelen interface
+	# FIXME, treat wan differently
+	case $DEVICE in 
+		eth*) update_txqueuelen 16;;
+		wlan*) update_txqueuelen 4;;
+	esac
 fi
