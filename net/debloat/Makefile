@@ -33,9 +33,9 @@ endef
 
 define Package/debloat/install
 	$(INSTALL_DIR) $(1)/lib/network $(1)/etc/hotplug.d/iface $(1)/etc/config
-	$(INSTALL_DATA) ./files/debloat.sh $(1)/lib/network/debloat.sh
-	$(INSTALL_DATA) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/02-debloat
-	$(INSTALL_DATA) ./files/ipv6fe80fix.hotplug $(1)/etc/hotplug.d/iface/01-fe80fix
+	$(INSTALL_BIN) ./files/debloat.sh $(1)/lib/network/debloat.sh
+	$(INSTALL_BIN) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/02-debloat
+	$(INSTALL_BIN) ./files/ipv6fe80fix.hotplug $(1)/etc/hotplug.d/iface/01-fe80fix
 	$(INSTALL_DATA) ./files/debloat.config $(1)/etc/config/debloat
 endef
 
