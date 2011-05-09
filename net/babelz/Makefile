@@ -47,7 +47,7 @@ MAKE_FLAGS+= \
 
 define Package/babelz/install
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/babelz $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/babeld $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_CONF) ./files/babeld.conf $(1)/etc/
 	$(INSTALL_DIR) $(1)/etc/config
