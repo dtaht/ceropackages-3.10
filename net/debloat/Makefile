@@ -15,7 +15,7 @@ include $(INCLUDE_DIR)/package.mk
 
 define Package/debloat
   SECTION:=net
-  CATEGORY:=Networking
+  CATEGORY:=Network
   TITLE:=Debloating TX queue scripts
   MAINTAINER:=Dave Täht <d@taht.net>
   PKGARCH:=all
