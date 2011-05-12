@@ -1,8 +1,0 @@
-#!/bin/sh
-
-echo $* >> /tmp/dhcp.log
-
-/etc/gen6.sh $* &
-
-exit 0
-
