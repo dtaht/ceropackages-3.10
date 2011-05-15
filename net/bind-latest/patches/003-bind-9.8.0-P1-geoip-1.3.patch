@@ -1,0 +1,1587 @@
+--- bin/named/geoip.c.orig	2011-02-04 17:17:47.528563320 -0800
++++ bin/named/geoip.c	2011-02-04 17:17:47.528563320 -0800
+@@ -0,0 +1,254 @@
++#ifdef HAVE_GEOIP
++
++#include <named/log.h>
++#include <isc/geoip.h>
++
++void
++geoip_init()
++{
++#ifdef _WIN32
++	GeoIPOptions geoip_method = GEOIP_STANDARD ;
++#else
++	GeoIPOptions geoip_method = GEOIP_MMAP_CACHE ;
++#endif
++	char *geoip_db_info ;
++
++	/* COUNTRY DB */
++
++	if ( ns_g_geoip_countryDB )
++		GeoIP_delete( ns_g_geoip_countryDB );
++
++	if ( GeoIP_db_avail( GEOIP_COUNTRY_EDITION ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP Country DB");
++		if ( !( ns_g_geoip_countryDB = GeoIP_open_type( GEOIP_COUNTRY_EDITION, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP Country DB!  "
++				"geoip_countryDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_countryDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP Country DB not available");
++
++	/* CITY DB */
++
++	if ( ns_g_geoip_cityDB )
++		GeoIP_delete( ns_g_geoip_cityDB );
++
++	if ( GeoIP_db_avail( GEOIP_CITY_EDITION_REV1 ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP City DB Revision 1");
++		if ( !( ns_g_geoip_cityDB = GeoIP_open_type( GEOIP_CITY_EDITION_REV1, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP City DB Revision 1!  "
++				"geoip_cityDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_cityDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else if ( GeoIP_db_avail( GEOIP_CITY_EDITION_REV0 ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP City DB Revision 0");
++		if ( !( ns_g_geoip_cityDB = GeoIP_open_type( GEOIP_CITY_EDITION_REV0, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP City DB Revision 0!  "
++				"geoip_cityDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_cityDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP City DB Revision 0 or 1 not available");
++
++	/* REGION DB */
++
++	if ( ns_g_geoip_regionDB )
++		GeoIP_delete( ns_g_geoip_regionDB );
++
++	if ( GeoIP_db_avail( GEOIP_REGION_EDITION_REV1 ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP Region DB Revision 1");
++		if ( !( ns_g_geoip_regionDB = GeoIP_open_type( GEOIP_REGION_EDITION_REV1, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP Region DB Revision 1!  "
++				"geoip_regionDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_regionDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else if ( GeoIP_db_avail( GEOIP_REGION_EDITION_REV0 ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP Region DB Revision 0");
++		if ( !( ns_g_geoip_regionDB = GeoIP_open_type( GEOIP_REGION_EDITION_REV0, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP Region DB Revision 0!  "
++				"geoip_regionDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_regionDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP Region DB Revision 0 or 1 not available");
++
++	/* ISP DB */
++
++	if ( ns_g_geoip_ispDB )
++		GeoIP_delete( ns_g_geoip_ispDB );
++
++	if ( GeoIP_db_avail( GEOIP_ISP_EDITION ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP ISP DB");
++		if ( !( ns_g_geoip_ispDB = GeoIP_open_type( GEOIP_ISP_EDITION, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP ISP DB!  "
++				"geoip_ispDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_ispDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP ISP DB not available");
++
++	/* ORGANIZATION DB */
++
++	if ( ns_g_geoip_orgDB )
++		GeoIP_delete( ns_g_geoip_orgDB );
++
++	if ( GeoIP_db_avail( GEOIP_ORG_EDITION ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP Organization DB");
++		if ( !( ns_g_geoip_orgDB = GeoIP_open_type( GEOIP_ORG_EDITION, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP Organization DB!  "
++				"geoip_orgDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_orgDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP Organization DB not available");
++
++	/* AS DB */
++
++	if ( ns_g_geoip_asDB )
++		GeoIP_delete( ns_g_geoip_asDB );
++
++	if ( GeoIP_db_avail( GEOIP_ASNUM_EDITION ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP AS DB");
++		if ( !( ns_g_geoip_asDB = GeoIP_open_type( GEOIP_ASNUM_EDITION, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP AS DB!  "
++				"geoip_asDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_asDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP AS DB not available");
++
++	/* NETSPEED DB */
++
++	if ( ns_g_geoip_netspeedDB )
++		GeoIP_delete( ns_g_geoip_netspeedDB );
++
++	if ( GeoIP_db_avail( GEOIP_NETSPEED_EDITION ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP NetSpeed DB");
++		if ( !( ns_g_geoip_netspeedDB = GeoIP_open_type( GEOIP_NETSPEED_EDITION, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP NetSpeed DB!  "
++				"geoip_netspeedDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_netspeedDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP NetSpeed DB not available");
++
++	/* DOMAIN DB */
++
++	if ( ns_g_geoip_domainDB )
++		GeoIP_delete( ns_g_geoip_domainDB );
++
++	if ( GeoIP_db_avail( GEOIP_DOMAIN_EDITION ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP Domain DB");
++		if ( !( ns_g_geoip_domainDB = GeoIP_open_type( GEOIP_DOMAIN_EDITION, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP Domain DB!  "
++				"geoip_domainDB_ matches will silently fail.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_domainDB) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP Domain DB not available");
++
++#ifdef HAVE_GEOIP_V6
++
++	/* COUNTRY DB IPv6 */
++
++	if ( ns_g_geoip_countryDB_v6 )
++		GeoIP_delete( ns_g_geoip_countryDB_v6 );
++
++	if ( GeoIP_db_avail( GEOIP_COUNTRY_EDITION_V6 ) ) {
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"Initializing GeoIP Country DB IPv6");
++		if ( !( ns_g_geoip_countryDB_v6 = GeoIP_open_type( GEOIP_COUNTRY_EDITION_V6, geoip_method ) ) )
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
++				"Failed to initialize GeoIP Country DB IPv6!  "
++				"geoip_countryDB_ matches will silently fail on IPv6 addresses.");
++		if (( geoip_db_info = GeoIP_database_info(ns_g_geoip_countryDB_v6) ))
++			isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++				NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++				geoip_db_info);
++	} else
++		isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL,
++			NS_LOGMODULE_SERVER, ISC_LOG_INFO,
++			"GeoIP Country DB IPv6 not available");
++
++#endif /* HAVE_GEOIP_V6 */
++} /* geoip_init() */
++
++#endif /* HAVE_GEOIP */
+--- bin/named/server.c.orig	2011-02-16 11:46:12.000000000 -0800
++++ bin/named/server.c	2011-03-08 14:09:44.000000000 -0800
+@@ -50,6 +50,9 @@
+ #include <isc/timer.h>
+ #include <isc/util.h>
+ #include <isc/xml.h>
++#ifdef HAVE_GEOIP
++#include <isc/geoip.h>
++#endif /* HAVE_GEOIP */
+ 
+ #include <isccfg/namedconf.h>
+ 
+@@ -4999,6 +5002,21 @@
+ 	return (result);
+ }
+ 
++#ifdef HAVE_GEOIP
++static isc_result_t
++load_geoip(ns_server_t *server) {
++	isc_result_t result;
++
++	result = isc_task_beginexclusive(server->task);
++	RUNTIME_CHECK(result == ISC_R_SUCCESS);
++
++	geoip_init();
++
++	isc_task_endexclusive(server->task);
++	return (result);
++}
++#endif /* HAVE_GEOIP */
++
+ static isc_result_t
+ load_zones(ns_server_t *server, isc_boolean_t stop) {
+ 	isc_result_t result;
+@@ -5113,6 +5131,11 @@
+ 
+ 	CHECKFATAL(load_zones(server, ISC_FALSE), "loading zones");
+ 
++#ifdef HAVE_GEOIP
++	/* Load GeoIP DBs */
++	CHECKFATAL(load_geoip(server), "loading GeoIP");
++#endif /* HAVE_GEOIP */
++
+ 	ns_os_started();
+ 	isc_log_write(ns_g_lctx, NS_LOGCATEGORY_GENERAL, NS_LOGMODULE_SERVER,
+ 		      ISC_LOG_NOTICE, "running");
+@@ -5554,6 +5577,10 @@
+ 			      NS_LOGMODULE_SERVER, ISC_LOG_ERROR,
+ 			      "reloading zones failed: %s",
+ 			      isc_result_totext(result));
++#ifdef HAVE_GEOIP
++	/* Reload GeoIP DBs */
++	load_geoip(server);
++#endif /* HAVE_GEOIP */
+ 
+  cleanup:
+ 	return (result);
+--- bin/named/Makefile.in.orig	2010-12-22 01:00:40.000000000 -0800
++++ bin/named/Makefile.in	2011-02-04 17:17:47.528563320 -0800
+@@ -87,6 +87,7 @@
+ 		zoneconf.@O@ \
+ 		lwaddr.@O@ lwresd.@O@ lwdclient.@O@ lwderror.@O@ lwdgabn.@O@ \
+ 		lwdgnba.@O@ lwdgrbn.@O@ lwdnoop.@O@ lwsearch.@O@ \
++		geoip.@O@ \
+ 		${DLZDRIVER_OBJS} ${DBDRIVER_OBJS}
+ 
+ UOBJS =		unix/os.@O@
+@@ -101,6 +102,7 @@
+ 		zoneconf.c \
+ 		lwaddr.c lwresd.c lwdclient.c lwderror.c lwdgabn.c \
+ 		lwdgnba.c lwdgrbn.c lwdnoop.c lwsearch.c \
++		geoip.c \
+ 		${DLZDRIVER_SRCS} ${DBDRIVER_SRCS}
+ 
+ MANPAGES =	named.8 lwresd.8 named.conf.5
+--- configure.in.orig	2011-01-12 17:59:25.000000000 -0800
++++ configure.in	2011-02-04 17:17:47.528563320 -0800
+@@ -793,6 +793,78 @@
+ esac
+ AC_SUBST(PKCS11_PROVIDER)
+ 
++AC_ARG_WITH(geoip,
++[  --with-geoip=PATH       Specify path for GeoIP support],
++    use_geoip="$withval", use_geoip="no")
++
++case "$use_geoip" in
++	no)
++		AC_MSG_CHECKING([for GeoIP support])
++		AC_MSG_RESULT([disabled])
++		;;
++	*)
++		if test "$use_geoip" != "yes"
++		then
++			if test -d "$use_geoip" -o -L "$use_geoip"
++			then
++				CFLAGS="$CFLAGS -I$use_geoip/include"
++				CPPFLAGS="$CPPFLAGS -I$use_geoip/include"
++				LIBS="$LIBS -L$use_geoip/lib -Wl,-rpath=$use_geoip/lib"
++			else
++				AC_MSG_ERROR([GeoIP path $use_geoip does not exist])
++			fi
++		fi
++		AC_CHECK_HEADER(GeoIP.h, [],
++			[AC_MSG_ERROR([GeoIP header file not found])]
++		)
++		AC_SEARCH_LIBS(GeoIP_open, GeoIP, [],
++			[AC_MSG_ERROR([GeoIP library not found])]
++		)
++		AC_SEARCH_LIBS(fabsf, m, [],
++			[AC_MSG_ERROR([Math library not found])]
++		)
++		CFLAGS="${CFLAGS} -DHAVE_GEOIP"
++		AC_MSG_CHECKING([for GeoIP support])
++		AC_MSG_RESULT([yes])
++
++		AC_MSG_CHECKING([for GeoIP IPv6 support])
++		AC_COMPILE_IFELSE(
++			AC_LANG_PROGRAM([[
++				#include <GeoIP.h>
++				#include <netinet/in.h>
++			]], [[
++				struct in6_addr in6;
++	
++				GeoIP_country_name_by_ipnum_v6(NULL, in6);
++			]]),
++			[
++				AC_MSG_RESULT([yes])
++				CFLAGS="${CFLAGS} -DHAVE_GEOIP_V6"
++				CPPFLAGS="${CPPFLAGS} -DHAVE_GEOIP_V6"
++			],
++			[AC_MSG_RESULT([no])]
++		)
++		;;
++esac
++
++AC_MSG_CHECKING(for GeoIP debugging)
++AC_ARG_WITH(geoip-debug,
++[  --with-geoip-debug      Enable GeoIP debugging messages],
++    use_geoip_debug="$withval", use_geoip_debug="no")
++
++case "$use_geoip_debug" in
++	no)
++		AC_MSG_RESULT([disabled])
++		;;
++	yes)
++		AC_MSG_RESULT([yes])
++		CFLAGS="${CFLAGS} -DDEBUG_GEOIP"
++		;;
++	*)
++		AC_MSG_ERROR([--with-geoip-debug requires yes or no])
++		;;
++esac
++
+ AC_MSG_CHECKING(for GSSAPI library)
+ AC_ARG_WITH(gssapi,
+ [  --with-gssapi=PATH      Specify path for system-supplied GSSAPI],
+--- configure.orig	2011-01-12 18:06:40.000000000 -0800
++++ configure	2011-02-04 17:17:47.528563320 -0800
+@@ -45,6 +45,10 @@
+ ## M4sh Initialization. ##
+ ## -------------------- ##
+ 
++touch configure.in
++echo "ERROR: Please run autoconf to enable GeoIP support"
++exit 1
++
+ # Be more Bourne compatible
+ DUALCASE=1; export DUALCASE # for MKS sh
+ if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then :
+--- lib/isccfg/aclconf.c.orig	2010-08-13 16:47:03.000000000 -0700
++++ lib/isccfg/aclconf.c	2011-02-04 17:17:47.528563320 -0800
+@@ -31,6 +31,11 @@
+ #include <dns/fixedname.h>
+ #include <dns/log.h>
+ 
++#ifdef HAVE_GEOIP
++#include <stdlib.h>
++#include <math.h>
++#endif /* HAVE_GEOIP */
++
+ #define LOOP_MAGIC ISC_MAGIC('L','O','O','P')
+ 
+ void
+@@ -220,6 +225,12 @@
+ 			if (strcasecmp(name, "localhost") == 0 ||
+ 			    strcasecmp(name, "localnets") == 0) {
+ 				n++;
++#ifdef HAVE_GEOIP
++			/* country_ for backwards compatibility with geodns */
++			} else if (strncasecmp(name, "country_", 8) == 0 ||
++			           strncasecmp(name, "geoip_", 6) == 0) {
++				n++;
++#endif /* HAVE_GEOIP */
+ 			} else if (strcasecmp(name, "any") != 0 &&
+ 				   strcasecmp(name, "none") != 0) {
+ 				result = get_acl_def(cctx, name, &cacl);
+@@ -412,6 +423,336 @@
+ 					de->negative = !neg;
+ 				} else
+ 					continue;
++#ifdef HAVE_GEOIP
++			} else if (strncasecmp(name, "country_", 8) == 0) {
++				if (strlen(name+8) == 2) {
++					de->geoip_countryDB.subtype = geoip_countryDB_country_code ;
++					strncpy( de->geoip_countryDB.country_code, name+8, 2 );
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP Country DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_countryDB;
++				de->negative = neg;
++			} /* country_XX (backwards compatibility) */
++			else if (strncasecmp(name, "geoip_countryDB_", 16) == 0) {
++				const char *noff = name+16 ;
++
++				if ((strncasecmp(noff, "country_", 8) == 0) && (strlen(noff+8) == 2)) {
++					de->geoip_countryDB.subtype = geoip_countryDB_country_code ;
++					strncpy( de->geoip_countryDB.country_code, noff+8, 2 );
++				} else if ((strncasecmp(noff, "country3_", 9) == 0) && (strlen(noff+9) == 3)) {
++					de->geoip_countryDB.subtype = geoip_countryDB_country_code3 ;
++					strncpy( de->geoip_countryDB.country_code3, noff+9, 3 );
++				} else if (strncasecmp(noff, "country_name_", 13) == 0) {
++					unsigned int c ;
++
++					de->geoip_countryDB.subtype = geoip_countryDB_country_name ;
++					strncpy( de->geoip_countryDB.country_name, noff+13, 255 );
++					de->geoip_countryDB.country_name[255] = '\0' ;
++					for ( c=0 ; c < strlen(de->geoip_countryDB.country_name) ; c++ )
++						if ( de->geoip_countryDB.country_name[c] == '_' )
++							de->geoip_countryDB.country_name[c] = ' ';
++						else if ( de->geoip_countryDB.country_name[c] == '|' )
++							de->geoip_countryDB.country_name[c] = '/';
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP Country DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_countryDB;
++				de->negative = neg;
++			} /* geoip_countryDB_ */
++			else if (strncasecmp(name, "geoip_cityDB_", 13) == 0) {
++				const char *noff = name+13 ;
++				int match ;
++				float flowt[4] ;
++				char radius_type[2+1] ;
++
++				if ((strncasecmp(noff, "country_", 8) == 0) && (strlen(noff+8) == 2)) {
++					de->geoip_cityDB.subtype = geoip_cityDB_country_code ;
++					strncpy( de->geoip_cityDB.country_code, noff+8, 2 );
++				} else if ((strncasecmp(noff, "country3_", 9) == 0) && (strlen(noff+9) == 3)) {
++					de->geoip_cityDB.subtype = geoip_cityDB_country_code3 ;
++					strncpy( de->geoip_cityDB.country_code3, noff+9, 3 );
++				} else if ((strncasecmp(noff, "region_", 7) == 0) && (strlen(noff+7) == 2)) {
++					de->geoip_cityDB.subtype = geoip_cityDB_region ;
++					strncpy( de->geoip_cityDB.region, noff+7, 2 );
++				} else if (strncasecmp(noff, "regionname_", 11) == 0) {
++					unsigned int c ;
++
++					de->geoip_cityDB.subtype = geoip_cityDB_region_name ;
++					strncpy( de->geoip_cityDB.region_name, noff+11, 255 );
++					de->geoip_cityDB.region_name[255] = '\0' ;
++					for ( c=0 ; c < strlen(de->geoip_cityDB.region_name) ; c++ )
++						if ( de->geoip_cityDB.region_name[c] == '_' )
++							de->geoip_cityDB.region_name[c] = ' ';
++						else if ( de->geoip_cityDB.region_name[c] == '|' )
++							de->geoip_cityDB.region_name[c] = '/';
++				} else if (strncasecmp(noff, "city_", 5) == 0) {
++					unsigned int c ;
++
++					de->geoip_cityDB.subtype = geoip_cityDB_city ;
++					strncpy( de->geoip_cityDB.city, noff+5, 255 );
++					de->geoip_cityDB.city[255] = '\0' ;
++					for ( c=0 ; c < strlen(de->geoip_cityDB.city) ; c++ )
++						if ( de->geoip_cityDB.city[c] == '_' )
++							de->geoip_cityDB.city[c] = ' ';
++						else if ( de->geoip_cityDB.city[c] == '|' )
++							de->geoip_cityDB.city[c] = '/';
++				} else if ((strncasecmp(noff, "postal_", 7) == 0) && (strlen(noff+7) <= 6)) {
++					de->geoip_cityDB.subtype = geoip_cityDB_postal_code ;
++					strncpy( de->geoip_cityDB.postal_code, noff+7, 6 );
++					de->geoip_cityDB.postal_code[6] = '\0' ;
++				} else if (( match = sscanf(noff, "lat_%f_lat_%f_lon_%f_lon_%f", &flowt[0], &flowt[1], &flowt[2], &flowt[3]) ) == 4 ) {
++					if ( fabsf(flowt[0]) >= 90 || fabsf(flowt[1]) >= 90
++							|| fabsf(flowt[2]) >= 180 || fabsf(flowt[3]) >= 180 ) {
++						cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++							"GeoIP ACL includes invalid lat,lat,lon,lon: %f,%f,%f,%f", flowt[0], flowt[1], flowt[2], flowt[3] );
++						result = ISC_R_FAILURE;
++						goto cleanup;
++					}
++
++					if ( flowt[0] == flowt[1] || flowt[2] == flowt[3] ) {
++						cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++							"GeoIP ACL includes invariant lat vs. lat or lon vs. lon: %f,%f %f,%f", flowt[0], flowt[1], flowt[2], flowt[3] );
++						result = ISC_R_FAILURE;
++						goto cleanup;
++					}
++
++					de->geoip_cityDB.subtype = geoip_cityDB_range ;
++					de->geoip_cityDB.lat[0] = flowt[0] ;
++					de->geoip_cityDB.lat[1] = flowt[1] ;
++					de->geoip_cityDB.lon[0] = flowt[2] ;
++					de->geoip_cityDB.lon[1] = flowt[3] ;
++				} else if (( match = sscanf(noff, "lat_%f_lat_%f", &flowt[0], &flowt[1]) ) == 2 ) {
++					if ( flowt[0] == flowt[1] ) {
++						cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++							"GeoIP ACL includes invariant lat vs. lat: %f,%f", flowt[0], flowt[1] );
++						result = ISC_R_FAILURE;
++						goto cleanup;
++					}
++
++					de->geoip_cityDB.subtype = geoip_cityDB_range ;
++					de->geoip_cityDB.lat[0] = flowt[0] ;
++					de->geoip_cityDB.lat[1] = flowt[1] ;
++					de->geoip_cityDB.lon[0] = 0.0 ;
++					de->geoip_cityDB.lon[1] = 0.0 ;
++				} else if (( match = sscanf(noff, "lon_%f_lon_%f", &flowt[0], &flowt[1]) ) == 2 ) {
++					if ( flowt[0] == flowt[1] ) {
++						cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++							"GeoIP ACL includes invariant lon vs. lon: %f,%f", flowt[0], flowt[1] );
++						result = ISC_R_FAILURE;
++						goto cleanup;
++					}
++
++					de->geoip_cityDB.subtype = geoip_cityDB_range ;
++					de->geoip_cityDB.lon[0] = flowt[0] ;
++					de->geoip_cityDB.lon[1] = flowt[1] ;
++					de->geoip_cityDB.lat[0] = 0.0 ;
++					de->geoip_cityDB.lat[1] = 0.0 ;
++				} else if (( match = sscanf(noff, "lat_%f_lon_%f_radius_%f%2s", &flowt[0], &flowt[1], &flowt[2], radius_type) ) == 4 ) {
++					float de2ra = acos(-1)/180 ;
++					float factor = fabsf( cos( flowt[0] * de2ra ) );
++
++					if ( fabsf(flowt[0]) >= 90 || fabsf(flowt[1]) >= 180 ) {
++						cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++							"GeoIP ACL includes invalid lat,lon: %f,%f", flowt[0], flowt[1] );
++						result = ISC_R_FAILURE;
++						goto cleanup;
++					}
++
++					if ( flowt[2] <= 0 ) {
++						cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++							"GeoIP ACL includes invalid radius value: %f", flowt[2] );
++						result = ISC_R_FAILURE;
++						goto cleanup;
++					}
++
++					if ( strncasecmp( radius_type, "mi", 2 ) == 0 ) {
++						static float earth_radius_mi = 3958.761 ;
++						float mi_de = earth_radius_mi * de2ra ;
++
++						de->geoip_cityDB.radius[0] = ( flowt[2] / mi_de );
++						de->geoip_cityDB.radius[1] = ( flowt[2] / mi_de ) * factor ;
++					}
++					else if ( strncasecmp( radius_type, "km", 2 ) == 0 ) {
++						static float earth_radius_km = 6371.009 ;
++						float km_de = earth_radius_km * de2ra ;
++
++						de->geoip_cityDB.radius[0] = ( flowt[2] / km_de );
++						de->geoip_cityDB.radius[1] = ( flowt[2] / km_de ) * factor ;
++					}
++					else if ( strncasecmp( radius_type, "de", 2 ) == 0 ) {
++						de->geoip_cityDB.radius[0] = flowt[2] ;
++						de->geoip_cityDB.radius[1] = flowt[2] ;
++					}
++					else {
++						cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++							"unrecognized GeoIP ACL (need mi, km, or de): %s", name );
++						result = ISC_R_FAILURE;
++						goto cleanup;
++					}
++					de->geoip_cityDB.subtype = geoip_cityDB_radius ;
++					de->geoip_cityDB.lat[0] = flowt[0] ;
++					de->geoip_cityDB.lon[0] = flowt[1] ;
++					de->geoip_cityDB.lat[1] = 0.0 ;
++					de->geoip_cityDB.lon[1] = 0.0 ;
++				} else if (strncasecmp(noff, "metro_", 6) == 0) {
++					de->geoip_cityDB.subtype = geoip_cityDB_metro_code ;
++					de->geoip_cityDB.metro_code = atoi( noff+6 );
++				} else if (strncasecmp(noff, "area_", 5) == 0) {
++					de->geoip_cityDB.subtype = geoip_cityDB_area_code ;
++					de->geoip_cityDB.area_code = atoi( noff+5 );
++				} else if ((strncasecmp(noff, "continent_", 10) == 0) && (strlen(noff+10) == 2)) {
++					de->geoip_cityDB.subtype = geoip_cityDB_continent_code ;
++					strncpy( de->geoip_cityDB.continent_code, noff+10, 2 );
++				} else if (strncasecmp(noff, "timezone_", 9) == 0) {
++					unsigned int c ;
++
++					de->geoip_cityDB.subtype = geoip_cityDB_timezone_code ;
++					strncpy( de->geoip_cityDB.timezone_code, noff+9, 255 );
++					de->geoip_cityDB.timezone_code[255] = '\0';
++					for ( c=0 ; c < strlen(de->geoip_cityDB.timezone_code) ; c++ )
++						if ( de->geoip_cityDB.timezone_code[c] == '_' )
++							de->geoip_cityDB.timezone_code[c] = ' ';
++						else if ( de->geoip_cityDB.timezone_code[c] == '|' )
++							de->geoip_cityDB.timezone_code[c] = '/';
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP City DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_cityDB;
++				de->negative = neg;
++			} /* geoip_cityDB_ */
++			else if (strncasecmp(name, "geoip_regionDB_", 15) == 0) {
++				const char *noff = name+15 ;
++
++				if ((strncasecmp(noff, "country_", 8) == 0) && (strlen(noff+8) == 2)) {
++					de->geoip_regionDB.subtype = geoip_regionDB_country_code ;
++					strncpy( de->geoip_regionDB.country_code, noff+8, 2 );
++				} else if ((strncasecmp(noff, "region_", 7) == 0) && (strlen(noff+7) == 2)) {
++					de->geoip_regionDB.subtype = geoip_regionDB_region ;
++					strncpy( de->geoip_regionDB.region, noff+7, 2 );
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP Region DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_regionDB;
++				de->negative = neg;
++			} /* geoip_regionDB_ */
++			else if (strncasecmp(name, "geoip_ispDB_", 12) == 0) {
++				const char *noff = name+12 ;
++
++				if (strncasecmp(noff, "name_", 5) == 0) {
++					unsigned int c ;
++
++					de->geoip_ispDB.subtype = geoip_ispDB_name ;
++					strncpy( de->geoip_ispDB.name, noff+5, 50 );
++					de->geoip_ispDB.name[50] = '\0';
++					for ( c=0 ; c < strlen(de->geoip_ispDB.name) ; c++ )
++						if ( de->geoip_ispDB.name[c] == '_' )
++							de->geoip_ispDB.name[c] = ' ';
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP ISP DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_ispDB;
++				de->negative = neg;
++			} /* geoip_ispDB_ */
++			else if (strncasecmp(name, "geoip_orgDB_", 12) == 0) {
++				const char *noff = name+12 ;
++
++				if (strncasecmp(noff, "name_", 5) == 0) {
++					unsigned int c ;
++
++					de->geoip_orgDB.subtype = geoip_orgDB_name ;
++					strncpy( de->geoip_orgDB.name, noff+5, 50 );
++					de->geoip_orgDB.name[50] = '\0';
++					for ( c=0 ; c < strlen(de->geoip_orgDB.name) ; c++ )
++						if ( de->geoip_orgDB.name[c] == '_' )
++							de->geoip_orgDB.name[c] = ' ';
++						else if ( de->geoip_orgDB.name[c] == '|' )
++							de->geoip_orgDB.name[c] = '/';
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP Organization DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_orgDB;
++				de->negative = neg;
++			} /* geoip_orgDB_ */
++			else if (strncasecmp(name, "geoip_asDB_", 11) == 0) {
++				const char *noff = name+11 ;
++
++				if (strncasecmp(noff, "org_", 4) == 0) {
++					unsigned int c ;
++
++					de->geoip_asDB.subtype = geoip_asDB_org ;
++					strncpy( de->geoip_asDB.org, noff+4, 50 );
++					de->geoip_asDB.org[50] = '\0';
++					for ( c=0 ; c < strlen(de->geoip_asDB.org) ; c++ )
++						if ( de->geoip_asDB.org[c] == '_' )
++							de->geoip_asDB.org[c] = ' ';
++						else if ( de->geoip_asDB.org[c] == '|' )
++							de->geoip_asDB.org[c] = '/';
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP AS DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_asDB;
++				de->negative = neg;
++			} /* geoip_asDB_ */
++			else if (strncasecmp(name, "geoip_netspeedDB_", 17) == 0) {
++				const char *noff = name+17 ;
++
++				if (strncasecmp(noff, "id_", 3) == 0) {
++					de->geoip_netspeedDB.subtype = geoip_netspeedDB_id ;
++					de->geoip_netspeedDB.id = atoi( noff+3 );
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP NetSpeed DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_netspeedDB;
++				de->negative = neg;
++			} /* geoip_netspeedDB_ */
++			else if (strncasecmp(name, "geoip_domainDB_", 15) == 0) {
++				const char *noff = name+15 ;
++
++				if (strncasecmp(noff, "name_", 5) == 0) {
++					unsigned int c ;
++
++					de->geoip_domainDB.subtype = geoip_domainDB_name ;
++					strncpy( de->geoip_domainDB.name, noff+5, 255 );
++					de->geoip_domainDB.name[255] = '\0';
++					for ( c=0 ; c < strlen(de->geoip_domainDB.name) ; c++ )
++						if ( de->geoip_domainDB.name[c] == '_' )
++							de->geoip_domainDB.name[c] = ' ';
++						else if ( de->geoip_domainDB.name[c] == '|' )
++							de->geoip_domainDB.name[c] = '/';
++				} else {
++					cfg_obj_log(ce, lctx, ISC_LOG_ERROR,
++						"unrecognized GeoIP Domain DB ACL: %s", name );
++					result = ISC_R_FAILURE;
++					goto cleanup;
++				}
++				de->type = dns_aclelementtype_geoip_domainDB;
++				de->negative = neg;
++#endif /* HAVE_GEOIP */
+ 			} else if (strcasecmp(name, "localhost") == 0) {
+ 				de->type = dns_aclelementtype_localhost;
+ 				de->negative = neg;
+--- lib/dns/acl.c.orig	2009-01-17 15:47:42.000000000 -0800
++++ lib/dns/acl.c	2011-02-04 17:17:47.528563320 -0800
+@@ -29,6 +29,72 @@
+ #include <dns/acl.h>
+ #include <dns/iptable.h>
+ 
++#ifdef HAVE_GEOIP
++#include <isc/thread.h>
++#include <math.h>
++#include <netinet/in.h>
++#include <dns/log.h>
++#include <GeoIP.h>
++#include <GeoIPCity.h>
++#include <isc/geoip.h>
++
++GeoIP * ns_g_geoip_countryDB = (GeoIP *)NULL ;
++GeoIP * ns_g_geoip_cityDB = (GeoIP *)NULL ;
++GeoIP * ns_g_geoip_regionDB = (GeoIP *)NULL ;
++GeoIP * ns_g_geoip_ispDB = (GeoIP *)NULL ;
++GeoIP * ns_g_geoip_orgDB = (GeoIP *)NULL ;
++GeoIP * ns_g_geoip_asDB = (GeoIP *)NULL ;
++GeoIP * ns_g_geoip_netspeedDB = (GeoIP *)NULL ;
++GeoIP * ns_g_geoip_domainDB = (GeoIP *)NULL ;
++#ifdef HAVE_GEOIP_V6
++GeoIP * ns_g_geoip_countryDB_v6 = (GeoIP *)NULL ;
++#endif
++
++#ifdef ISC_PLATFORM_USETHREADS
++/* CITY IPNUM v4 */
++static isc_once_t prev_cityDB_ipnum_once = ISC_ONCE_INIT;
++static isc_thread_key_t prev_cityDB_ipnum ;
++static void
++initialize_prev_cityDB_ipnum( void ) {
++	RUNTIME_CHECK(isc_thread_key_create( &prev_cityDB_ipnum, (void *)NULL) == ISC_R_SUCCESS);
++}
++static uint32_t
++get_prev_cityDB_ipnum() {
++	uint32_t *preval = (uint32_t *)isc_thread_key_getspecific( prev_cityDB_ipnum );
++	if ( preval )
++		return *preval ;
++	return 0 ;
++}
++static void
++set_prev_cityDB_ipnum( const uint32_t in_ipnum ) {
++	uint32_t *preval = (uint32_t *)isc_thread_key_getspecific( prev_cityDB_ipnum );
++	if ( preval )
++		free(preval);
++	if (( preval = (uint32_t *)malloc( sizeof(uint32_t) ) ))
++		*preval = in_ipnum ;
++	isc_thread_key_setspecific( prev_cityDB_ipnum, preval );
++}
++/* CITY RECORD */
++static isc_once_t prev_cityDB_record_once = ISC_ONCE_INIT;
++static isc_thread_key_t prev_cityDB_record ;
++static void
++initialize_prev_cityDB_record( void ) {
++	RUNTIME_CHECK(isc_thread_key_create( &prev_cityDB_record, (void *)NULL) == ISC_R_SUCCESS);
++}
++static GeoIPRecord *
++get_prev_cityDB_record() {
++	return (GeoIPRecord *)isc_thread_key_getspecific( prev_cityDB_record );
++}
++static void
++set_prev_cityDB_record( GeoIPRecord *in_record ) {
++	GeoIPRecord *preval = get_prev_cityDB_record();
++	if ( preval )
++		GeoIPRecord_delete( preval );
++	isc_thread_key_setspecific(prev_cityDB_record, in_record);
++}
++#endif /* ISC_PLATFORM_USETHREADS */
++#endif /* HAVE_GEOIP */
++
+ /*
+  * Create a new ACL, including an IP table and an array with room
+  * for 'n' ACL elements.  The elements are uninitialized and the
+@@ -375,6 +441,43 @@
+ 	dns_acl_t *inner = NULL;
+ 	int indirectmatch;
+ 	isc_result_t result;
++#ifdef HAVE_GEOIP
++	uint32_t ipnum = 0;
++#ifdef HAVE_GEOIP_V6
++	const geoipv6_t *ipnum6 = NULL;
++#ifdef DEBUG_GEOIP
++	/* Use longest address type to size the buffer */
++	char ipstr[INET6_ADDRSTRLEN+1] = "";
++#endif
++#else /* HAVE_GEOIP_V6 */
++#ifdef DEBUG_GEOIP
++	char ipstr[INET_ADDRSTRLEN+1] = "";
++#endif
++#endif /* HAVE_GEOIP_V6 */
++
++	switch ( reqaddr->family ) {
++	case AF_INET:
++		ipnum = ntohl(reqaddr->type.in.s_addr);
++#ifdef DEBUG_GEOIP
++		inet_ntop(AF_INET, &reqaddr->type.in, ipstr, INET_ADDRSTRLEN);
++#endif
++		break;
++#ifdef HAVE_GEOIP_V6
++	case AF_INET6:
++		ipnum6 = &reqaddr->type.in6;
++#ifdef DEBUG_GEOIP
++		inet_ntop(AF_INET6, &reqaddr->type.in6, ipstr, INET6_ADDRSTRLEN);
++#endif
++		break;
++#endif
++	}
++	if ( !ipnum )
++		return(ISC_FALSE);
++#ifdef HAVE_GEOIP_V6
++	if ( !ipnum && !ipnum6 )
++		return(ISC_FALSE);
++#endif
++#endif /* HAVE_GEOIP */
+ 
+ 	switch (e->type) {
+ 	case dns_aclelementtype_keyname:
+@@ -391,6 +494,477 @@
+ 		inner = e->nestedacl;
+ 		break;
+ 
++#ifdef HAVE_GEOIP
++	/* GeoIPRecord lookups are only performed if the previous lookup was
++	 * with a different IP address than the current.
++	 *
++	 * This allows only a single GeoIPRecord lookup per query for an entire
++	 * configuration pass, instead of a GeoIPRecord lookup for each and
++	 * every instance of a geoip_* ACL.  Because of this, CityDB /may/ scale
++	 * more nicely than other DBs.
++	 *
++	 * The mechanism consists of simple statics (prev_ipnum, prev_record)
++	 * for non-threaded operation, and an unspeakably painful TLS mechanism
++	 * for threaded operation.
++	 */
++	case dns_aclelementtype_geoip_countryDB: {
++		short int georesult = 0 ;
++		const char *result = (const char *)NULL ;
++
++		if ( ( ipnum && !ns_g_geoip_countryDB )
++#ifdef HAVE_GEOIP_V6
++		     || ( ipnum6 && !ns_g_geoip_countryDB_v6 )
++#endif
++		   )
++			return(ISC_FALSE);
++
++		switch ( e->geoip_countryDB.subtype ) {
++		case geoip_countryDB_country_code:
++			if ( ipnum )
++				result = GeoIP_country_code_by_ipnum( ns_g_geoip_countryDB, ipnum );
++#ifdef HAVE_GEOIP_V6
++			else if ( ipnum6 )
++				result = GeoIP_country_code_by_ipnum_v6( ns_g_geoip_countryDB_v6, *ipnum6 );
++#endif
++			if ( result )
++				georesult = ( strncasecmp( e->geoip_countryDB.country_code, result, 2 ) == 0 );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_countryDB_country_code compared result \"%s\" to rule \"%s\", got %d neg %d",
++				ipstr,
++				result, e->geoip_countryDB.country_code,
++				georesult, e->negative);
++#endif
++			break;
++		case geoip_countryDB_country_code3:
++			if ( ipnum )
++				result = GeoIP_country_code3_by_ipnum( ns_g_geoip_countryDB, ipnum );
++#ifdef HAVE_GEOIP_V6
++			else if ( ipnum6 )
++				result = GeoIP_country_code3_by_ipnum_v6( ns_g_geoip_countryDB_v6, *ipnum6 );
++#endif
++			if ( result )
++				georesult = ( strncasecmp( e->geoip_countryDB.country_code3, result, 3 ) == 0 );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_countryDB_country_code3 compared result \"%s\" to rule \"%s\", got %d neg %d",
++				ipstr,
++				result, e->geoip_countryDB.country_code3,
++				georesult, e->negative);
++#endif
++			break;
++		case geoip_countryDB_country_name:
++			if ( ipnum )
++				result = GeoIP_country_name_by_ipnum( ns_g_geoip_countryDB, ipnum );
++#ifdef HAVE_GEOIP_V6
++			else if ( ipnum6 )
++				result = GeoIP_country_name_by_ipnum_v6( ns_g_geoip_countryDB_v6, *ipnum6 );
++#endif
++			if ( result )
++				georesult = ( strcasecmp( e->geoip_countryDB.country_name, result ) == 0 );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_countryDB_country_name compared result \"%s\" to rule \"%s\", got %d neg %d",
++				ipstr,
++				result, e->geoip_countryDB.country_name,
++				georesult, e->negative);
++#endif
++			break;
++		default:
++			break;
++		} /* switch */
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_countryDB */
++
++	case dns_aclelementtype_geoip_cityDB: {
++		short int georesult = 0 ;
++		const char *scratch = (const char *)NULL;
++		GeoIPRecord *record = (GeoIPRecord *)NULL ;
++#ifdef ISC_PLATFORM_USETHREADS
++		uint32_t prev_cityDB_ipnum = get_prev_cityDB_ipnum();
++
++		GeoIPRecord *prev_cityDB_record = (GeoIPRecord *)NULL ;
++
++		RUNTIME_CHECK(
++			isc_once_do(&prev_cityDB_ipnum_once, initialize_prev_cityDB_ipnum) == ISC_R_SUCCESS
++		);
++		RUNTIME_CHECK(
++			isc_once_do(&prev_cityDB_record_once, initialize_prev_cityDB_record) == ISC_R_SUCCESS
++		);
++
++		prev_cityDB_record = get_prev_cityDB_record();
++#else
++		static uint32_t prev_cityDB_ipnum = 0 ;
++		static void *prev_cityDB_record ;
++#endif
++
++		if ( !ipnum || !ns_g_geoip_cityDB )
++			return( ISC_FALSE );
++
++		if ( prev_cityDB_ipnum == ipnum )
++			record = prev_cityDB_record ;
++		else {
++			record = GeoIP_record_by_ipnum( ns_g_geoip_cityDB, ipnum );
++#ifdef ISC_PLATFORM_USETHREADS
++			set_prev_cityDB_record( record );
++			set_prev_cityDB_ipnum( ipnum );
++#else
++			prev_cityDB_record = record ;
++			prev_cityDB_ipnum = ipnum ;
++#endif
++		}
++			
++		if ( record ) {
++			switch ( e->geoip_cityDB.subtype ) {
++			case geoip_cityDB_country_code:
++				if ( record->country_code )
++					georesult = ( strncasecmp( e->geoip_cityDB.country_code, record->country_code, 2 ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_country_code compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->country_code, e->geoip_cityDB.country_code,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_country_code3:
++				if ( record->country_code3 )
++					georesult = ( strncasecmp( e->geoip_cityDB.country_code3, record->country_code3, 3 ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_country_code3 compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->country_code3, e->geoip_cityDB.country_code3,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_region:
++				if ( record->region )
++					georesult = ( strncasecmp( e->geoip_cityDB.region, record->region, 2 ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_region compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->region, e->geoip_cityDB.region,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_region_name:
++				if ( record->country_code && record->region
++						&& ( scratch = GeoIP_region_name_by_code(record->country_code,record->region) ) )
++					georesult = ( strcasecmp( e->geoip_cityDB.region_name, scratch ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_regionname compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					scratch, e->geoip_cityDB.region_name,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_city:
++				if ( record->city )
++					georesult = ( strcasecmp( e->geoip_cityDB.city, record->city ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_city compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->city, e->geoip_cityDB.city,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_postal_code:
++				if ( record->postal_code )
++					georesult = ( strcasecmp( e->geoip_cityDB.postal_code, record->postal_code ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_postal compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->postal_code, e->geoip_cityDB.postal_code,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_range: {
++				short int lat = -1 ;
++				short int lon = -1 ;
++				if ( e->geoip_cityDB.lat[0] || e->geoip_cityDB.lat[1] )
++					lat = ( e->geoip_cityDB.lat[0] <= record->latitude && record->latitude <= e->geoip_cityDB.lat[1] );
++				if ( e->geoip_cityDB.lon[0] || e->geoip_cityDB.lon[1] )
++					lon = ( e->geoip_cityDB.lon[0] <= record->longitude && record->longitude <= e->geoip_cityDB.lon[1] );
++				georesult = ( lat && lon );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_range compared result %f,%f to rule %f->%f,%f->%f; got %d neg %d",
++					ipstr,
++					record->latitude, record->longitude,
++					e->geoip_cityDB.lat[0], e->geoip_cityDB.lat[1],
++					e->geoip_cityDB.lon[0], e->geoip_cityDB.lon[1],
++					georesult, e->negative);
++#endif
++				break;
++			}
++			case geoip_cityDB_radius:
++				georesult = (( pow((record->latitude-e->geoip_cityDB.lat[0])/e->geoip_cityDB.radius[0],2) + pow((record->longitude-e->geoip_cityDB.lon[0])/e->geoip_cityDB.radius[1],2) ) <= 1 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_radius compared result %f,%f to rule %f->%f %fx%f; got %d neg %d",
++					ipstr,
++					record->latitude, record->longitude,
++					e->geoip_cityDB.lat[0], e->geoip_cityDB.lon[0],
++					e->geoip_cityDB.radius[0], e->geoip_cityDB.radius[1],
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_metro_code:
++				georesult = ( e->geoip_cityDB.metro_code == record->metro_code );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_metro compared result %d to rule %d, got %d neg %d",
++					ipstr,
++					record->metro_code, e->geoip_cityDB.metro_code,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_area_code:
++				georesult = ( e->geoip_cityDB.area_code == record->area_code );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_area compared result %d to rule %d, got %d neg %d",
++					ipstr,
++					record->area_code, e->geoip_cityDB.area_code,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_continent_code:
++				if ( record->continent_code )
++					georesult = ( strncasecmp( e->geoip_cityDB.continent_code, record->continent_code, 2 ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_continent compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->continent_code, e->geoip_cityDB.continent_code,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_cityDB_timezone_code:
++				if ( record->country_code && record->region
++						&& ( scratch = GeoIP_time_zone_by_country_and_region( record->country_code, record->region ) ) )
++					georesult = ( strcasecmp( e->geoip_cityDB.timezone_code, scratch ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_cityDB_timezone compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					scratch, e->geoip_cityDB.timezone_code,
++					georesult, e->negative);
++#endif
++				break;
++			default:
++				break;
++			} /* switch */
++		} /* if record */
++#ifdef DEBUG_GEOIP
++		else
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_cityDB found no record",
++				ipstr);
++#endif
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_cityDB */
++
++	case dns_aclelementtype_geoip_regionDB: {
++		short int georesult = 0 ;
++		const GeoIPRegion *record = (const GeoIPRegion *)NULL ;
++
++		if ( !ipnum || !ns_g_geoip_regionDB )
++			return(ISC_FALSE);
++
++		if (( record = GeoIP_region_by_ipnum( ns_g_geoip_regionDB, ipnum) )) {
++			switch ( e->geoip_regionDB.subtype ) {
++			case geoip_regionDB_country_code:
++				if ( record->country_code )
++					georesult = ( strncasecmp( e->geoip_regionDB.country_code, record->country_code, 3 ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_regionDB_name compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->country_code, e->geoip_regionDB.country_code,
++					georesult, e->negative);
++#endif
++				break;
++			case geoip_regionDB_region:
++				if ( record->region && *record->region )
++					georesult = ( strncasecmp( e->geoip_regionDB.region, record->region, 3 ) == 0 );
++#ifdef DEBUG_GEOIP
++				isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++					DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++					"client %s: geoip_regionDB_name compared result \"%s\" to rule \"%s\", got %d neg %d",
++					ipstr,
++					record->region, e->geoip_regionDB.region,
++					georesult, e->negative);
++#endif
++				break;
++			default:
++				break;
++			} /* switch */
++		} /* if record */
++#ifdef DEBUG_GEOIP
++		else
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_regionDB found no record",
++				ipstr);
++#endif
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_regionDB */
++
++	case dns_aclelementtype_geoip_ispDB: {
++		short int georesult = 0 ;
++		const char *result = (const char *)NULL ;
++
++		if ( !ipnum || !ns_g_geoip_ispDB )
++			return(ISC_FALSE);
++
++		switch ( e->geoip_ispDB.subtype ) {
++		case geoip_ispDB_name:
++			if (( result = GeoIP_name_by_ipnum( ns_g_geoip_ispDB, ipnum ) ))
++				georesult = ( strcasecmp( e->geoip_ispDB.name, result ) == 0 );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_ispDB_name compared result \"%s\" to rule \"%s\", got %d neg %d",
++				ipstr,
++				result, e->geoip_ispDB.name,
++				georesult, e->negative);
++#endif
++			break;
++		default:
++			break;
++		} /* switch */
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_ispDB */
++
++	case dns_aclelementtype_geoip_orgDB: {
++		short int georesult = 0 ;
++		const char *result = (const char *)NULL ;
++
++		if ( !ipnum || !ns_g_geoip_orgDB )
++			return(ISC_FALSE);
++
++		switch ( e->geoip_orgDB.subtype ) {
++		case geoip_orgDB_name:
++			if (( result = GeoIP_name_by_ipnum( ns_g_geoip_orgDB, ipnum ) ))
++				georesult = ( strcasecmp( e->geoip_orgDB.name, result ) == 0 );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_orgDB_name compared result \"%s\" to rule \"%s\", got %d neg %d",
++				ipstr,
++				result, e->geoip_orgDB.name,
++				georesult, e->negative);
++#endif
++			break;
++		default:
++			break;
++		} /* switch */
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_orgDB */
++
++	case dns_aclelementtype_geoip_asDB: {
++		short int georesult = 0 ;
++		const char *result = (const char *)NULL ;
++
++		if ( !ipnum || !ns_g_geoip_asDB )
++			return(ISC_FALSE);
++
++		switch ( e->geoip_asDB.subtype ) {
++		case geoip_asDB_org:
++			if (( result = GeoIP_org_by_ipnum( ns_g_geoip_asDB, ipnum ) ))
++				georesult = ( strcasecmp( e->geoip_asDB.org, result ) == 0 );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_asDB_org compared result \"%s\" to rule \"%s\", got %d neg %d",
++				ipstr,
++				result, e->geoip_asDB.org,
++				georesult, e->negative);
++#endif
++			break;
++		default:
++			break;
++		} /* switch */
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_asDB */
++
++	case dns_aclelementtype_geoip_netspeedDB: {
++		short int georesult = 0 ;
++		short int result = -1 ;
++
++		if ( !ipnum || !ns_g_geoip_netspeedDB )
++			return( ISC_FALSE );
++
++		switch ( e->geoip_netspeedDB.subtype ) {
++		case geoip_netspeedDB_id:
++			result = GeoIP_id_by_ipnum( ns_g_geoip_netspeedDB, ipnum );
++			georesult = ( e->geoip_netspeedDB.id == result );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_netspeedDB_id compared result %d to rule %d, got %d neg %d",
++				ipstr,
++				result, e->geoip_netspeedDB.id,
++				georesult, e->negative);
++#endif
++			break;
++		default:
++			break;
++		} /* switch */
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_netspeedDB */
++
++	case dns_aclelementtype_geoip_domainDB: {
++		short int georesult = 0 ;
++		const char *result = (const char *)NULL ;
++
++		if ( !ipnum || !ns_g_geoip_domainDB )
++			return(ISC_FALSE);
++
++		switch ( e->geoip_domainDB.subtype ) {
++		case geoip_domainDB_name:
++			if (( result = GeoIP_name_by_ipnum( ns_g_geoip_domainDB, ipnum ) ))
++				georesult = ( strcasecmp( e->geoip_domainDB.name, result ) == 0 );
++#ifdef DEBUG_GEOIP
++			isc_log_write(dns_lctx, DNS_LOGCATEGORY_NOTIFY,
++				DNS_LOGMODULE_ACL, ISC_LOG_DEBUG(3),
++				"client %s: geoip_domainDB_name compared result \"%s\" to rule \"%s\", got %d neg %d",
++				ipstr,
++				result, e->geoip_domainDB.name,
++				georesult, e->negative);
++#endif
++			break;
++		default:
++			break;
++		} /* switch */
++		return( georesult ? ISC_TRUE : ISC_FALSE );
++	} /* case geoip_domainDB */
++
++#endif /* HAVE_GEOIP */
++
+ 	case dns_aclelementtype_localhost:
+ 		if (env == NULL || env->localhost == NULL)
+ 			return (ISC_FALSE);
+--- lib/dns/include/dns/acl.h.orig	2009-01-17 15:47:43.000000000 -0800
++++ lib/dns/include/dns/acl.h	2011-02-04 17:17:47.528563320 -0800
+@@ -52,8 +52,139 @@
+ 	dns_aclelementtype_nestedacl,
+ 	dns_aclelementtype_localhost,
+ 	dns_aclelementtype_localnets,
++#ifdef HAVE_GEOIP
++	dns_aclelementtype_geoip_countryDB,
++	dns_aclelementtype_geoip_cityDB,
++	dns_aclelementtype_geoip_regionDB,
++	dns_aclelementtype_geoip_ispDB,
++	dns_aclelementtype_geoip_orgDB,
++	dns_aclelementtype_geoip_asDB,
++	dns_aclelementtype_geoip_netspeedDB,
++	dns_aclelementtype_geoip_domainDB,
++#endif /* HAVE_GEOIP */
+ 	dns_aclelementtype_any
+-} dns_aclelemettype_t;
++} dns_aclelementtype_t;
++
++#ifdef HAVE_GEOIP
++
++/* COUNTRY DB */
++
++typedef enum {
++	geoip_countryDB_country_code,
++	geoip_countryDB_country_code3,
++	geoip_countryDB_country_name,
++} dns_geoip_subtype_countryDB_t ;
++
++typedef struct dns_geoip_countryDB {
++	dns_geoip_subtype_countryDB_t subtype ;
++	char country_code[2] ;
++	char country_code3[3] ;
++	char country_name[256] ;	/* \0 padded */
++} dns_geoip_countryDB_t;
++
++/* CITY DB */
++
++typedef enum {
++	geoip_cityDB_country_code,
++	geoip_cityDB_country_code3,
++	geoip_cityDB_region,
++	geoip_cityDB_region_name,
++	geoip_cityDB_city,
++	geoip_cityDB_postal_code,
++	geoip_cityDB_range,
++	geoip_cityDB_radius,
++	geoip_cityDB_metro_code,
++	geoip_cityDB_area_code,
++	geoip_cityDB_continent_code,
++	geoip_cityDB_timezone_code,
++} dns_geoip_subtype_cityDB_t ;
++
++typedef struct dns_geoip_cityDB {
++	dns_geoip_subtype_cityDB_t subtype ;
++	char country_code[2] ;
++	char country_code3[3] ;
++	char region[2] ;
++	char region_name[256] ;		/* \0 padded */
++	char city[256] ;		/* \0 padded */
++	char postal_code[7] ;		/* \0 padded */
++	float lat[2] ;
++	float lon[2] ;
++	float radius[2] ;
++	int metro_code ;
++	int area_code ;
++	char continent_code[2] ;
++	char timezone_code[256] ;	/* \0 padded */
++} dns_geoip_cityDB_t;
++
++/* REGION DB */
++
++typedef enum {
++	geoip_regionDB_country_code,
++	geoip_regionDB_region,
++} dns_geoip_subtype_regionDB_t ;
++
++typedef struct dns_geoip_regionDB {
++	dns_geoip_subtype_regionDB_t subtype ;
++	char country_code[2] ;
++	char region[2] ;
++} dns_geoip_regionDB_t;
++
++/* ISP DB */
++
++typedef enum {
++	geoip_ispDB_name,
++} dns_geoip_subtype_ispDB_t ;
++
++typedef struct dns_geoip_ispDB {
++	dns_geoip_subtype_ispDB_t subtype ;
++	char name[51] ;			/* \0 padded */
++} dns_geoip_ispDB_t;
++
++/* ORG DB */
++
++typedef enum {
++	geoip_orgDB_name,
++} dns_geoip_subtype_orgDB_t ;
++
++typedef struct dns_geoip_orgDB {
++	dns_geoip_subtype_orgDB_t subtype ;
++	char name[51] ;			/* \0 padded */
++} dns_geoip_orgDB_t;
++
++/* AS DB */
++
++typedef enum {
++	geoip_asDB_org,
++} dns_geoip_subtype_asDB_t ;
++
++typedef struct dns_geoip_asDB {
++	dns_geoip_subtype_asDB_t subtype ;
++	char org[51] ;			/* \0 padded */
++} dns_geoip_asDB_t;
++
++/* NETSPEED DB */
++
++typedef enum {
++	geoip_netspeedDB_id,
++} dns_geoip_subtype_netspeedDB_t ;
++
++typedef struct dns_geoip_netspeedDB {
++	dns_geoip_subtype_netspeedDB_t subtype ;
++	short int id ;
++} dns_geoip_netspeedDB_t;
++
++/* DOMAIN DB */
++
++typedef enum {
++	geoip_domainDB_name,
++} dns_geoip_subtype_domainDB_t ;
++
++typedef struct dns_geoip_domainDB {
++	dns_geoip_subtype_domainDB_t subtype ;
++	char name[256] ;		/* \0 padded */
++} dns_geoip_domainDB_t;
++
++#endif /* HAVE_GEOIP */
+ 
+ typedef struct dns_aclipprefix dns_aclipprefix_t;
+ 
+@@ -63,9 +194,19 @@
+ };
+ 
+ struct dns_aclelement {
+-	dns_aclelemettype_t	type;
++	dns_aclelementtype_t	type;
+ 	isc_boolean_t		negative;
+ 	dns_name_t		keyname;
++#ifdef HAVE_GEOIP
++	dns_geoip_countryDB_t	geoip_countryDB;
++	dns_geoip_cityDB_t	geoip_cityDB;
++	dns_geoip_regionDB_t	geoip_regionDB;
++	dns_geoip_ispDB_t	geoip_ispDB;
++	dns_geoip_orgDB_t	geoip_orgDB;
++	dns_geoip_asDB_t	geoip_asDB;
++	dns_geoip_netspeedDB_t	geoip_netspeedDB;
++	dns_geoip_domainDB_t	geoip_domainDB;
++#endif /* HAVE_GEOIP */
+ 	dns_acl_t		*nestedacl;
+ 	int			node_num;
+ };
+--- lib/isc/include/isc/geoip.h.orig	2011-02-04 17:17:47.528563320 -0800
++++ lib/isc/include/isc/geoip.h	2011-02-04 17:17:47.528563320 -0800
+@@ -0,0 +1,25 @@
++#ifdef HAVE_GEOIP
++#ifndef _GEOIP_H
++#define _GEOIP_H
++
++#include <GeoIP.h>
++#include <GeoIPCity.h>
++
++void geoip_init( void );
++
++extern GeoIP * ns_g_geoip_countryDB ;		/*  1  */
++extern GeoIP * ns_g_geoip_cityDB ;			/* 2&6 */
++extern GeoIP * ns_g_geoip_regionDB ;		/* 3&7 */
++extern GeoIP * ns_g_geoip_ispDB ;			/*  4  */
++extern GeoIP * ns_g_geoip_orgDB ;			/*  5  */
++/* proxyDB doesn't apply in a DNS context	 *  8  */
++extern GeoIP * ns_g_geoip_asDB ;			/*  9  */
++extern GeoIP * ns_g_geoip_netspeedDB ;		/* 10  */
++extern GeoIP * ns_g_geoip_domainDB ;		/* 11  */
++#ifdef HAVE_GEOIP_V6
++extern GeoIP * ns_g_geoip_countryDB_v6 ;	/* 12  */
++#endif
++
++#endif /* !_GEOIP_H */
++#endif /* HAVE_GEOIP */
++
+--- version.orig	2011-01-12 20:45:16.000000000 -0800
++++ version	2011-02-04 17:19:14.958567969 -0800
+@@ -7,4 +7,4 @@
+ MINORVER=8
+ PATCHVER=0
+ RELEASETYPE=-P
+-RELEASEVER=1
++RELEASEVER=1-geoip-1.3
