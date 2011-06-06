@@ -1,0 +1,33 @@
+#!/bin/sh
+# Copyright (C) 2011 OpenWrt.org
+
+. /etc/functions.sh
+
+poe_status() {
+	echo 8 > /sys/class/gpio/export
+	echo in > /sys/class/gpio/gpio8/direction
+	local v=`cat /sys/class/gpio/gpio8/value`
+	case $v in
+		0) echo POE DISABLED ;;
+		1) echo POE ENABLED ;;
+		*) echo POE unknown ;;
+	esac	
+}
+
+poe_change() {
+	echo 8 > /sys/class/gpio/export
+	echo out > /sys/class/gpio/gpio8/direction
+	echo $1 > /sys/class/gpio/gpio8/value
+}
+
+poe_enable=1
+config_load poe
+
+case $1 in 
+	start) poe_change $poe_enable
+	stop) poe_change 0
+	enable) ;;
+	disable) ;;
+	status) poe_status ;;
+esac
+
