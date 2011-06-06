@@ -8,6 +8,19 @@
 	rmmod="rmmod"
 }
 
+have_ip6tables() {
+	if [ -x /usr/sbin/ip6tables ] 
+	then
+	echo 1
+	else
+	echo 0
+fi
+
+do_iptables() {
+	iptables $*
+	have_ip6tables || ip6tables $*
+}
+
 add_insmod() {
 	eval "export isset=\${insmod_$1}"
 	case "$isset" in
@@ -397,17 +410,17 @@ start_cg() {
 	local pktrules
 	local sizerules
 	enum_classes "$cg"
-	add_rules iptrules "$ctrules" "iptables -t mangle -A ${cg}_ct"
+	add_rules iptrules "$ctrules" "do_iptables -t mangle -A ${cg}_ct"
 	config_get classes "$cg" classes
 	for class in $classes; do
 		config_get mark "$class" classnr
 		config_get maxsize "$class" maxsize
 		[ -z "$maxsize" -o -z "$mark" ] || {
 			add_insmod ipt_length
-			append pktrules "iptables -t mangle -A ${cg} -m mark --mark $mark -m length --length $maxsize: -j MARK --set-mark 0" "$N"
+			append pktrules "do_iptables -t mangle -A ${cg} -m mark --mark $mark -m length --length $maxsize: -j MARK --set-mark 0" "$N"
 		}
 	done
-	add_rules pktrules "$rules" "iptables -t mangle -A ${cg}"
+	add_rules pktrules "$rules" "do_iptables -t mangle -A ${cg}"
 	for iface in $INTERFACES; do
 		config_get classgroup "$iface" classgroup
 		config_get device "$iface" device
@@ -416,8 +429,8 @@ start_cg() {
 		config_get download "$iface" download
 		config_get halfduplex "$iface" halfduplex
 		download="${download:-${halfduplex:+$upload}}"
-		append up "iptables -t mangle -A OUTPUT -o $device -j ${cg}" "$N"
-		append up "iptables -t mangle -A FORWARD -o $device -j ${cg}" "$N"
+		append up "do_iptables -t mangle -A OUTPUT -o $device -j ${cg}" "$N"
+		append up "do_iptables -t mangle -A FORWARD -o $device -j ${cg}" "$N"
 	done
 	cat <<EOF
 $INSMOD
@@ -430,6 +443,16 @@ $pktrules
 $up$N${down:+${down}$N}
 EOF
 	unset INSMOD
+#FIXME - need equivs for ip6tables
+	have_ip6tables || cat <<EOF
+ip6tables -t mangle -N ${cg} >&- 2>&-
+ip6tables -t mangle -N ${cg}_ct >&- 2>&-
+${iptrules:+${iptrules}${N}ip6tables -t mangle -A ${cg}_ct -j CONNMARK --save-mark}
+ip6tables -t mangle -A ${cg} -j CONNMARK --restore-mark
+ip6tables -t mangle -A ${cg} -m mark --mark 0 -j ${cg}_ct
+$pktrules
+$up$N${down:+${down}$N}
+EOF
 }
 
 start_firewall() {
@@ -438,6 +461,10 @@ start_firewall() {
 	cat <<EOF
 iptables -t mangle -F
 iptables -t mangle -X
+EOF
+	have_ip6tables || cat <<EOF
+ip6tables -t mangle -F
+ip6tables -t mangle -X
 EOF
 	for group in $CG; do
 		start_cg $group
