@@ -24,8 +24,8 @@ poe_enable=1
 config_load poe
 
 case $1 in 
-	start) poe_change $poe_enable
-	stop) poe_change 0
+	start) poe_change $poe_enable ;;
+	stop) poe_change 0 ;;
 	enable) ;;
 	disable) ;;
 	status) poe_status ;;
