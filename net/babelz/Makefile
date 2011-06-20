@@ -3,17 +3,17 @@
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
-#
+# Please note this is not an officially released version of babelz
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=babelz
-PKG_VERSION:=20110317
-PKG_RELEASE:=2
+PKG_VERSION:=20110620
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
-PKG_MD5SUM:=7532a36a455515f175faa793ad1dd9af
+PKG_SOURCE_URL:=http://www.teklibre.com/~d/cerowrt/
+PKG_MD5SUM:=bebb2f34391189b6439e8b9e3b3dde8a 
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -23,7 +23,7 @@ define Package/babelz
   SUBMENU:=Routing and Redirection
   TITLE:=A loop-free distance-vector routing protocol
   URL:=http://www.pps.jussieu.fr/~jch/software/babel/
-  MAINTAINER:=Gabriel Kerneis <kerneis@pps.jussieu.fr>
+  MAINTAINER:=Dave Taht <d+babel@taht.net>
   DEPENDS:=+kmod-ipv6 +librt
 endef
 
