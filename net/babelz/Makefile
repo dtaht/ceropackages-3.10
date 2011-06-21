@@ -13,7 +13,7 @@ PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.teklibre.com/~d/cerowrt/
-PKG_MD5SUM:=bebb2f34391189b6439e8b9e3b3dde8a 
+PKG_MD5SUM:=bebb2f34391189b6439e8b9e3b3dde8a
 
 include $(INCLUDE_DIR)/package.mk
 
