@@ -1,29 +1,83 @@
 <html xml:lang="en" lang="en"> 
  
 <head> 
-  <title>About Cerowrt</title> 
+  <title>About CeroWrt</title> 
   <link rel="stylesheet" type="text/css" href="/uberwrt/static/cerowrtstyle.css" /> 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head> 
 <body>
-<h3>About Uberwrt</h3> 
-<p><a href="http://www.bufferbloat.net/projects/uberwrt">Uberwrt</a> is a family of projects intended to resolve some endemic problems in networking today, and push the state of the art of edge networks and routers forward in various directions. Projects include tighter integration with DNSSEC (<a href="http://www.bufferbloat.net/projects/iscwrt">ISCwrt</a>), wireless mesh networking (<a href="http://www.bufferbloat.net/projects/wisp6">Wisp6</a>), measurements of networking and censorship issues (<a href="http://www.projectbismark.net">BISMark</a>), and others.</p>
-<p>It is closely related to the ongoing debloat-testing efforts of <a href=http://www.bufferbloat.net>Bufferbloat.net</a> except that debloat-testing targets servers and laptops, not routers, directly, and Uberwrt does not, at present, include the eBDP algorithm.</p>
-<h3>About Cerowrt</h3> 
-<p><a href="http://www.bufferbloat.net">Cerowrt</a> is an <a href="http://www.openwrt.org">Openwrt</a> based routing and simulation platform intended for use by network engineers, researchers, teachers, students and individuals interested in advancing the state of the art on the Internet, and in particular, those investigating the problems of latency under load, bufferbloat, wireless-n, and the inter-relationships between various TCP & QoS algorithms.</p>
+<h3>About UberWrt</h3> 
 
-<p>A core goal for cerowrt is to provide a well understood platform, where researchers can perform tests with confidence that their results can be duplicated by others. (It has NOT achieved this goal yet!)</p>
-<p>Cerowrt is a base for most of the other Uberwrt projects. It is kept small in size (~6MB) so as to be compatible with more commonly available routers. </p>
+<p><a href="http://www.bufferbloat.net/projects/uberwrt">UberWrt</a>
+is a family of projects intended to resolve endemic problems in
+networking today, and push the state of the art of edge networks and
+routers forward. Projects include tighter
+integration with DNSSEC
+(<a href="http://www.bufferbloat.net/projects/iscwrt">ISCWrt</a>),
+wireless mesh networking
+(<a href="http://www.bufferbloat.net/projects/wisp6">Wisp6</a>),
+measurements of networking and censorship issues
+(<a href="http://www.projectbismark.net">BISMark</a>), and others.</p>
 
-<p>Cerowrt breaks with home router conventions in several ways. The first you are already seeing - it comes with an <a href="webserver.html">integral web server</a> with which you can establish local web services. This is useful, for example, in providing a place where you can share data such as packet captures with others in your team, and a place to keep useful information when the Internet is down. </p>
+<p>It is closely related to the ongoing debloat-testing efforts of
+<a href=http://www.bufferbloat.net>Bufferbloat.net</a> except that
+debloat-testing targets servers and laptops, not routers, directly,
+and UberWrt does not, at present, include the eBDP algorithm.</p>
 
-<p>There are numerous other <a href="features.html">features</a> all intended to help make insight into networking problems easier. In particular, bufferbloat, wherever <a href="debloat.html">we could find it</a>, has been reduced tremendously, but not eliminated entirely.</p>
+<h3>About CeroWrt</h3> 
 
-<p>While we have tried very hard to produce a usable web interface for the normal use of Cerowrt as your primary Internet router (and do desire you use it as such and give us feedback!), some things, such as configuration of the <a href="proxy.html">web proxy</a>, or <A href="http://www.bufferbloat.net/projects/uberwrt/Using_Alternate_TCP_algorithms">alternate tcp algorithms</a> can require non-gui editing via ssh.</p>
+<p><a href="http://www.bufferbloat.net">CeroWrt</a> is
+an <a href="http://www.openwrt.org">OpenWrt</a> based routing and
+simulation platform intended for use by individuals, network engineers,
+researchers, teachers, and students interested in
+advancing the state of the art on the Internet, and in particular,
+those investigating the problems of latency under load, bufferbloat,
+wireless-n, and the inter-relationships between various TCP & QoS
+algorithms.</p>
 
-<p>As this is a research platform primarily, there will be no long term support for this release. Subsequent releases will most likely require a complete reflashing of your router. We apologize for the inconvienence but lack funding to do more, and the state of the art and the problems we are trying to solve are rapidly moving targets that we would prefer to track closely. We expect to feed back the results of this work into other stable distributions.</p>
+<p>A core goal for CeroWrt is to provide a well understood platform,
+where contributors will be able to eventually perform tests with
+confidence that their results can be duplicated by others.</p>
 
-<p>Thanks for giving Cerowrt a try!</p> <p>Please <a href="http://www.bufferbloat.net/register">register on and use our wikis</a>, join the <a href="https://lists.bufferbloat.net">mailing lists</a>, and share your results.</p>
+<p>CeroWrt is a base for most of the other UberWrt projects.  It is
+kept small in size (~6MB) so as to be compatible with more commonly
+available routers. </p>
+
+<p>CeroWrt breaks with home router conventions in several ways.  The
+first you are already seeing - it comes with
+an <a href="webserver.html">integral web server</a> with which you can
+establish local web services.  This is useful, for example, in
+providing a place where you can share data such as packet captures
+with others in your team, and a place to keep useful information when
+the Internet is down. </p>
+
+<p>There are other <a href="features.html">features</a> all intended
+to help make insight into networking problems easier. In particular,
+bufferbloat, wherever <a href="debloat.html">we could find it</a>, has
+been reduced tremendously, but not eliminated entirely, which is our
+eventual goal.</p>
+
+<p>While we have tried very hard to produce a usable web interface for
+the normal use of CeroWrt as your primary Internet router (and do
+desire you use it as such and give us feedback!), some things, such as
+configuration of the <a href="proxy.html">web proxy</a>,
+or <A href="http://www.bufferbloat.net/projects/uberwrt/Using_Alternate_TCP_algorithms">alternate
+tcp algorithms</a> can require non-gui editing via ssh.</p>
+
+<p>As this is a research and development platform, there will be no
+long term support for this release. Subsequent releases will likely
+require a complete reflashing and reconfiguration of your router. We
+apologize for the inconvienence but the state of the art and the
+problems we are trying to solve are rapidly moving targets that we
+must track closely. We will feed back the results of this work into
+stable distributions.</p>
+
+<p>Thanks for giving CeroWrt a
+try!</p> <p>Please <a href="http://www.bufferbloat.net/register">register
+on and use our wikis</a>, join
+the <a href="https://lists.bufferbloat.net">mailing lists</a>, and
+share your results.</p>
+
 <p>The network you save may be your own.</p>
 
 <hr /> 
