@@ -24,27 +24,39 @@
 </ul><h3>Alternate TCP algorithms</h3><ul>
 <p>The default TCP algorithm in this router is "Westwood+", which has been shown to work better than Vegas, over wired and wireless links. Available as options are Vegas, Reno, Cubic, and Bic - the last two are the algorithms in most common use in the Linux world today.</p>
 
-<p>Changing the default TCP algorithm on the router has <i>no effect on performance</i> unless you are using the bundled <a href="proxy.html">web proxy</a>, or doing significant amounts of traffic to/from the local <a href="rsync.html"> or <a href="webserver.html">web server</a>, or doing your own network simulations. Packets going through the router use their own algorithms from the host and servers involved.</p>
+<p>Changing the default TCP algorithm on the router has <i>no effect on performance</i> unless you are using the bundled <a href="proxy.html">web proxy</a>, or doing significant amounts of traffic to/from the local <a href="rsync.html">rsync</a> or <a href="webserver.html">web server</a>.</p>
 
-<p>Changing the default TCP algorithm, however, can be very useful for simulating normal traffic during simulations. At some point in the near future we hope to have a bandwidth and latency under load test that more accurately measures the available bandwidth between the router and the rest of the Internet. We hope to be able to thoroughly analyze the behavior of the Qos subsystems as well as the behavior of all the intervening routers on the path.</p>
-<p> Future TCP algorithms, such as TCP-Fit, are being evaluated.</p>
-<p> If you wish to change the default TCP algorithm, you can do a:</p>
-<pre>
-echo 'cubic' > /proc/sys/net/ipv4/tcp_congestion_control
-</pre>
-<p> And to see what tcp algorithms are actually available:</p>
+<p>Packets going through the router use their own algorithms from the host and servers involved.</p>
+
+<p>Changing the default TCP algorithm, however, can be very useful for simulating normal traffic during simulations. At some point in the near future we hope to have a bandwidth and latency under load test that more accurately measures the available bandwidth between the router and the rest of the Internet. We hope to be able to thoroughly analyze the behavior of the <a href="#qos">QoS</a> subsystems as well as the behavior of all the intervening routers on the path.</p>
+<p> Other TCP algorithms, such as TCP-Fit, are being evaluated.</p>
+<p> To see what tcp algorithms are actually available:</p>
 <pre>
 cat /proc/sys/net/ipv4/tcp_allowed_congestion_control
 </pre>
-<P>There are <i>many</i> other parameters affecting TCP behavior, notably low default limits on the amount of outstanding data in flight, and the various congestion windows, that need also to be modified to correctly emulate another machine's behavior on the router. Merely changing the algorithm will not yield valid, comparable results! TCP is very - almost chaotically - sensitive to initial preconditions. </p>
+<p> If you wish to change the default TCP algorithm, you can do a:</p>
+<pre>
+echo the_algorithm_you_want > /proc/sys/net/ipv4/tcp_congestion_control
+</pre>
+<P>There are <i>many</i> other parameters affecting TCP behavior, notably (configured low) default limits on the amount of outstanding data in flight, and the various congestion windows, that need also to be modified to correctly emulate another machine's behavior on the router. Merely changing the algorithm will not yield valid, comparable results! TCP is very - almost chaotically - sensitive to initial preconditions. </p>
 <p>We strongly recommend that you capture your pre-existing sysctl values, and your iptables and traffic shaping configurations before doing a test.</p>
-<P>Please see the <a href=http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">wiki pages</a> for more details.</p>
+<P>Please see the <a href="http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">wiki pages</a> for more details.</p>
 
 </ul><h3><a name="qos"></a>Quality of Service and Traffic shaping</h3><ul>
-</ul><h3><a name="netem"></a>Network Emulation</h3><ul>
-Cerowrt includes the NETEM network emulator. With it, you can simulate delay, packet loss, packet randomization, and many other factors that can effect network connections. For more details about netem, please see the online <a href="">documentation for it</a>. 
-</ul><h3><a name="netdrop"></a>Net Drop Monitor</h3><ul>
 
+</ul><h3><a name="netem"></a>Network Emulation</h3><ul> Cerowrt
+includes the NETEM network emulator. With it, you can simulate delay,
+packet loss, packet randomization, and many other factors that can
+effect network connections. For more details about netem, please see
+the
+online <a href="http://www.linuxfoundation.org/collaborate/workgroups/networking/netem">documentation
+on it's web site</a>.
+</ul><h3><a name="netdrop"></a>Net Drop Monitor</h3><ul> Packet drops
+occur throughout the network stack for a variety of reasons, many of
+which are good, and more than a few, bad. To date, few have had any
+insight into how,when,and why packet drop happens. The Packet drop
+monitor (which requires a separate tool to use) can poke into the
+depths of the kernel to determine this information.
 </ul>
 <hr /> 
 <p class="footnote"> 
