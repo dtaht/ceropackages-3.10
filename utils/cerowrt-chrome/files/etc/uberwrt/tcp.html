@@ -9,26 +9,62 @@
 <body>
 <h2>TCP, Traffic Shaping, and Network simulation</h2> 
 <a name="ECN"></a><h3>ECN enablement</h3><ul>
-<p> ECN - Explicit congestion notification - is enabled by default. Connections shaped by an ECN enabled shaper will mark, rather than drop, ECN enabled packets. This should improve (theoretically) overall TCP performance and fairness in ways that normal packet drop cannot. </p>
+<p> ECN - Explicit congestion notification - is enabled by
+default. Connections shaped by an ECN enabled shaper will mark, rather
+than drop, ECN enabled packets. This should improve (theoretically)
+overall TCP performance and fairness in ways that normal packet drop
+cannot. </p>
 
-<p>We are encouraging more people to enable ECN throughout their networks, on their hosts, and servers. ECN is enabled on approximately 12% of all the servers in the web top 100, but it is enabled on relatively few desktops, clients, and handheld devices.</p>
+<p>We are encouraging more people to enable ECN throughout their
+networks, on their hosts, and servers. ECN is enabled on approximately
+12% of all the servers in the web top 100, but it is enabled on
+relatively few desktops, clients, and handheld devices.</p>
 
-<p>Another means by which ECN enablement can help, is that by using the <a href="proxy.html">web proxy</a> server, both sides of the connection may be able to negotiate an ECN or non-ECN connection separately.</p>
+<p>Another means by which ECN enablement can help, is that by using
+the <a href="proxy.html">web proxy</a> server, both sides of the
+connection may be able to negotiate an ECN or non-ECN connection
+separately.</p>
 
-<p>Connections originating from the router have ECN enabled by default. If you experience problems making connections to your router for maintenance or other purposes, you may have a problem with ECN, and you can easily turn it on or off, to diagnose it, from the network parameters menu. However the problem more likely lies with your client! </p>
-<p>Bufferbloat.net is very interested in reports of ECN success or failures with given pieces of network equipment. We have high hopes that ECN can be more widely deployed.</p>
+<p>Connections originating from the router have ECN enabled by
+default. If you experience problems making connections to your router
+for maintenance or other purposes, you may have a problem with ECN,
+and you can easily turn it on or off, to diagnose it, from the network
+parameters menu. However the problem more likely lies with your
+client! </p>
+<p>Bufferbloat.net is very interested in reports of ECN success or
+failures with given pieces of network equipment. We have high hopes
+that ECN can be more widely deployed.</p>
 </ul><h3><a name="sack"></a>SACK/DSACK enablement</h3><ul>
-<p>TCP DSACK and SACK are enabled by default. These are optimizations that improve TCP's behavior when losses are encountered. (They only apply for connections originating from, not going through, the router)</p>
-<p> In practice, enabling these seem to cause no harm in the general case, so long as smaller TCP windows are used.</p>
+<p>TCP DSACK and SACK are enabled by default. These are optimizations
+that improve TCP's behavior when losses are encountered. (They only
+apply for connections originating from, not going through, the
+router)</p>
+<p> In practice, enabling these seem to cause no harm in the general
+case, so long as smaller TCP windows are used.</p>
 <a name="tcp"></a>
 </ul><h3>Alternate TCP algorithms</h3><ul>
-<p>The default TCP algorithm in this router is "Westwood+", which has been shown to work better than Vegas, over wired and wireless links. Available as options are Vegas, Reno, Cubic, and Bic - the last two are the algorithms in most common use in the Linux world today.</p>
+<p>The default TCP algorithm in this router is "Westwood+", which has
+been shown to work better than Vegas, over wired and wireless
+links. Available as options are Vegas, Reno, Cubic, and Bic - the last
+two are the algorithms in most common use in the Linux world
+today.</p>
 
-<p>Changing the default TCP algorithm on the router has <i>no effect on performance</i> unless you are using the bundled <a href="proxy.html">web proxy</a>, or doing significant amounts of traffic to/from the local <a href="rsync.html">rsync</a> or <a href="webserver.html">web server</a>.</p>
+<p>Changing the default TCP algorithm on the router has <i>no effect
+on performance</i> unless you are using the
+bundled <a href="proxy.html">web proxy</a>, or doing significant
+amounts of traffic to/from the local <a href="rsync.html">rsync</a>
+or <a href="webserver.html">web server</a>.</p>
 
-<p>Packets going through the router use their own algorithms from the host and servers involved.</p>
+<p>Packets going <i>through</i> the router use their own algorithms
+from the host and servers involved.</p>
 
-<p>Changing the default TCP algorithm, however, can be very useful for simulating normal traffic during simulations. At some point in the near future we hope to have a bandwidth and latency under load test that more accurately measures the available bandwidth between the router and the rest of the Internet. We hope to be able to thoroughly analyze the behavior of the <a href="#qos">QoS</a> subsystems as well as the behavior of all the intervening routers on the path.</p>
+<p>Changing the default TCP algorithm, however, can be very useful for
+simulating normal traffic during simulations. At some point in the
+near future we hope to have a bandwidth and latency under load test
+that more accurately measures the available bandwidth between the
+router and the rest of the Internet. We hope to be able to thoroughly
+analyze the behavior of the <a href="#qos">QoS</a> subsystems as well
+as the behavior of all the intervening routers on the path.</p>
 <p> Other TCP algorithms, such as TCP-Fit, are being evaluated.</p>
 <p> To see what tcp algorithms are actually available:</p>
 <pre>
@@ -38,11 +74,53 @@ cat /proc/sys/net/ipv4/tcp_allowed_congestion_control
 <pre>
 echo the_algorithm_you_want > /proc/sys/net/ipv4/tcp_congestion_control
 </pre>
-<P>There are <i>many</i> other parameters affecting TCP behavior, notably (configured low) default limits on the amount of outstanding data in flight, and the various congestion windows, that need also to be modified to correctly emulate another machine's behavior on the router. Merely changing the algorithm will not yield valid, comparable results! TCP is very - almost chaotically - sensitive to initial preconditions. </p>
-<p>We strongly recommend that you capture your pre-existing sysctl values, and your iptables and traffic shaping configurations before doing a test.</p>
-<P>Please see the <a href="http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">wiki pages</a> for more details.</p>
+<P>There are <i>many</i> other parameters affecting TCP behavior,
+notably (configured low) default limits on the amount of outstanding
+data in flight, and the various congestion windows, that need also to
+be modified to correctly emulate another machine's behavior on the
+router. Merely changing the algorithm will not yield valid, comparable
+results! TCP is very - almost chaotically - sensitive to initial
+preconditions. </p>
+<p>We strongly recommend that you capture your pre-existing sysctl
+values, and your iptables and traffic shaping configurations before
+doing a test.</p>
+<P>Please see
+the <a href="http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">evaluating tcp behavior wiki
+pages</a> for more details.</p>
 
-</ul><h3><a name="qos"></a>Quality of Service and Traffic shaping</h3><ul>
+</ul><h3><a name="qos"></a>Quality of Service (QoS) and Traffic shaping</h3><ul>
+<p>Good Quality of Service is a holy grail that has been chased over
+the Internet for very long time. With the advent of streaming video
+delivery, simultainously with the increasing popularity of video
+teleconferencing, and handheld, wireless devices, existing traffic
+shaping methods, passive queue management and active queue management
+systems no longer work as well as they did only a few years ago. </p>
+<p>Fixing bufferbloat alone may only be part of an answer.</p>
+<p>This router comes with QoS mechanisms enabled that is a combination
+of HTB, HFSC, SFQ, and RED. Set properly, it works fairly well, but
+new traffic shapers such as SFB and DRR have emerged that may
+dramatically simplify QoS to where it could be a set and forget
+operation.</p>
+<p>Unfortunately, "set and forget" is not now the case. Cerowrt QoS
+needs to be set to the explicit up/download bandwidths available from
+your provider, after running a sufficiently long duration test, longer
+than that most online bandwidth tests run for.
+<p>The onboard QoS system is easily disabled, and re-enabled for tests
+of this sort. Also, as we are shipping nearly every available shaper
+available, we hope that you will experiment with various forms of QoS
+in order to get the best results for a multi-user and very mixed
+workload - both out to the internet, and to your wireless devices, and
+under good-to-difficult conditions. We hope at some point to have a
+plug-able QoS system that 'just works', but we are a long way from
+that.</p>
+<p>In the meantime, please experiment with what we've delivered today,
+but be sure to set it correctly for your bandwidth! The default is
+setup for a network that is 20Mbit down/4 Mbit up.</p>
+<p>There are multiple other projects experimenting with forms of
+QoS. This is a very active hotbed of research and development. </p>
+<p>See
+<http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior>Evaluating
+QoS Behavior</a> for more up-to-date details.</p>
 
 </ul><h3><a name="netem"></a>Network Emulation</h3><ul> Cerowrt
 includes the NETEM network emulator. With it, you can simulate delay,
