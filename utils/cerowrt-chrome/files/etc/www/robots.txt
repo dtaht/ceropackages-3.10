@@ -1,0 +1,1 @@
+ignore bcgi-bin, cgi-bin etc from robots

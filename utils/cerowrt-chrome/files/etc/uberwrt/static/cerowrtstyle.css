@@ -1,0 +1,84 @@
+body, html { 
+  color: #000000;
+  background: #ffffff;
+  padding-left: .1em;
+  padding-right:.1em;
+}
+
+img {  
+  border-style: none;
+}
+
+h3 {
+        font-size: 145% ;
+        font-weight: bold ;
+        color: #4A4A3C ;
+        color-grey: #bbbbbb
+}
+
+
+a {
+        text-decoration: none ;
+        color: #991133 ;
+	background: #ffffff;	
+}
+
+a:hover {
+        text-decoration: underline
+}
+
+body {
+        font-family: arial, sans-serif ;
+        background-color: #ffffff ;
+        font-size: 12pt ;
+        margin: 8;
+}
+
+ul {
+	list-style-type: none;
+	padding-left: 2.5em;
+}
+
+li {
+	padding-bottom: 5px;
+}
+
+
+DIV.projects ul {
+	list-style-type: circle;
+	padding-left: 2.5em;
+}
+
+DIV.projects li {
+	padding-bottom: 0px;
+}
+
+
+DIV.traps a {
+   background: #ffffff;
+   color: #ffffff;
+   visited: #ffffff;
+}
+
+
+a:visited { 
+  background: #ffffff;
+  color:  #408860;
+}
+
+
+p.lastupdated { 
+  font-size: 70%;
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+p.contact {
+  margin-top: 0;
+  font-size: 70%;
+}
+
+p.footnote {
+  margin-top: 0;
+  font-size: 85%;
+}
