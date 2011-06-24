@@ -8,30 +8,25 @@
  
 <body>
 <h2>TCP, Traffic Shaping, and Network simulation</h2> 
-<a name="ECN"></a>
+<a name="ECN"></a><h3>ECN enablement</h3><ul>
 <p> ECN - Explicit congestion notification - is enabled by default. Connections shaped by an ECN enabled shaper will mark, rather than drop, ECN enabled packets. This should improve (theoretically) overall TCP performance and fairness in ways that normal packet drop cannot. </p>
 
-<p>We are encouraging more people to enable ECN throughout their networks, on their hosts, and servers. ECN is enabled on approximately 12% of all the servers in the web top 100, but it is enabled on relatively few of the desktops, clients, and handheld devices.</p>
+<p>We are encouraging more people to enable ECN throughout their networks, on their hosts, and servers. ECN is enabled on approximately 12% of all the servers in the web top 100, but it is enabled on relatively few desktops, clients, and handheld devices.</p>
 
-<p>Another means by which ECN enablement can help, is that by using a web <a href="proxy.html">proxy</a> server, both sides of the connection may be able to negotiate an ECN or non-ECN connection separately.</p>
+<p>Another means by which ECN enablement can help, is that by using the <a href="proxy.html">web proxy</a> server, both sides of the connection may be able to negotiate an ECN or non-ECN connection separately.</p>
 
-<p>Connections originating from the router have ECN enabled by default. If you experience problems making connections to your router for maintenence or other purposes, you may have a problem with ECN, and you can easily turn it on or off, to diagnose it, from the network parameters menu</p>.
-
+<p>Connections originating from the router have ECN enabled by default. If you experience problems making connections to your router for maintenence or other purposes, you may have a problem with ECN, and you can easily turn it on or off, to diagnose it, from the network parameters menu.</p>
 <p>Bufferbloat.net is very interested in reports of ECN success or failures with given pieces of network equipment. We have high hopes that ECN can be more widely deployed.</p>
-
-<a name="sack"></a>
-<h3>DSACK/SACK</h3>
-<p>TCP DSACK and SACK are enabled by default. These are optimizations that improve TCP's behavior when losses are encounters. (They only apply for connections originating from, not through, the router)</p>
+</ul><h3><a name="sack"></a>SACK/DSACK enablement</h3><ul>
+<p>TCP DSACK and SACK are enabled by default. These are optimizations that improve TCP's behavior when losses are encountered. (They only apply for connections originating from, not going through, the router)</p>
 <p> In practice, enabling these seem to cause no harm in the general case, so long as smaller TCP windows are used.</p>
-
 <a name="tcp"></a>
-<h3>Alternate TCP algorithms</h3>
+</ul><h3>Alternate TCP algorithms</h3><ul>
 <p>The default TCP algorithm in this router is "Westwood+", which has been shown to work better than Vegas, over wired and wireless links. Available as options are Vegas, Reno, Cubic, and Bic - the last two are the algorithms in most common use in the Linux world today.</p>
 
-<p>Changing the default TCP algorithm on the router has <i>no effect on performance</i> unless you are using the bundled web <a href="proxy.html">, or doing significant amounts of use of the local <a href="rsync.html"> or <a href="webserver.html">web server</a>. Packets going through the router use their own algorithms from the host and servers involved.</p>
+<p>Changing the default TCP algorithm on the router has <i>no effect on performance</i> unless you are using the bundled <a href="proxy.html">web proxy</a>, or doing significant amounts of traffic to/from the local <a href="rsync.html"> or <a href="webserver.html">web server</a>, or doing your own network simulations. Packets going through the router use their own algorithms from the host and servers involved.</p>
 
-<p>Changing the default TCP algorithm, however, can be very useful for simulating normal traffic during simulations. At some point in the near future we hope to have a bandwidth and latency under load test that more accurately measures the available bandwidth between the router and the rest of the internet, and the behavior of </p>
-
+<p>Changing the default TCP algorithm, however, can be very useful for simulating normal traffic during simulations. At some point in the near future we hope to have a bandwidth and latency under load test that more accurately measures the available bandwidth between the router and the rest of the Internet. We hope to be able to thoroughly analyze the behavior of the Qos subsystems as well as the behavior of all the intervening routers on the path.</p>
 <p> Future TCP algorithms, such as TCP-Fit, are being evaluated.</p>
 <p> If you wish to change the default TCP algorithm, you can do a:</p>
 <pre>
@@ -41,16 +36,17 @@ echo 'cubic' > /proc/sys/net/ipv4/tcp_congestion_control
 <pre>
 cat /proc/sys/net/ipv4/tcp_allowed_congestion_control
 </pre>
-<P>here are many other parameters affecting TCP behavior, notably low default limits on the amount of outstanding data in flight, and the various congestion windows, that need also to be modified to correctly emulate another machine's behavior on the router. Merely changing the algorithm will not yield valid, comparable results! TCP is very - almost chaotically - sensitive to initial preconditions. </p>
-
+<P>There are <i>many</i> other parameters affecting TCP behavior, notably low default limits on the amount of outstanding data in flight, and the various congestion windows, that need also to be modified to correctly emulate another machine's behavior on the router. Merely changing the algorithm will not yield valid, comparable results! TCP is very - almost chaotically - sensitive to initial preconditions. </p>
+<p>We strongly recommend that you capture your pre-existing sysctl values, and your iptables and traffic shaping configurations before doing a test.</p>
 <P>Please see the <a href=http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">wiki pages</a> for more details.</p>
-
+</ul><h3>Quality of Service and Traffic shaping</h3><ul>
 <a name="qos"></a>
 <h3>Qos</h3>
+</ul><h3>Network Emulation</h3><ul>
 <a name="netem"></a>
 <h3>Netem</h3>
-<a name="netdrop"></a>
-<h3>Net Drop</h3>
+</ul><h3><a name="netdrop"></a>Net Drop</h3><ul>
+</ul>
 <hr /> 
 <p class="footnote"> 
   <a href="/uberwrt">Home</a> |
