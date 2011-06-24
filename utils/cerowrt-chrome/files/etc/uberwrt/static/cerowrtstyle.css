@@ -79,6 +79,7 @@ p.contact {
 }
 
 p.footnote {
+  align: top;
   margin-top: 0;
   font-size: 85%;
 }
