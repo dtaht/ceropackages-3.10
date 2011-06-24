@@ -7,9 +7,30 @@
 </head> 
 <body>
 <h3>About IPv6</h3>
-<p>Since the ipv4 address space was exausted in March, 2011, there is no room left for further expansion of the original Internet. IPv6, although available for a long time, is not widely deployed or used, and has numerous latent bugs and problems that need to be addressed before it can be more widely deployed and used.</p>
-<p>All Uberwrt projects have IPv6 (specifically 6in4) networking enabled by default. If you have a real IPv4 address, 6in4 will be enabled on startup, and all your local networks supplied with a usable IPv6 address range. 6in4 is working well on some networks in America, notably Comcast's, and much of Europe.</p>
-<p>Undoubtably enabling v6 by default will introduce problems and it can be easily disabled or modified via the router's networking screen, on the 'v6' option, but please try to report bugs and expend the effort needed to actually use it. The future of the Internet is at stake!</p>
+
+<p>All IPv4 address space was allocated by March, 2011, and exhaustion
+of these allocations looms. When exhaustion occurs, there will be no
+room left for further expansion of the Internet, and/or increasingly
+problematic uses of NAT, with increasing breakage of applications.
+IPv6 has been available for a long time, but has not been widely
+deployed in home routers, and since usage has been low, networks may
+have latent problems that need to be fixed to enable a seamless
+transiton to IPv6.</p>
+
+<p>All Uberwrt projects have IPv6 (specifically 6to4) networking
+enabled by default. If the router has a public IPv4 address, 6to4 will be
+enabled on startup, and all your local networks supplied with a usable
+IPv6 address range. 6to4 is working well on some networks in America,
+notably <a href=http://www.comcast6.net/6to4-config.php>Comcast</a>,
+on which production 6to4 relays have been provided, and much of
+Europe, but may be problematic in parts of the world unserved by local
+6to4 relays.</p>
+
+<p>Enabling IPv6 by default may introduce problems and IPv6 can be easily
+disabled or modified via the router's networking screen, on the 'v6'
+option, but please try to report bugs and expend the effort needed to
+actually use it. The future of the Internet is at stake!</p>
+
 <hr /> 
 <p class="footnote"> 
   <a href="/uberwrt">Home</a> |
