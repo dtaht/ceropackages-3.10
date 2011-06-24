@@ -79,7 +79,14 @@ p.contact {
 }
 
 p.footnote {
-  align: top;
   margin-top: 0;
   font-size: 85%;
 }
+
+nav {
+  position: absolute;
+  top: 4px;
+  margin-top: 0;
+  font-size: 85%;
+}
+
