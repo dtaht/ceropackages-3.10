@@ -2,19 +2,29 @@
 
 # On starting an interface, set the txqueuelen to the right thing
 # If there is no explicit txqueuelen, set according to the default
-# ip link set wlan0 txqueuelen 7 
-# FIXME: Allow per product default override
+# FIXME: Allow per product default minimum blacklist
+# /sys/class/net/*/brforward shows a bridge
+# FIXME for underlying bridged interfaces
+# FIXME don't change ethtool if already changed
+# What indicates ppp?
 
-if [ "$ACTION" = ifup ]; then
-# brute force for underlying interfaces in bridges
-	ifconfig wlan0 txqueuelen 4 2> /dev/null
-	ifconfig eth0 txqueuelen 16 2> /dev/null
-	update_txqueuelen() {
-		ip link set $DEVICE txqueuelen $1
-	}
-	# FIXME, treat wan differently
-	case $DEVICE in 
-		eth*) update_txqueuelen 16;;
-		wlan*) update_txqueuelen 4;;
-	esac
-fi
+SYSPATH=/sys/class/net/
+#DEBLOAT_LOG=/tmp/debloat.log
+DEBLOAT_LOG=/dev/null
+
+debloat_interface() {
+local DEV=$1
+local devtype=0
+[ -h $SYSPATH/$DEVICE/phy80211 ] && devtype=1
+[ -d $SYSPATH/$DEVICE/brif ] && devtype=2
+
+case $devtype in
+	0) ip link set $DEV txqueuelen 8;
+	   ethtool -G $DEV tx 4 ;;
+	1) ip link set $DEV txqueuelen 4 ;;
+	2) echo 'do something sane on a bridge' > $DEBLOAT_LOG ;;
+	*) echo 'not reached' > $DEBLOAT_LOG ;;
+esac
+}
+
+[ "$ACTION" = "ifup" ] && debloat_interface $DEVICE
