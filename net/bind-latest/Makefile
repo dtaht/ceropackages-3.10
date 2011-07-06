@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
 PKG_VERSION:=9.8.0-P4
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -94,6 +94,7 @@ CONFIGURE_ARGS += \
 	--disable-static \
 	--with-randomdev="/dev/urandom" \
 	--with-openssl="$(STAGING_DIR)/usr" \
+	--enable-threads \
 	--with-libtool \
 	--with-libxml2=no \
 	--enable-epoll=yes \
