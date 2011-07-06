@@ -112,7 +112,7 @@ define Build/Compile
 		gen
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
-		all install-stripped
+		all install
 
 endef
 
