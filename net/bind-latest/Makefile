@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.8.0-P2
-PKG_RELEASE:=2
+PKG_VERSION:=9.8.0-P4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
 	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION)/$(PKG_SRC) \
 	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_MD5SUM:=5f90dcf1730631feacdad3257c465c54
+PKG_MD5SUM:=13e36e3f28dc1ce7675b45a4192e8389
 
 PKG_FIXUP:=libtool
 
@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/bind-latest/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+bind-latest-libs +libopenssl
+  DEPENDS:=+bind-latest-libs +libopenssl +xinetd
   TITLE:=bind
   URL:=https://www.isc.org/software/bind
   SUBMENU:=IP Addresses and Names
@@ -44,7 +44,7 @@ endef
 
 define Package/bind-latest-client
   $(call Package/bind-latest/Default)
-  TITLE+= dynamic DNS client
+  TITLE+= dynamic DNS client (nsupdate)
 endef
 
 define Package/bind-latest-tools
@@ -82,19 +82,23 @@ define Package/bind-latest-devtools
   TITLE+= DNS developer tools
 endef
 
+define Package/bind-latest-config
+  $(call Package/bind-latest/Default)
+  TITLE+= Out of the box working configuration files for dnssec
+endef
+
 export BUILD_CC="$(TARGET_CC)"
 
 CONFIGURE_ARGS += \
 	--enable-shared \
 	--disable-static \
 	--with-randomdev="/dev/urandom" \
-	--disable-threads \
 	--with-openssl="$(STAGING_DIR)/usr" \
 	--with-libtool \
 	--with-libxml2=no \
 	--enable-epoll=yes \
 	--with-rlimtype="long int" \
-	--with-gost=no \
+	--with-gost=no 
 
 CONFIGURE_VARS += \
 	BUILD_CC="$(TARGET_CC)" \
@@ -108,7 +112,8 @@ define Build/Compile
 		gen
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
-		all install
+		all install-stripped
+
 endef
 
 define Package/bind-latest-libs/install
@@ -120,7 +125,7 @@ define Package/bind-latest-server/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/named $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc
-	$(CP) ./files/bind $(1)/etc/
+	$(CP) -a ./files/xinetd $(1)/etc/
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/named.init $(1)/etc/init.d/named
 	find $(1)/etc/bind/ -name ".svn" | xargs rm -rf
@@ -179,6 +184,14 @@ define Package/bind-latest-dig/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/dig $(1)/usr/bin/
 endef
 
+# FIXME:
+
+define Package/bind-latest-config/install
+	$(INSTALL_DIR) $(1)/etc
+	$(CP) -a ./files/* $(1)/etc/
+	find $(1)/etc/chroot/bind -name ".svn" | xargs rm -rf
+endef
+
 define Package/bind-latest-devtools/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/named-journalprint $(1)/usr/sbin/
@@ -194,3 +207,4 @@ $(eval $(call BuildPackage,bind-latest-dnssec))
 $(eval $(call BuildPackage,bind-latest-host))
 $(eval $(call BuildPackage,bind-latest-dig))
 $(eval $(call BuildPackage,bind-latest-devtools))
+$(eval $(call BuildPackage,bind-latest-config))

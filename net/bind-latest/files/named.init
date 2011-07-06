@@ -1,18 +1,32 @@
 #!/bin/sh /etc/rc.common
-START=50
+# Since we are running from xinetd, we just kick bind
 
-config_file=/etc/bind/named.conf
-pid_file=/var/run/named/named.pid
+START=50
+CHRT=/etc/chroot/bind/
+
+config_file=$CHRT/etc/bind/named.conf
+pid_file=$CHRT/var/run/named/named.pid
+
+# It would be easier on flash if we only did this part once
+
+setup_jail() {
+mkdir -p $CHRT/dev $CHRT/tmp 
+mount $CHRT/tmp
+
+cp -a /dev/zero /dev/urandom /dev/random /dev/null $CHRT/dev
+
+}
 
 start() {
+  
   if [ -e $pid_file ]
   then
      echo "  named already running with PID `cat $pid_file`"
      return 1
   fi
-  echo Starting isc-bind
+  echo Kicking isc-bind in xinetd
 
-  /usr/sbin/named -c $config_file
+  nslookup 127.255.255.255 127.0.0.1
 
   if [ $? -ne 0 ]
   then

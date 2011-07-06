@@ -3,7 +3,9 @@ COMMAND=/usr/sbin/named
 
 [ "$ACTION" = "ifup" -a "$INTERFACE" = "wan" ] && {
         [ -x $COMMAND ] && [ -r $CONFIG ] && {
-		killall named
-		/etc/init.d/named start
+:
+# 		Would be better to kick named instead
+#		killall named
+#		/etc/init.d/named start
         } &
 }
