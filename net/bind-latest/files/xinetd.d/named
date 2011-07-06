@@ -1,0 +1,13 @@
+service domain
+{
+	disable         = no
+	socket_type     = dgram
+	wait            = yes
+	user            = root
+	only_from	= 0.0.0.0/0 ::/0
+	server          = /usr/sbin/named
+	server_args     =  -t /etc/chroot/named -u named -c /etc/bind/named.conf
+	log_on_failure  += USERID
+	flags		= IPv6
+}
+

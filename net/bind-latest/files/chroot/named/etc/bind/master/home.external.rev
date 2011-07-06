@@ -1,0 +1,13 @@
+$TTL    86400
+@       IN      SOA gw.home.lan. gw.home.lan. (
+	2009083006      ; Serial
+	3600    ; Refresh
+	3600    ; Retry
+	1209600 ; Expire
+	7200 )  ; Minimum TTL
+	IN NS gw.home.lan.
+
+$ORIGIN 42.30.172.in-addr.arpa.
+
+33 	IN PTR gw.home.lan.
+

@@ -1,0 +1,21 @@
+$TTL    8640
+@       IN      SOA     home.lan. postmaster.home.lan.  (
+	2011060239; Serial
+	2880      ; Refresh
+	1440      ; Retry
+	3600    ; Expire
+	8640 )    ; Minimum
+$ORIGIN home.lan.
+	IN	A	172.30.42.33
+	IN	NS      gw
+	IN	MX      30 gw
+
+gw	IN	A 172.30.42.33
+
+my	IN	CNAME gw
+www	IN 	CNAME gw
+proxy	IN 	CNAME gw
+wpad	IN 	CNAME gw
+rsync	IN 	CNAME gw
+pbx	IN 	CNAME gw
+
