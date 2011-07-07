@@ -94,7 +94,7 @@ CONFIGURE_ARGS += \
 	--disable-static \
 	--with-randomdev="/dev/urandom" \
 	--with-openssl="$(STAGING_DIR)/usr" \
-	--enable-threads \
+	--disable-threads \
 	--with-libtool \
 	--with-libxml2=no \
 	--enable-epoll=yes \
