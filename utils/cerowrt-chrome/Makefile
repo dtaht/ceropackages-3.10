@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cerowrt-chrome
 PKG_VERSION:=1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 #PKG_REV:=2693afcf4c08c41067ac11177a1da3a033d6c6c0
 # PKG_VERSION:=20110517
 
@@ -45,10 +45,16 @@ define Build/Compile
 endef
 
 define Package/cerowrt-chrome/install
+	$(INSTALL_DIR) $(1)/etc/uberwrt
+	$(INSTALL_DIR) $(1)/etc/lighttpd
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc/default
 	$(INSTALL_DIR) $(1)/etc/www
 	$(INSTALL_DIR) $(1)/etc/bgi-bin
 	$(INSTALL_DIR) $(1)/mnt/disk1/www
 	$(INSTALL_DIR) $(1)/mnt/disk1/cgi-bin
+	$(CP) -rp $(PKG_BUILD_DIR)/etc/init.d/* $(1)/etc/init.d/
+	$(CP) -rp $(PKG_BUILD_DIR)/etc/lighttpd/* $(1)/etc/lighttpd/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/www/* $(1)/etc/www/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/bgi-bin/* $(1)/etc/bgi-bin/
 	$(CP) -rp $(PKG_BUILD_DIR)/mnt/disk1/www/* $(1)/mnt/disk1/www/
