@@ -16,9 +16,6 @@ chroot/named/etc/bind/master/home.rev 0640 bind root
 chroot/named/etc/bind/master/home.external.rev 0640 bind root
 chroot/named/etc/bind/master/home.external 0640 bind root
 chroot/named/etc/bind/keys 04750 root bind
-chroot/named/etc/bind/keys/them.key 0640 root bind
-chroot/named/etc/bind/keys/us.key 0640 root bind
-chroot/named/etc/bind/keys/rndc.key 0640 root bind
 chroot/named/etc/bind/default 04750 root bind
 chroot/named/etc/bind/default/rfc1918.zones 0640 root bind
 chroot/named/etc/bind/default/127.db 0640 root bind
