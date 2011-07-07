@@ -1,0 +1,85 @@
+#!/bin/sh
+# We have a terrible circular dependency on dnssec on valid time
+
+# xinetd comes up S46
+# ntpd comes up S46
+# bind-prep is S46
+# bind is S48
+
+# We don't have valid time on boot
+# NTP needs dns to start
+# DNSSEC needs valid time to work
+# DNSSEC comes up enabled by default 
+# ntp -g does not issue dns queries with the unauthenticated bit on
+# Thus we can't come up with invalid time until ntp does
+# A better fix for this would be to modify ntp -g to send queries with unauth on
+# Somehow.
+# There isn't a good way to know if validation is enabled or disabled
+# And we need three ntp servers to vote to slew the time
+# Usually. And we need the network up
+# We could just wait for a time slew event
+# but for now it's most robust to have lots of ntp servers in the conf file
+# Other stuff that could go wrong - your dns key could be bad...
+
+
+
+montime() {
+    local COUNTER=0
+    local DNSSEC=1 # assume it is on
+    MPID=/tmp/timetest
+    TFILE=/tmp/timegood.$$
+    [ -e $MPID ] && {
+        logger "time test already running"
+	exit 0
+    }
+    touch $MPID
+    echo 0 > $TFILE
+    COUNTER=0
+    TRIES=0
+    # Kick the name server
+    nslookup 127.255.255.255 127.0.0.1 > /dev/null 
+
+    while [ $COUNTER -lt 3 ]
+    do
+    while [ $TRIES -lt 2 -a $COUNTER -lt 3 ]
+       do
+	 ntpdc -n -p | grep -v "^==" | grep "^=" | awk '{ print $3 }' | while read x
+	     do
+ 	        [ $x -gt 0 -a $x -lt 16 ] && {	
+		   COUNTER=$(($COUNTER + 1)) 
+		   echo $COUNTER > $TFILE
+		   }
+	     done
+	 COUNTER=`cat $TFILE` # state not visible outside of while loop
+	 [ $COUNTER -lt 3 ] && {
+	 [ $DNSSEC = 1 ] && {
+	   rndc validation disable
+	   [ $? -gt 0 ] && {
+	     nslookup 127.255.255.255 127.0.0.1 > /dev/null
+	     rndc validation disable
+	     }
+	   DNSSEC=0
+	   logger "Can't get current time, dns validation disabled"
+	   }
+	   sleep 10
+	   TRIES=$(($TRIES + 1))
+        }
+       done
+       COUNTER=`cat $TFILE`
+       [ $COUNTER -lt 3 ] && { 
+             nslookup 127.255.255.255 127.0.0.1 > /dev/null # kick the name server hard
+       	     rndc validation disable
+	     /etc/init.d/ntp restart
+       }
+       TRIES=0
+    done
+    COUNTER=`cat $TFILE`
+    [ $COUNTER -gt 2 ] && {
+        rndc validation enable
+        rndc reload
+	logger "dnssec enabled"
+	}
+    rm -f $TFILE $MPID
+}
+
+montime

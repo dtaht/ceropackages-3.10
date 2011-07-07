@@ -1,0 +1,64 @@
+#!/bin/sh /etc/rc.common
+# Setup the jail for bind
+
+START=46
+STOP=46
+
+CHRT=/etc/chroot/bind/
+CHRTB=$CHRT/etc/bind
+
+config_file=$CHRT/etc/bind/conf/named.conf
+pid_file=$CHRT/var/run/named/named.pid
+
+KEYFILES="us them rndc"
+DEVFILES="/dev/log /dev/zero /dev/urandom /dev/random /dev/null"
+
+
+
+gen_rndc() {
+    local keyname=$1
+    [ ! -s $CHRTB/keys/$keyname.key ] && rndc -u root -k $keyname -c $keyname.key -t $CHRTB/keys/$keyname.key -r /dev/urandom -a
+}
+
+# When we start on squashfs, we're going to have bad perms, so fix them
+# FIXME It would be better to do this without pounding flash, too
+
+# perms generated via find . -printf '%h/%f %#m %u %g\n'
+
+gen_perms() {
+cd $CHRT/..
+
+cat /etc/bind.perms | while read fname mode owner group
+do
+    chgrp $group $fname
+    chown $owner $fname
+    chmod $mode $fname
+done
+}
+
+setup_jail() {
+
+    mkdir -p $CHRT/dev $CHRT/tmp 
+#    mount -t tmpfs -o size=64k $CHRT/tmp 
+    mount -t tmpfs -o size=64k $CHRT/dev
+
+    cp -a $DEVFILES $CHRT/dev
+
+# if the keyfiles don't exist or are zero length, create them
+  
+    gen_rndc us
+    gen_rndc them
+    rm -f /etc/us.key # we don't need to leave these around 
+    rm -f /etc/them.key 
+    gen_rndc rndc
+    gen_perms
+}
+
+start() {
+	setup_jail
+}
+
+stop() {
+killall named
+umount $CHRT/dev
+}

@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
 PKG_VERSION:=9.8.0-P4
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -84,7 +84,7 @@ endef
 
 define Package/bind-latest-config
   $(call Package/bind-latest/Default)
-  TITLE+= Out of the box working configuration files for dnssec
+  TITLE+= Out of the box working chrooted onfiguration files for dnssec
 endef
 
 export BUILD_CC="$(TARGET_CC)"
@@ -126,9 +126,14 @@ define Package/bind-latest-server/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/named $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc
-	$(CP) -a ./files/xinetd $(1)/etc/
+	$(INSTALL_DIR) $(1)/etc/xinetd
+	$(CP) ./files/xinetd/named $(1)/etc/xinetd/
+	$(CP) ./files/bind.perms $(1)/etc/
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) ./files/named.init $(1)/etc/init.d/named
+	$(INSTALL_BIN) ./files/named.prep $(1)/etc/init.d/namedprep
+	$(INSTALL_BIN) ./files/named.montime $(1)/usr/sbin/named.montime
 	find $(1)/etc/bind/ -name ".svn" | xargs rm -rf
 endef
 
@@ -188,9 +193,8 @@ endef
 # FIXME:
 
 define Package/bind-latest-config/install
-	$(INSTALL_DIR) $(1)/etc
-	$(CP) -a ./files/* $(1)/etc/
-	find $(1)/etc/chroot/bind -name ".svn" | xargs rm -rf
+	$(INSTALL_DIR) $(1)/etc/chroot/bind
+	$(CP) -a ./files/chroot/* $(1)/etc/chroot/bind
 endef
 
 define Package/bind-latest-devtools/install

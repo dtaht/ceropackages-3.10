@@ -1,0 +1,6 @@
+zone "home.lan" {
+	type master;
+	update-policy local;
+	file "/etc/bind/master/home.external";
+};
+
