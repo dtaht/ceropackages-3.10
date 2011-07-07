@@ -11,7 +11,7 @@
 
 <p><a href="http://www.bufferbloat.net/attachments/27/IC-15-03-Backspace.pdf">Bufferbloat
 is a widespread problem</a> present throughout the Internet,
-"end-to-end". Debloating is a "work in progress" industry wide and
+"end-to-end." Debloating is a "work in progress" industry wide and
 will take years.  Ultimately, all buffering/queing in operating
 systems needs to be carefully managed and
 be <a href="http://gettys.wordpress.com/2011/07/06/rant-warning-there-is-no-single-right-answer-for-buffering-ever/">automatically
@@ -19,8 +19,8 @@ adaptive</a> to the data transfer rates. All network routers (and
 operating systems!) should be running with AQM (e.g. algorithms such
 as RED) including home routers: unfortunately, existing algorithms such as RED
 are <a href="http://gettys.wordpress.com/2010/12/17/red-in-a-different-light/">unlikey
-to work correctly</a> in today's home network environment, and
-UberWrt/CeroWrt is the intended test platform for improved AQM
+to work correctly</a> in today's home network environment.
+UberWrt/CeroWrt is the test platform for improved AQM
 algorithms. To acheive ultimate latencies under load across the high
 bandwidth variation of 802.11 and broadband, new AQM algorithms need
 testing in addition to more complex changes in internal buffering;
@@ -41,9 +41,9 @@ working on
 the <a href="http://lwn.net/Articles/429943/">debloat-testing</a> work
 going on on <a href="http://bufferbloat.net">bufferbloat.net</a>.  On
 other operating systems, you should contact your operating system
-vendor and complain. Be gentle, however: before 2011, bufferbloat was
-not understood to be a general problem, and it will take time to
-overcome.
+vendor and complain. Be gentle (but insistent), however: before 2011,
+bufferbloat was not understood to be a general problem, and it will
+take time to overcome.
 </p>
 
 <p>
@@ -59,24 +59,30 @@ consequences of bufferbloat in that hop as best you can).
 
 <h3>Home Routers</h3>
 <p>
-Current operating systems has been tuned over the last
-decade for maximum bandwidth over very long, high bandwidth LFN ("Large Fat Network") paths
-without consideration of bufferbloat (gigabit speed + over 100ms or longer
-paths) for "land speed" record bragging rights that have destroyed
-latency, the speed we really need.
+Current operating systems has been tuned over the last decade for
+maximum bandwidth over very long, high bandwidth LFN ("Large Fat
+Network") paths without consideration of bufferbloat (gigabit speed +
+over 100ms or longer paths) for "land speed" record bragging rights
+that have destroyed latency, the speed we really need.
 The <a href="http://en.wikipedia.org/wiki/Bandwidth-delay_product">bandwidth-delay
 product</a> of these LFN paths is very high indeed, and buffers have
-been adjusted upwards accordingly. Since these operating systems are used in home routers (e.g. Linux and Apple's system), this tuning has become a serious headache in home routers.
+been adjusted upwards accordingly. Since these operating systems are
+used in home routers (e.g. Linux and Apple's system), this tuning has
+become a serious headache in home routers.
 </p>
 
 <p>
-Home routers never operate as LFN's, rather, they operate as
+Home routers never operate in LFN's, rather, they operate in two
+network environments, sometimes simultaneously:
 <ol>
 <li>Relatively low bandwidth (100Mbps or much less), sometimes long paths (10-100ms), (your broadband connection) and
-<li>Medium bandwidth (never much more than 100Mbps wireless, and never more than 1Gps wired), but very, very short paths (in your house, to other devices such as file storage, less than 1ms away).
+<li>Medium bandwidth (never much more than 100Mbps wireless, and never
+more than 1Gps wired), but very, very short paths (in your house, to
+other devices such as file storage, less than 1ms away).
 </ol>
 <p>
-We can therefore cut the buffering in the router greatly, since there are never high bandwidth, high delay paths through these devices. If
+We can therefore cut the buffering in the router greatly, since there
+are never high bandwidth, high delay paths through these devices. If
 we've done this correctly, you'll never see lower bandwidth, but will
 see much better latency. Please let us know if you see any performance
 problems.
@@ -91,12 +97,12 @@ problems.
 </ul>
 
 <p>
-QoS is interesting to improve low latency applications (VOIP) and to
-help with the reverse path consequences of bufferbloat (e.g. delay of
-acks, DNS and other key protocols which are killing performance and
-inducing failures).  QoS is a useful but insufficient tool:
-bufferbloat cannot be completly solved without AQM, a common
-misunderstanding.
+QoS classification is interesting to improve low latency applications
+(e.g. VOIP & gaming) and to help with the reverse path consequences of
+bufferbloat (e.g. delay of acks, DNS and other key protocols which are
+killing performance and even inducing failures).  QoS is a useful but
+insufficient tool: bufferbloat cannot be completly solved without AQM,
+a common misunderstanding.
 </p>
  
 </div>

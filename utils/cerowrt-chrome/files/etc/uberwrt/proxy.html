@@ -1,51 +1,50 @@
 <!DOCTYPE HTML> 
  
 <head> 
-  <title>Web proxy</title> 
+  <title>Web Proxy</title> 
   <link rel="stylesheet" type="text/css" href="/uberwrt/static/cerowrtstyle.css" /> 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head> 
  
 <body><div> 
-<h3>Web Proxy</h3>
+<h2>Web Proxy</h2>
 
-<p>Proxying is an integral component of the http architecture, which
-has fallen into disuse, despite easy to configure automatic mechanisms
-for configuration (wpad and proxy.pac), and nearly universal support
-in all modern equipment (including ipads and ipods!) and browsers. Due
-to the lossy nature of wireless, proxying theoretically has native
-advantages - each proxied connection consists of two (or more) 'split
-TCP' streams, which can ramp up and down independently of packet loss
-- smoothing out bandwidth on both sides of the bottleneck to the
+<p>CeroWrt provides <a href="http://www.pps.jussieu.fr/~jch/software/polipo/">polipo</a>, which is a caching web proxy server.</p>
+
+<p>Proxying is an integral component of the http architecture,
+commonly used in institutional environments behind firewalls but
+seldom used in home environments, despite easy to configure automatic
+mechanisms for configuration (wpad and proxy.pac), and nearly
+universal support in all modern equipment and browsers. Due to the
+lossy nature of wireless, proxying theoretically has native advantages
+- each proxied connection consists of two (or more) 'split TCP'
+streams, which can ramp up and down independently of packet loss -
+smoothing out bandwidth on both sides of the bottleneck to the
 internet. </p>
 
 <p>As presently configured in CeroWrt, a polipo'd connection competes
-badly with non-proxied streams, in general only being a win where it
-has local cache and/or can convert connections into using HTTP 1.1
-pipelining. The router defaults to TCP westwood+ which attempts to be
-bandwidth friendly, and most clients use a TCP that is more
-aggressive, so proxied connections can end up starved for bandwidth vs
-connections that are going directly to the internet. </p>
+poorly with non-proxied streams, in general only being a win where it
+has local cache and/or can convert connections into using HTTP/1.1
+pipelining.  The router defaults
+to <a href="http://en.wikipedia.org/wiki/TCP_Westwood_plus">TCP
+Westwood plus</a> which attempts to be bandwidth friendly, and most
+clients use a TCP that is more aggressive, so proxied connections can
+end up starved for bandwidth vs direct connections. </p>
 
-
-<p>There are multiple solutions to this problem - making the majority
-(or all) of your web clients use the proxy is probably the best of
-them, which leverages the advantages of westwood+ for
-wireless. Another option is to enable TCP cubic on the router (not
-recommended, except for testing), and a third, to apply a different
-level of QoS to proxied streams than non-proxied, which is the
-approach being followed by the ongoing Diffserv work elsewhere. </p>
+<p>There are multiple solutions to this problem - making your web
+clients use the proxy is probably the best of them, which leverages
+the advantages of Westwood + for wireless. Another option is to enable
+TCP cubic on the router (not recommended, except for testing), and a
+third, to apply a different level of QoS to proxied streams than
+non-proxied, which is the approach being followed by the ongoing
+Diffserv work elsewhere. </p>
 
 <p>It is reasonably effective to merely put your highest bandwidth
 streams (e.g. Video) through the proxy. As these devices tend not to
 move, you'll only have to configure them once, in order to gain the
 benefits of proxying elsewhere on your network.</p>
 
-<p>We also note that polipo can act as an effective ipv6&lt;-&gt;ipv4
-translator. You can enable your browser to run the proxy over IPv6 and
-nearly eliminate your usage of ipv4 for most operations.</p>
-
-<p> The gui interface for polipo is reasonably complete. All you need
+<p> The GUI interface for polipo is reasonably complete. All you need
 to do to turn it on via the gui is allow in your private networks
 (including IPv6!), and if you attach a USB stick as a local cache,
 point it at the location you plan to be caching in, then configure
@@ -54,10 +53,15 @@ and proxy.pac configuration is feasible with the integral web server
 there are security implications we have not yet addressed. (please see
 the wiki for updates)</p>
 
-<P>Additionally, an ad-blocking and experimental web proxy, 'privoxy',
-is also in the package repository for cerowrt. It works well to
-provide ad blocking facilities to devices that lack such. </p>
+<P>An ad-blocking and experimental web proxy,
+'<a href="http://www.privoxy.org/">privoxy</a>', is also in the
+package repository for CeroWrt. It works well to provide ad blocking
+facilities to devices lacking them, particularly of use in bandwidth
+scarce locations such as the developing world.</p>
 
+<p>Polipo can act as an effective IPv6 to IPv4 translator. You can
+enable your browser to run the proxy over IPv6 and nearly eliminate
+your usage of ipv4 for most operations.</p>
 
 </div>
 <nav>
