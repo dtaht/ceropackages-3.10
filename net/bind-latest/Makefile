@@ -126,8 +126,8 @@ define Package/bind-latest-server/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/named $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DIR) $(1)/etc/xinetd
-	$(CP) ./files/xinetd/named $(1)/etc/xinetd/
+	$(INSTALL_DIR) $(1)/etc/xinetd.d
+	$(CP) ./files/xinetd.d/named $(1)/etc/xinetd.d/
 	$(CP) ./files/bind.perms $(1)/etc/
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/usr/sbin
