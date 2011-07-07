@@ -1,0 +1,4 @@
+include "/etc/bind/default/other.zones";
+include "/etc/bind/default/rfc1918.zones";
+include "/etc/bind/default/rfc1912.zones";
+

@@ -4,10 +4,12 @@ service domain
 	socket_type     = dgram
 	wait            = yes
 	user            = root
+	group           = bind
 	only_from	= 0.0.0.0/0 ::/0
 	server          = /usr/sbin/named
-	server_args     =  -t /etc/chroot/named -u named -c /etc/bind/named.conf
+	server_args     = -c /etc/bind/conf/named.conf -u bind -t /etc/chroot/named
 	log_on_failure  += USERID
 	flags		= IPv6
 }
+
 

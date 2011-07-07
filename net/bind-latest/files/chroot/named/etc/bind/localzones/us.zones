@@ -10,5 +10,3 @@ zone "42.30.172.in-addr.arpa" {
 	file "/etc/bind/master/home.rev";
 };
 
-include "/etc/bind/zones.rfc1918";
-	
