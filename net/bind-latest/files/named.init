@@ -17,7 +17,6 @@ start() {
   then
     echo "  isc-bind failed to start"
     logger " isc-bind failed to start "
-  fi
   else 
     logger " isc-bind started "
   fi

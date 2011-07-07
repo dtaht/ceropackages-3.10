@@ -43,7 +43,7 @@ montime() {
     do
     while [ $TRIES -lt 2 -a $COUNTER -lt 3 ]
        do
-	 ntpdc -n -p | grep -v "^==" | grep "^=" | awk '{ print $3 }' | while read x
+	 ntpdc -n -p | grep -v "^==" | egrep '^=|^\*' | awk '{ print $3 }' | while read x
 	     do
  	        [ $x -gt 0 -a $x -lt 16 ] && {	
 		   COUNTER=$(($COUNTER + 1)) 
@@ -69,7 +69,7 @@ montime() {
        [ $COUNTER -lt 3 ] && { 
              nslookup 127.255.255.255 127.0.0.1 > /dev/null # kick the name server hard
        	     rndc validation disable
-	     /etc/init.d/ntp restart
+	     /etc/init.d/ntpd restart
        }
        TRIES=0
     done

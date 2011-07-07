@@ -4,7 +4,7 @@
 START=46
 STOP=46
 
-CHRT=/etc/chroot/bind/
+CHRT=/etc/chroot/named/
 CHRTB=$CHRT/etc/bind
 
 config_file=$CHRT/etc/bind/conf/named.conf
@@ -13,11 +13,9 @@ pid_file=$CHRT/var/run/named/named.pid
 KEYFILES="us them rndc"
 DEVFILES="/dev/log /dev/zero /dev/urandom /dev/random /dev/null"
 
-
-
 gen_rndc() {
     local keyname=$1
-    [ ! -s $CHRTB/keys/$keyname.key ] && rndc -u root -k $keyname -c $keyname.key -t $CHRTB/keys/$keyname.key -r /dev/urandom -a
+    [ ! -s $CHRTB/keys/$keyname.key ] && rndc-confgen -u root -k $keyname-key -c $keyname.key -t $CHRTB/keys/$keyname.key -r /dev/urandom -a
 }
 
 # When we start on squashfs, we're going to have bad perms, so fix them
@@ -26,13 +24,14 @@ gen_rndc() {
 # perms generated via find . -printf '%h/%f %#m %u %g\n'
 
 gen_perms() {
-cd $CHRT/..
+
+mkdir $CHRTB/managed
 
 cat /etc/bind.perms | while read fname mode owner group
 do
-    chgrp $group $fname
-    chown $owner $fname
-    chmod $mode $fname
+    chgrp $group /etc/$fname
+    chown $owner /etc/$fname
+    chmod $mode /etc/$fname
 done
 }
 
@@ -40,7 +39,7 @@ setup_jail() {
 
     mkdir -p $CHRT/dev $CHRT/tmp 
 #    mount -t tmpfs -o size=64k $CHRT/tmp 
-    mount -t tmpfs -o size=64k $CHRT/dev
+#    mount -t tmpfs -o size=64k $CHRT/dev
 
     cp -a $DEVFILES $CHRT/dev
 
@@ -51,6 +50,7 @@ setup_jail() {
     rm -f /etc/us.key # we don't need to leave these around 
     rm -f /etc/them.key 
     gen_rndc rndc
+    cp $CHRTB/keys/rndc.key /etc # make sure we got this!
     gen_perms
 }
 
@@ -60,5 +60,5 @@ start() {
 
 stop() {
 killall named
-umount $CHRT/dev
+# umount $CHRT/dev
 }
