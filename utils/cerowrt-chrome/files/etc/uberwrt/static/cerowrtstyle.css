@@ -12,14 +12,12 @@ img {
 h1 {
     padding-top: 20px;
     font-weight: bold ;
-    color-grey: #bbbbbb
 }
 
 h3 {
         font-size: 145% ;
         font-weight: bold ;
         color: #4A4A3C ;
-        color-grey: #bbbbbb
 }
 
 
@@ -37,7 +35,7 @@ body {
         font-family: arial, sans-serif ;
         background-color: #ffffff ;
         font-size: 12pt ;
-        margin: 2;
+        margin: 3px;
 	background-image:url('cerowrt2.png');
 	background-repeat:no-repeat;
 	background-position:right top;
@@ -81,23 +79,6 @@ div.menu a:hover,a:active
 {
 background-color:#7A991A;
 }
-
-DIV.projects ul {
-	list-style-type: circle;
-	padding-left: 2.5em;
-}
-
-DIV.projects li {
-	padding-bottom: 0px;
-}
-
-
-DIV.traps a {
-   background: #ffffff;
-   color: #ffffff;
-   visited: #ffffff;
-}
-
 
 a:visited { 
   background: #ffffff;
