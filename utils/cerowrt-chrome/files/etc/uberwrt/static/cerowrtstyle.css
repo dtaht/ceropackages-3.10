@@ -53,6 +53,9 @@ li {
 
 div.menu ul
 {
+position:fixed;
+background-color:#ffffff;
+top:0px;
 list-style-type:none;
 margin:0;
 padding:0;
@@ -120,9 +123,8 @@ p.footnote {
 }
 
 nav {
-  position: absolute;
   top: 4px;
   margin-top: 0;
-  font-size: 90%;
+  font-size: 85%;
 }
 

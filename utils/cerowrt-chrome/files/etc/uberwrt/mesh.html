@@ -11,7 +11,7 @@
 
 <p>UberWrt comes with mesh networking enabled, using
 the <a href="http://www.pps.jussieu.fr/~jch/software/babel/">babel</a>
-protocol to spread routes over both ipv6 and ipv4.  It
+protocol (babelz) to spread routes over both ipv6 and ipv4.  It
 uses <a href="http://www.pps.jussieu.fr/~jch/software/ahcp/">ahcp</a>
 to assign ipv4 and ipv6 addresses across the mesh. </p>
 
@@ -20,11 +20,9 @@ particular, when used 'right' you are able to move transparently from
 one wireless (or wired!) node to another, relay traffic for others out
 of range of the main access point, and not lose your own
 connections. Mesh networks are self-repairing - at a sufficient
-densitity of nodes, there are always paths to get to get to your
-destination - and (unlike bridging), mesh routing is sensitive to the
-frequencies you are using, so that if multiple wireless
-channels are in use, it tries to pick the clearest channels to
-transmit over.</p>
+density of nodes, there are always paths to get to get to your
+destination - and (unlike bridging), babelz's "diversity" mesh routing is sensitive to the
+frequencies you are using, so that different network paths are picked based on the frequencies in use - a packet from a nearby 5.2ghz node will try to go through a node on another channel, while preferring ethernet wherever possible. Something like the <a href=http://en.wikipedia.org/wiki/Four_color_theorem>Four colour theorem</a> applies to dense wireless networks.</p>
 
 <p>Since there may be multiple hops before the wired connection each
 with its own buffering, mesh networks are particularly sensitive to
@@ -38,7 +36,7 @@ mesh network using this router.</p>
 
  
 </div>
-<div class="menu">
+<div role="menu" class="menu">
 <nav>
 <ul>
 <li><a href="/uberwrt/index.html">Home</a>   

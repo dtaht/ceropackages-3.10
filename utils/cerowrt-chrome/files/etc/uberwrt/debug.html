@@ -10,28 +10,38 @@
 <h1>Debugging and Diagnostic Tools</h1>
 
 <p>Most home routers shipped to date have limited network testing and
-debugging tools. CeroWrt comes with a rich set of tools, some critical
+debugging tools. CeroWrt comes with a rich set of tools. Some critical
 tools are installed by default, and many more tools are available in
 the package repository.</p>
 
 <h2>Default Packages</h2>
 <ul> <li>tcpdump<li>traceroute<li>ping<li>ping6<li>lft<li>iostat<li>netcat<li>rsync<li>curl<li>fping</ul>
-<h2>Optional Packages</h2>
+<h2>Optional packages</h2>
 <p>Optional packages include, but are not limited to:
-<ul><li>iperf<li>shaperprobe<li>d-itg<li>atft<li>bwping<li>strace<li>netperf<li>httpping<li>bing<li>BWPing<li>curl</ul>
+<ul>
+<li>iperf</li>
+<li>shaperprobe</li>
+<li>d-itg</li>
+<li>atftp</li>
+<li>bwping</li>
+<li>strace</li>
+<li>netperf</li>
+<li>httpping</li>
+<li>bing</li>
+<li>BWPing</li>
+<li>curl</li>
+</ul>
 </p>
 
 <p>The package listing in the router's administrative interface will
 contain a complete listing once updated.</p>
 
-<p> The cerowrt-dbg releases also contain oprofile support, which is
+<p> Most CeroWrt releases also contain oprofile support, which is
 very useful for detecting problems integral to the kernel and
-networking stack. Due to the "heisenbugging" performance impact of
-oprofile, however, it is not available in the primary releases of
-CeroWrt.</p>
+networking stack. Note that enabling oprofile can introduce "heisenbugs" in that it is very cpu and memory intensive</p>
  
 </div>
-<div class="menu">
+<div role="menu" class="menu">
 <nav>
 <ul>
 <li><a href="/uberwrt/index.html">Home</a>

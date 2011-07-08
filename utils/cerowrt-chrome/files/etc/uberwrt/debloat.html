@@ -19,10 +19,9 @@ be <a href="http://gettys.wordpress.com/2011/07/06/rant-warning-there-is-no-sing
 adaptive</a> to the data transfer rates. All network routers (and
 operating systems!) should be running with AQM (e.g. algorithms such
 as RED) including home routers: unfortunately, existing algorithms such as RED
-are <a href="http://gettys.wordpress.com/2010/12/17/red-in-a-different-light/">unlikey
-to work correctly</a> in today's home network environment.
+are <a href="http://gettys.wordpress.com/2010/12/17/red-in-a-different-light/">unlikely to work correctly</a> in today's home network environment.</p><p>
 UberWrt/CeroWrt is the test platform for improved AQM
-algorithms. To acheive ultimate latencies under load across the high
+algorithms. To achieve ultimate latencies under load across the high
 bandwidth variation of 802.11 and broadband, new AQM algorithms need
 testing in addition to more complex changes in internal buffering;
 these will take time and therefore debloating will be a work in
@@ -63,13 +62,13 @@ consequences of bufferbloat in that hop as best you can).
 Current operating systems has been tuned over the last decade for
 maximum bandwidth over very long, high bandwidth LFN ("Large Fat
 Network") paths without consideration of bufferbloat (gigabit speed +
-over 100ms or longer paths) for "land speed" record bragging rights
-that have destroyed latency, the speed we really need.
+over 100ms or longer paths). </p> 
+<p>The quest for "land speed" record bragging rights has destroyed latency, the speed we really need.
 The <a href="http://en.wikipedia.org/wiki/Bandwidth-delay_product">bandwidth-delay
 product</a> of these LFN paths is very high indeed, and buffers have
-been adjusted upwards accordingly. Since these operating systems are
-used in home routers (e.g. Linux and Apple's system), this tuning has
-become a serious headache in home routers.
+been adjusted upwards accordingly. When these same operating systems are
+used in home routers (e.g. Linux and Apple's system), LFN tuning 
+becomes a serious headache as the circumstances differ tremendously.
 </p>
 
 <p>
@@ -91,9 +90,9 @@ problems.
 
 <p>Debloating techniques currently in place include but are not limited to:</p>
 <ul>
-<li>Vastly reduced TXQUEUELEN accoss all ethernet and wireless interfaces.</li>
+<li>Vastly reduced TXQUEUELEN across all ethernet and wireless interfaces.</li>
 <li>Reduced buffering in the ethernet switch</li>
-<li>Reduced driver buffering accoss all ethernet and wireless interfaces</li>
+<li>Reduced driver buffering across all ethernet and wireless interfaces</li>
 <li>QoS enabled by default</li>
 </ul>
 
@@ -102,12 +101,12 @@ QoS classification is interesting to improve low latency applications
 (e.g. VOIP & gaming) and to help with the reverse path consequences of
 bufferbloat (e.g. delay of acks, DNS and other key protocols which are
 killing performance and even inducing failures).  QoS is a useful but
-insufficient tool: bufferbloat cannot be completly solved without AQM,
+insufficient tool: bufferbloat cannot be completely solved without AQM,
 a common misunderstanding.
 </p>
  
 </div>
-<div class="menu">
+<div role="menu" class="menu">
 <nav>
 <ul>
 <li><a href="/uberwrt/index.html">Home</a>   
