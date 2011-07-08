@@ -9,6 +9,12 @@ img {
   border-style: none;
 }
 
+h1 {
+    padding-top: 20px;
+    font-weight: bold ;
+    color-grey: #bbbbbb
+}
+
 h3 {
         font-size: 145% ;
         font-weight: bold ;
@@ -31,18 +37,48 @@ body {
         font-family: arial, sans-serif ;
         background-color: #ffffff ;
         font-size: 12pt ;
-        margin: 8;
+        margin: 2;
+	background-image:url('cerowrt2.png');
+	background-repeat:no-repeat;
+	background-position:right top;
 }
 
 ul {
-	list-style-type: none;
 	padding-left: 2.5em;
 }
 
 li {
-	padding-bottom: 5px;
+	padding-bottom: 0px;
 }
 
+div.menu ul
+{
+list-style-type:none;
+margin:0;
+padding:0;
+overflow:hidden;
+}
+div.menu li
+{
+padding-right: 1em;
+float:left;
+}
+div.menu a:link,a:visited
+{
+display:block;
+/* width:150px;*/
+font-weight:bold;
+color:#FFFFFF;
+background-color:#98bf21;
+text-align:center;
+padding:4px;
+text-decoration:none;
+text-transform:uppercase;
+}
+div.menu a:hover,a:active
+{
+background-color:#7A991A;
+}
 
 DIV.projects ul {
 	list-style-type: circle;
@@ -87,6 +123,6 @@ nav {
   position: absolute;
   top: 4px;
   margin-top: 0;
-  font-size: 85%;
+  font-size: 90%;
 }
 
