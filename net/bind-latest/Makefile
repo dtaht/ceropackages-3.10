@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
 PKG_VERSION:=9.8.0-P4
-PKG_RELEASE:=8
+PKG_RELEASE:=9
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -193,8 +193,13 @@ endef
 # FIXME:
 
 define Package/bind-latest-config/install
-	$(INSTALL_DIR) $(1)/etc/chroot/named
-	$(CP) -a ./files/chroot/* $(1)/etc/chroot/named
+	$(INSTALL_DIR) $(1)/etc/chroot/
+	$(INSTALL_DIR) $(1)/etc/default/
+	$(INSTALL_DIR) $(1)/usr/sbin/
+	$(CP) -a ./files/chroot/* $(1)/etc/chroot/
+	$(INSTALL_BIN) ./files/ddns6.sh $(1)/usr/sbin/
+	$(CP) ./files/ddns6.config $(1)/etc/default/
+
 endef
 
 define Package/bind-latest-devtools/install

@@ -1,16 +1,8 @@
 #!/bin/sh
-ipv4addr=0.0.0.0
+
+. /etc/default/ddns6.config
 tempfile="/tmp/dnsupdate.$$"
 logfile="/tmp/logfile"
-
-# set defaults:
-# (these should come from a config file)
-key=/etc/bind/ddns-them.key
-iface=br-lan
-ttl=600
-
-# for multiple prefixes use a space-separated list
-prefixes="2001:470:8717::/48"
 
 usage() {
     echo "$0 action [<object> <string> [<object> <string> ...]]" 1>&2

@@ -15,7 +15,13 @@ DEVFILES="/dev/log /dev/zero /dev/urandom /dev/random /dev/null"
 
 gen_rndc() {
     local keyname=$1
-    [ ! -s $CHRTB/keys/$keyname.key ] && rndc-confgen -u root -k $keyname-key -c $keyname.key -t $CHRTB/keys/$keyname.key -r /dev/urandom -a
+    [ ! -s $CHRTB/keys/$keyname.key ] && {
+    	rndc-confgen -u root -k $keyname-key -c /tmp/$keyname.key -r /dev/urandom -a
+    	chgrp bind /tmp/$keyname.key
+    	chmod og-rwx /tmp/$keyname.key
+    	chmod g+r /tmp/$keyname.key
+    	mv /tmp/$keyname.key $CHRTB/keys/$keyname.key
+    	}
 }
 
 # When we start on squashfs, we're going to have bad perms, so fix them
@@ -47,10 +53,8 @@ setup_jail() {
   
     gen_rndc us
     gen_rndc them
-    rm -f /etc/us.key # we don't need to leave these around 
-    rm -f /etc/them.key 
     gen_rndc rndc
-    cp $CHRTB/keys/rndc.key /etc # make sure we got this!
+    cp $CHRTB/keys/rndc.key /etc
     gen_perms
 }
 
