@@ -7,8 +7,7 @@
 <body>
 <div>
 <h1>TCP, Traffic Shaping, and Network simulation</h1>
-<a name="ECN"></a>
-<h2>ECN enablement</h2>
+<h2 id="ECN">ECN enablement</h2>
 <p> ECN - Explicit congestion notification - is enabled by
 default. Connections shaped by an ECN enabled shaper will mark, rather
 than drop, ECN enabled packets. This should improve (theoretically)
@@ -36,15 +35,14 @@ client!
 <p>Bufferbloat.net is very interested in reports of ECN success or
 failures with given pieces of network equipment. We have high hopes
 that ECN can be more widely deployed.</p>
-<h2><a name="sack"></a>SACK/DSACK enablement</h2>
+<h2 id="sack">SACK/DSACK enablement</h2>
 <p>TCP DSACK and SACK are enabled by default. These are optimizations
 that improve TCP's behavior when losses are encountered. (They only
 apply for connections originating from, not going through, the
 router)</p>
 <p> In practice, enabling these seem to cause no harm in the general
 case, so long as smaller TCP windows are used.</p>
-<a name="tcp"></a>
-<h2>Alternate TCP algorithms</h2>
+<h2 id="tcp">Alternate TCP algorithms</h2>
 <p>The default TCP algorithm in this router is "Westwood+", which has
 been shown to work better than Vegas, over wired and wireless
 links. Available as options are Vegas, Reno, Cubic, and Bic - the last
@@ -90,7 +88,7 @@ doing a test.</p>
 the <a href="http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">evaluating tcp behavior wiki
 pages</a> for more details.</p>
 
-<h3><a name="qos"></a>Quality of Service (QoS) and Traffic shaping</h3>
+<h2 id="qos">Quality of Service (QoS) and Traffic shaping</h2>
 <p>Good Quality of Service is a holy grail that has been chased over
 the Internet for very long time. With the advent of streaming video
 delivery, simultaneously with the increasing popularity of video
@@ -124,7 +122,7 @@ QoS. This is a very active hotbed of research and development. </p>
 <a href="http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_qos_behavior">Evaluating
 QoS Behavior</a> for more up-to-date details.</p>
 
-<h2><a name="netem"></a>Network Emulation</h2> 
+<h2 id="netem">Network Emulation</h2> 
 <p>CeroWrt
 includes the NETEM network emulator. With it, you can simulate delay,
 packet loss, packet randomization, and many other factors that can
@@ -132,7 +130,7 @@ effect network connections. For more details about netem, please see
 the
 online <a href="http://www.linuxfoundation.org/collaborate/workgroups/networking/netem">documentation
 on it's web site</a>.
-<h2><a name="netdrop"></a>Net Drop Monitor</h2>
+<h2 id="netdrop">Net Drop Monitor</h2>
 <p> Packet drops
 occur throughout the network stack for a variety of reasons, many of
 which are good, and more than a few, bad. To date, few have had any
@@ -141,7 +139,7 @@ monitor (which requires a separate tool to use) can poke into the
 depths of the kernel to determine this information.
  
 </div>
-<div role="menu" class="menu">
+<div class="menu">
 <nav>
 <ul>
 <li><a href="/uberwrt/index.html">Home</a>   
