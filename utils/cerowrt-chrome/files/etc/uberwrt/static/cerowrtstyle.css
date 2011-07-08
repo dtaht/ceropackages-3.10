@@ -84,9 +84,9 @@ p.footnote {
 }
 
 nav {
-  position: absolute;
   top: 4px;
   margin-top: 0;
   font-size: 85%;
+  background-image: url('/static/cerowrt21.png') no-repeat right top;
 }
 
