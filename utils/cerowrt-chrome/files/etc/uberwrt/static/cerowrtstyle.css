@@ -54,7 +54,7 @@ li {
 div.menu ul
 {
 position:fixed;
-background-color:#ffffff;
+background-color:#98bf21;
 top:0px;
 list-style-type:none;
 margin:0;
@@ -76,7 +76,6 @@ background-color:#98bf21;
 text-align:center;
 padding:4px;
 text-decoration:none;
-text-transform:uppercase;
 }
 div.menu a:hover,a:active
 {
@@ -125,6 +124,6 @@ p.footnote {
 nav {
   top: 4px;
   margin-top: 0;
-  font-size: 85%;
+  font-size: 100%;
 }
 
