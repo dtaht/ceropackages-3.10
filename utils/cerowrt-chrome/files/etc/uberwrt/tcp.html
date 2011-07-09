@@ -8,7 +8,7 @@
 <div>
 <h1>TCP, Traffic Shaping, and Network simulation</h1>
 <h2 id="ECN">ECN enablement</h2>
-<p> ECN - Explicit congestion notification - is enabled by
+<p> ECN - Explicit Congestion Notification - is enabled by
 default. Connections shaped by an ECN enabled shaper will mark, rather
 than drop, ECN enabled packets. This should improve (theoretically)
 overall TCP performance and fairness in ways that normal packet drop
@@ -66,7 +66,7 @@ router and the rest of the Internet. We hope to be able to thoroughly
 analyze the behavior of the <a href="#qos">QoS</a> subsystems as well
 as the behavior of all the intervening routers on the path.</p>
 <p> Other TCP algorithms, such as TCP-Fit, are being evaluated.</p>
-<p> To see what tcp algorithms are actually available:</p>
+<p> To see what TCP algorithms are actually available:</p>
 <pre>
 cat /proc/sys/net/ipv4/tcp_allowed_congestion_control
 </pre>
@@ -85,7 +85,7 @@ preconditions. </p>
 values, and your iptables and traffic shaping configurations before
 doing a test.</p>
 <P>Please see
-the <a href="http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">evaluating tcp behavior wiki
+the <a href="http://www.bufferbloat.net/projects/uberwrt/wiki/evaluating_tcp_behavior">evaluating TCP behavior wiki
 pages</a> for more details.</p>
 
 <h2 id="qos">Quality of Service (QoS) and Traffic shaping</h2>
@@ -115,7 +115,7 @@ plug-able QoS system that 'just works', but we are a long way from
 that.</p>
 <p>In the meantime, please experiment with what we've delivered today,
 but be sure to set it correctly for your bandwidth! The default is
-setup for a network that is 20Mbit down/4 Mbit up, which most likely isn't your configuration.</p>
+setup for a network that is 20Mbit down/4Mbit up, which most likely isn't your configuration.</p>
 <p>There are multiple other projects experimenting with forms of
 QoS. This is a very active hotbed of research and development. </p>
 <p>See
@@ -129,12 +129,12 @@ packet loss, packet randomization, and many other factors that can
 effect network connections. For more details about netem, please see
 the
 online <a href="http://www.linuxfoundation.org/collaborate/workgroups/networking/netem">documentation
-on it's web site</a>.
+on its web site</a>.
 <h2 id="netdrop">Net Drop Monitor</h2>
 <p> Packet drops
 occur throughout the network stack for a variety of reasons, many of
 which are good, and more than a few, bad. To date, few have had any
-insight into how,when,and why packet drop happens. The Packet drop
+insight into how, when, and why packet drop happens. The Packet drop
 monitor (which requires a separate tool to use) can poke into the
 depths of the kernel to determine this information.
  
