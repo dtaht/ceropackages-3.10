@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cerowrt-chrome
 PKG_VERSION:=1
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 #PKG_REV:=2693afcf4c08c41067ac11177a1da3a033d6c6c0
 # PKG_VERSION:=20110517
 
