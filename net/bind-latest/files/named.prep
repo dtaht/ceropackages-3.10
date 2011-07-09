@@ -44,7 +44,8 @@ done
 
 setup_jail() {
 
-    mkdir -p $CHRT/dev $CHRT/tmp 
+    mkdir -p $CHRT/dev 
+    mkdir -p $CHRT/tmp 
 #    mount -t tmpfs -o size=64k $CHRT/tmp 
 #    mount -t tmpfs -o size=64k $CHRT/dev
 

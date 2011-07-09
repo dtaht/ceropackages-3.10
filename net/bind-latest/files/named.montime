@@ -40,8 +40,8 @@ montime() {
 # Cope with not being able to write flash on first boot
     while [ ! -s $CHRTB/keys/rndc.key ] 
     do
-	sleep 5
-	/etc/init.d/namedprep start
+	/etc/init.d/namedprep start &
+	sleep 10
     done
 
     # Kick the name server
