@@ -28,25 +28,25 @@ poorly with non-proxied streams, in general only being a win where it
 has local cache and/or can convert connections into using HTTP/1.1
 pipelining.  The router defaults
 to <a href="http://en.wikipedia.org/wiki/TCP_Westwood_plus">TCP
-Westwood plus</a> which attempts to be bandwidth friendly, and most
+Westwood+</a> which attempts to be bandwidth friendly, and most
 clients use a TCP that is more aggressive, so proxied connections can
-end up starved for bandwidth vs direct connections. </p>
+end up starved for bandwidth vs. direct connections. </p>
 
 <p>There are multiple solutions to this problem - making your web
 clients use the proxy is probably the best of them, which leverages
-the advantages of Westwood + for wireless. Another option is to enable
+the advantages of Westwood+ for wireless. Another option is to enable
 TCP cubic on the router (not recommended, except for testing), and a
 third, to apply a different level of QoS to proxied streams than
 non-proxied, which is the approach being followed by the ongoing
 Diffserv work elsewhere. </p>
 
 <p>It is reasonably effective to merely put your highest bandwidth
-streams (e.g. Video) through the proxy. As these devices tend not to
+streams (e.g. video) through the proxy. As these devices tend not to
 move, you'll only have to configure them once, in order to gain the
 benefits of proxying elsewhere on your network.</p>
 
-<p> The GUI interface for polipo is reasonably complete. All you need
-to do to turn it on via the gui is allow in your private networks
+<p> The GUI for polipo is reasonably complete. All you need
+to do to turn it on via the GUI is allow in your private networks
 (including IPv6!), and if you attach a USB stick as a local cache,
 point it at the location you plan to be caching in, then configure
 your devices to access it on port 8123. While enabling automatic wpad
@@ -62,7 +62,7 @@ scarce locations such as the developing world.</p>
 
 <p>Polipo can act as an effective IPv6 to IPv4 translator. You can
 enable your browser to run the proxy over IPv6 and nearly eliminate
-your usage of ipv4 for most operations.</p>
+your usage of IPv4 for most operations.</p>
 
 </div>
 <div class="menu">
