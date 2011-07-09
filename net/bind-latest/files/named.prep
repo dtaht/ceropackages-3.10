@@ -1,8 +1,8 @@
 #!/bin/sh /etc/rc.common
 # Setup the jail for bind
 
-START=46
-STOP=46
+START=47
+STOP=47
 
 CHRT=/etc/chroot/named/
 CHRTB=$CHRT/etc/bind
@@ -31,7 +31,8 @@ gen_rndc() {
 
 gen_perms() {
 
-mkdir $CHRTB/managed $CHRTB/keys
+mkdir -p $CHRTB/managed
+mkdir -p $CHRTB/keys
 
 cat /etc/bind.perms | while read fname mode owner group
 do

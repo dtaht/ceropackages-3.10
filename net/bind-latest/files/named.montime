@@ -21,7 +21,8 @@
 # but for now it's most robust to have lots of ntp servers in the conf file
 # Other stuff that could go wrong - your dns key could be bad...
 
-
+CHRT=/etc/chroot/named/
+CHRTB=$CHRT/etc/bind
 
 montime() {
     local COUNTER=0
@@ -36,6 +37,13 @@ montime() {
     echo 0 > $TFILE
     COUNTER=0
     TRIES=0
+# Cope with not being able to write flash on first boot
+    while [ ! -s $CHRTB/keys/rndc.key ] 
+    do
+	sleep 5
+	/etc/init.d/namedprep start
+    done
+
     # Kick the name server
     nslookup 127.255.255.255 127.0.0.1 > /dev/null 
 
