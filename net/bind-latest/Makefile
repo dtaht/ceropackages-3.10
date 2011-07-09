@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
 PKG_VERSION:=9.8.0-P4
-PKG_RELEASE:=9
+PKG_RELEASE:=10
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
