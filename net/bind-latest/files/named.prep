@@ -31,8 +31,6 @@ gen_rndc() {
 
 gen_perms() {
 
-mkdir -p $CHRTB/managed
-mkdir -p $CHRTB/keys
 
 cat /etc/bind.perms | while read fname mode owner group
 do
@@ -44,6 +42,8 @@ done
 
 setup_jail() {
 
+    mkdir -p $CHRTB/managed
+    mkdir -p $CHRTB/keys
     mkdir -p $CHRT/dev 
     mkdir -p $CHRT/tmp 
 #    mount -t tmpfs -o size=64k $CHRT/tmp 
