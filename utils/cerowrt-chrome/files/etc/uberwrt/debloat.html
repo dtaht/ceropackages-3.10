@@ -17,8 +17,12 @@ will take years.  Ultimately, all buffering/queuing in operating
 systems needs to be carefully managed and
 be <a href="http://gettys.wordpress.com/2011/07/06/rant-warning-there-is-no-single-right-answer-for-buffering-ever/">automatically
 adaptive</a> to the data transfer rates. All network routers (and
-operating systems!) should be running with AQM (e.g. algorithms such
-as RED) including home routers: unfortunately, existing algorithms such as RED
+operating systems!) should be running with <a
+href="http://en.wikipedia.org/wiki/Active_queue_management"><abbr
+title="Active Queue Management">AQM</abbr></a> (e.g. algorithms such
+as RED) including home routers: unfortunately, existing algorithms such as <a
+href="http://en.wikipedia.org/wiki/Random_early_detection"><abbr
+title="Random Early Detection">RED</abbr></a>
 are <a href="http://gettys.wordpress.com/2010/12/17/red-in-a-different-light/">unlikely to work correctly</a> in today's home network environment.</p><p>
 UberWrt/CeroWrt is the test platform for improved AQM
 algorithms. To achieve ultimate latencies under load across the high
@@ -33,7 +37,9 @@ In the upstream direction, the bottleneck link may be adjacent to your
 home devices (e.g. your laptop on wireless), and in your operating
 system, outside of our control; you may see problems therefore copying
 from your home device upstream to the internet and/or your home file
-server.  Unfortunately, TCP acks can be stalled behind packets queued
+server.  Unfortunately, <a
+href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol"><abbr
+title="Transmission Control Protocol">TCP</abbr></a> acks can be stalled behind packets queued
 in a particular direction, so bufferbloat in one direction <b>can</b>
 result in bad performance (poor latency) in the other direction.  If
 you run Linux, you can help with debloating by working with those
@@ -53,7 +59,9 @@ not available for the devices either side of a bottleneck, therefore,
 is to try to arrange to move the bottleneck from a device which is
 badly bloated to one which is not: e.g. you might arrange to ensure
 that your wireless bandwidth is <b>always</b> bigger than your
-broadband bandwidth (and using bandwidth shaping and QoS to avoid the
+broadband bandwidth (and using bandwidth shaping and <a
+href="http://en.wikipedia.org/wiki/Quality_of_service"><abbr
+title="Quality of Service">QoS</abbr></a> to avoid the
 consequences of bufferbloat in that hop as best you can).
 </p>
 
@@ -64,8 +72,9 @@ maximum bandwidth over very long, high bandwidth LFN ("Large Fat
 Network") paths without consideration of bufferbloat (gigabit speed +
 over 100ms or longer paths). </p> 
 <p>The quest for "land speed" record bragging rights has destroyed latency, the speed we really need.
-The <a href="http://en.wikipedia.org/wiki/Bandwidth-delay_product">bandwidth-delay
-product</a> of these LFN paths is very high indeed, and buffers have
+The <a
+href="http://en.wikipedia.org/wiki/Bandwidth-delay_product"><abbr
+title="Bandwidth-Delay Product">BDP</abbr></a> of these LFN paths is very high indeed, and buffers have
 been adjusted upwards accordingly. When these same operating systems are
 used in home routers (e.g. Linux and Apple's system), LFN tuning 
 becomes a serious headache as the circumstances differ tremendously.
@@ -98,7 +107,8 @@ problems.
 
 <p>
 QoS classification is interesting to improve low latency applications
-(e.g. VOIP & gaming) and to help with the reverse path consequences of
+(e.g. <a href="http://en.wikipedia.org/wiki/Voice_over_IP"><abbr
+title="Voice over IP">VoIP</abbr></a> & gaming) and to help with the reverse path consequences of
 bufferbloat (e.g. delay of acks, DNS and other key protocols which are
 killing performance and even inducing failures).  QoS is a useful but
 insufficient tool: bufferbloat cannot be completely solved without AQM,
