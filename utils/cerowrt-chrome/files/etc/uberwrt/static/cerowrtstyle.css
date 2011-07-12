@@ -108,3 +108,23 @@ nav {
   font-size: 100%;
 }
 
+.center {
+  text-align: center;
+}
+
+.center * {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.center table {
+  text-align: left;
+}
+
+.narrow {
+  width: 25%;
+}
+
+.wide {
+  width: 33%;
+}
