@@ -8,12 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netperf-latest
-PKG_VERSION:=2.4.5-r431
-PKG_RELEASE:=3
+PKG_REV:=432
+PKG_VERSION:=2.5.0r$(PKG_REV)
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://people.csail.mit.edu/woodrow/netperf-latest/
-PKG_MD5SUM:=0516bdbf3b161c991c650b613e25082c
+PKG_SOURCE_URL:=http://www.netperf.org/svn/netperf2/trunk
+PKG_SOURCE_PROTO:=svn
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_REV)
+
+PKG_INSTALL:= 1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -25,21 +30,12 @@ define Package/netperf-latest
 endef
 
 define Package/netperf-latest/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/netserver.init $(1)/etc/init.d/netserver
+	$(INSTALL_DIR) $(1)/etc/xinet.d/
+	$(INSTALL_BIN) ./files/netserver $(1)/etc/xinet.d/
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/netperf $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/netserver $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/net{perf,server} $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/arr_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/packet_byte_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/sctp_stream_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/snapshot_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/tcp_range_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/tcp_rr_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/tcp_stream_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/udp_rr_script $(1)/lib/netperf
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/udp_stream_script $(1)/lib/netperf
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/*_script $(1)/lib/netperf/
 endef
 
 $(eval $(call BuildPackage,netperf-latest))

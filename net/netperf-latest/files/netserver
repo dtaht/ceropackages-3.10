@@ -1,0 +1,14 @@
+service netperf
+{
+	disable         = no
+	socket_type     = stream
+	wait            = no
+	user            = nobody
+	port		= 12865
+	type		= UNLISTED
+	server          = /usr/bin/netserver
+	flags		= IPv6
+	log_on_failure  += USERID
+	instances	= 1
+}
+
