@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# ethtool -G eth0 (at least on the wndr3700 wan) eats kittens at gigE speeds
+# (See bug #210)
+# must fix in the next RC. For now, we're back up at
+# 64 ring buffers on ethernet, but down from 1000 on txqueuelen to 8 or 4
+
 # On starting an interface, set the txqueuelen to the right thing
 # FIXME: Allow per product default minimum blacklist
 # FIXME: If there is no explicit txqueuelen, set according to the default
@@ -20,8 +25,7 @@ local devtype=3
 [ -d $SYSPATH/$DEV/brif ] && devtype=2
 
 case $devtype in
-	0) ip link set $DEV txqueuelen 8;
-	   ethtool -G $DEV tx 4 ;;
+	0) ip link set $DEV txqueuelen 8 ;;
 	1) ip link set $DEV txqueuelen 4 ;;
 	2) echo 'do something sane on a bridge' >> $DEBLOAT_LOG ;;
 	*) echo 'unknown interface type' >> $DEBLOAT_LOG ;;
