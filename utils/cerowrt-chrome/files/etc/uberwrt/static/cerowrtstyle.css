@@ -52,6 +52,7 @@ li {
 div.menu ul
 {
 position:fixed;
+#background-color:#98bf21;
 background-color:#98bf21;
 top:0px;
 list-style-type:none;
@@ -64,7 +65,7 @@ div.menu li
 padding-right: 1em;
 float:left;
 }
-div.menu a:link,a:visited
+div.menu a:link,a:active
 {
 display:block;
 /* width:150px;*/
