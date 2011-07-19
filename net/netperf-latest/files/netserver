@@ -7,6 +7,7 @@ service netperf
 	port		= 12865
 	type		= UNLISTED
 	server          = /usr/bin/netserver
+	server_args	= -N
 	flags		= IPv6
 	log_on_failure  += USERID
 	instances	= 1

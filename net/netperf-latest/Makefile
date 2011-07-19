@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netperf-latest
-PKG_REV:=432
+PKG_REV:=438
 PKG_VERSION:=2.5.0r$(PKG_REV)
 PKG_RELEASE:=2
 
