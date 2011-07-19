@@ -64,7 +64,7 @@ div.menu li
 padding-right: 1em;
 float:left;
 }
-div.menu a:link,a:active
+div.menu a:link,a:visited
 {
 display:block;
 /* width:150px;*/
