@@ -10,3 +10,10 @@ zone "42.30.172.in-addr.arpa" {
 	file "/etc/bind/master/home.rev";
 };
 
+// Dummy zone to avoid leaking queries to the root
+// for the non-existent .lan zone
+
+zone "lan" {
+    type master;
+    file "/etc/bind/master/lan.internal";
+};

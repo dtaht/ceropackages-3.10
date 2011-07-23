@@ -1,0 +1,15 @@
+$TTL 8640
+$ORIGIN .
+lan.    IN      SOA     lan. postmaster.home.lan.  (
+       2011060239      ; Serial
+       2880            ; Refresh
+       1440            ; Retry
+       3600            ; Expire
+       8640 )          ; Minimum
+
+lan.            IN      NS      ns.lan.
+ns.lan.         IN      A       172.30.42.33
+
+home.lan.       IN      NS      gw.home.lan.
+gw.lan.         IN      A       172.30.42.33
+
