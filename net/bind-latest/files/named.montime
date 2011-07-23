@@ -69,7 +69,7 @@ montime() {
 	   DNSSEC=0
 	   logger "Can't get current time, dns validation disabled"
 	   }
-	   sleep 10
+	   sleep 180
 	   TRIES=$(($TRIES + 1))
         }
        done
