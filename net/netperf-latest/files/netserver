@@ -9,7 +9,8 @@ service netperf
 	server          = /usr/bin/netserver
 	server_args	= -N
 	flags		= IPv6
-	log_on_failure  += USERID
+	log_on_success  += HOST USERID
+	log_on_failure  += HOST USERID
 	instances	= 1
 }
 
