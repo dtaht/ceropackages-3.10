@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=babelz
-PKG_VERSION:=20110620
-PKG_RELEASE:=3
+PKG_VERSION:=20110715
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.teklibre.com/~d/cerowrt/
-PKG_MD5SUM:=bebb2f34391189b6439e8b9e3b3dde8a
+PKG_SOURCE_URL:=http://huchra.bufferbloat.net/~cero1/software/
+PKG_MD5SUM:=f39c1ff7426d32f73b2263d3a632991d
 
 include $(INCLUDE_DIR)/package.mk
 
