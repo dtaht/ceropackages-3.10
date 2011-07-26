@@ -20,8 +20,7 @@ local devtype=3
 [ -d $SYSPATH/$DEV/brif ] && devtype=2
 
 case $devtype in
-	0) ip link set $DEV txqueuelen 8;
-	   ethtool -G $DEV tx 4 ;;
+	0) ip link set $DEV txqueuelen 8 ;;
 	1) ip link set $DEV txqueuelen 4 ;;
 	2) echo 'do something sane on a bridge' >> $DEBLOAT_LOG ;;
 	*) echo 'unknown interface type' >> $DEBLOAT_LOG ;;

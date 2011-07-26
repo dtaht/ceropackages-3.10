@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=debloat
-PKG_VERSION:=1
-PKG_RELEASE:=3
+PKG_VERSION:=2
+PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -33,7 +33,7 @@ endef
 
 define Package/debloat/install
 	$(INSTALL_DIR) $(1)/lib/network $(1)/etc/hotplug.d/iface $(1)/etc/config
-	$(INSTALL_BIN) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/02-debloat
+	$(INSTALL_BIN) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/00-debloat
 	$(INSTALL_DATA) ./files/debloat.config $(1)/etc/config/debloat
 endef
 
