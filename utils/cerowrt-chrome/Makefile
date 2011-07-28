@@ -45,7 +45,7 @@ define Build/Compile
 endef
 
 define Package/cerowrt-chrome/install
-	$(INSTALL_DIR) $(1)/etc/uberwrt
+	$(INSTALL_DIR) $(1)/etc/cerowrt
 	$(INSTALL_DIR) $(1)/etc/lighttpd
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/etc/default
@@ -55,7 +55,7 @@ define Package/cerowrt-chrome/install
 	$(INSTALL_DIR) $(1)/mnt/disk1/cgi-bin
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/init.d/* $(1)/etc/init.d/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/lighttpd/* $(1)/etc/lighttpd/
-	$(CP) -rp $(PKG_BUILD_DIR)/etc/uberwrt/* $(1)/etc/uberwrt/
+	$(CP) -rp $(PKG_BUILD_DIR)/etc/cerowrt/* $(1)/etc/cerowrt/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/www/* $(1)/etc/www/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/bgi-bin/* $(1)/etc/bgi-bin/
 endef
