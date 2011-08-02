@@ -1,0 +1,53 @@
+<!DOCTYPE HTML> 
+ 
+<head> 
+  <title>DNS</title> 
+  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head> 
+<body>
+<div>
+<h1>DNS Server</h1>
+
+<h2>Automatic configuration & security</h2>
+<p>The goal is secure, autoconfigured name services: a home user
+should be able to plug in a new named device, and everything "just
+work", including publishing an IPv6 address into the global DNS
+without any configuration required. Towards this goal, the router
+includes <a href="http://en.wikipedia.org/wiki/BIND">Bind 9</a>
+running in a <a href="chrooted jail"chrooted jail</a>
+for additional security. DNSSEC is supported.
+
+<p> XXX we need some verbiage on how much can be configured at the moment here
+
+<h2>DNSSEC support</h2>
+<a href="http://en.wikipedia.org/wiki/Dnssec">DNSSEC 
+(Domain Name System Security Extensions)</a> is a method for adding
+authentication and data security to the existing Domain Name System (DNS)
+while retaining backward compatibility with systems that do not support
+DNSSEC.
+<p>
+A DNSSEC-enabled name server which provides authoritative data for a
+given domain responds to requests with the requested data and also a
+signature record which cryptographically authenticates the response.
+<p>
+A DNSSEC-enabled name server that provides local resolution of DNS
+requests validates the signatures received from authoritative servers
+to ensure that the data received was not tampered with.  If the data
+in the response cannot be proven to be valid and secure, the name server
+will reject it and return a "server failed" message to the client.
+</div>
+<div class="menu">
+<nav>
+<ul role="navigation">
+<li><a href="index.html">Home</a>   
+<li><a href="/bgi-bin/redir.sh">Administer</a>    
+<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+<li><a href="about.html">About CeroWrt</a>
+<li><a href="credits.html">Credits</a>
+<li><a href="support.html">Help</a>
+</ul>
+</nav>
+</div>
+</body>
+</html>
