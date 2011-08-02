@@ -8,17 +8,17 @@
 <body>
 <div>
 <h1>DNS Server</h1>
-
-<h2>Automatic configuration & security</h2>
 <p>The goal is secure, autoconfigured name services: a home user
 should be able to plug in a new named device, and everything "just
 work", including publishing an IPv6 address into the global DNS
-without any configuration required. Towards this goal, the router
+without any configuration required.
+<h2>Automatic configuration & security</h2>
+<p>Towards the stated goal, the router
 includes <a href="http://en.wikipedia.org/wiki/BIND">Bind 9</a>
-running in a <a href="chrooted jail"chrooted jail</a>
-for additional security. DNSSEC is supported.
-
-<p> XXX we need some verbiage on how much can be configured at the moment here
+running in a <a href="chrooted jail">chrooted jail</a>
+for additional security. This enables the router to support advanced name services, including zone transfers, split views, and DNSSEC. For more
+details, <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/OCEAN_CITY_RELEASE_NOTES">see the release notes</a> 
+as not all of this intended functionality is complete.
 
 <h2>DNSSEC support</h2>
 <a href="http://en.wikipedia.org/wiki/Dnssec">DNSSEC 
