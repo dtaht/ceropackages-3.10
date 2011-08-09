@@ -1,0 +1,15 @@
+--- a/estats-config.in
++++ b/estats-config.in
+@@ -2,10 +2,10 @@
+ 
+ prefix="@PREFIX@"
+ exec_prefix="@EXEC_PREFIX@"
+-cflags="-I@ESTATS_INCLUDE_DIR@"
+ includedir="@ESTATS_INCLUDE_DIR@"
+-libs="-L@LIBDIR@ -lestats"
++cflags="-I${includedir}"
+ libdir="@LIBDIR@"
++libs="-L${libdir} -lestats"
+ version="@ESTATS_VERSION@"
+ 
+ usage()
