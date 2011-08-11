@@ -1,0 +1,104 @@
+diff --git a/in.ctcs/Makefile b/in.ctcs/Makefile
+index 5765309..ba5b745 100644
+--- a/in.ctcs/Makefile
++++ b/in.ctcs/Makefile
+@@ -3,7 +3,7 @@ all:	in.ctcs
+ 
+ in.ctcs:
+ 	$(CC) $(CFLAGS) -o in.ctcs in.ctcs.c
+-	strip in.ctcs
++	$(STRIP) in.ctcs
+ 	cp in.ctcs ../bin
+ 
+ clean:
+diff --git a/in.dhcp/Makefile b/in.dhcp/Makefile
+index a37d36a..04054b2 100644
+--- a/in.dhcp/Makefile
++++ b/in.dhcp/Makefile
+@@ -3,7 +3,7 @@ all:	in.dhcp
+ 
+ in.dhcp: 
+ 	$(CC) $(CFLAGS) -o in.dhcp in.dhcp.c
+-	strip in.dhcp
++	$(STRIP) in.dhcp
+ 	cp in.dhcp ../bin
+ 
+ clean:
+diff --git a/in.dns/Makefile b/in.dns/Makefile
+index 627cb00..b108291 100644
+--- a/in.dns/Makefile
++++ b/in.dns/Makefile
+@@ -3,7 +3,7 @@ all:	in.dns
+ 
+ in.dns:
+ 	$(CC) $(CFLAGS) -o in.dns in.dns.c
+-	strip in.dns
++	$(STRIP) in.dns
+ 	cp in.dns ../bin
+ 
+ clean:
+diff --git a/in.jabberd/Makefile b/in.jabberd/Makefile
+index 957dbe1..1ab7264 100644
+--- a/in.jabberd/Makefile
++++ b/in.jabberd/Makefile
+@@ -3,7 +3,7 @@ all:	in.jabberd
+ 
+ in.jabberd:
+ 	$(CC) $(CFLAGS) -o in.jabberd in.jabberd.c sha1.c
+-	strip in.jabberd
++	$(STRIP) in.jabberd
+ 	cp in.jabberd ../bin
+ 
+ clean:
+diff --git a/in.mvp/Makefile b/in.mvp/Makefile
+index 70c5e08..0432cb9 100644
+--- a/in.mvp/Makefile
++++ b/in.mvp/Makefile
+@@ -3,7 +3,7 @@ all:	in.mvp
+ 
+ in.mvp:
+ 	$(CC) $(CFLAGS) -o in.mvp in.mvp.c
+-	strip in.mvp
++	$(STRIP) in.mvp
+ 	cp in.mvp ../bin
+ 
+ clean:
+diff --git a/in.proxy/Makefile b/in.proxy/Makefile
+index 210f328..9ff4131 100644
+--- a/in.proxy/Makefile
++++ b/in.proxy/Makefile
+@@ -3,7 +3,7 @@ all:	in.proxy
+ 
+ in.proxy:
+ 	$(CC) $(CFLAGS) -o in.proxy in.proxy.c
+-	strip in.proxy
++	$(STRIP) in.proxy
+ 	cp in.proxy ../bin
+ 
+ clean:
+diff --git a/in.smtp/Makefile b/in.smtp/Makefile
+index aee5aaf..8858cc6 100644
+--- a/in.smtp/Makefile
++++ b/in.smtp/Makefile
+@@ -3,7 +3,7 @@ all:	in.smtp
+ 
+ in.smtp:
+ 	$(CC) $(CFLAGS) -o in.smtp in.smtp.c
+-	strip in.smtp
++	$(STRIP) in.smtp
+ 	cp in.smtp ../bin
+ 
+ clean:
+diff --git a/in.www/Makefile b/in.www/Makefile
+index a82f71e..99dad51 100644
+--- a/in.www/Makefile
++++ b/in.www/Makefile
+@@ -3,7 +3,7 @@ all:	in.www
+ 
+ in.www:
+ 	$(CC) $(CFLAGS) -o in.www in.www.c
+-	strip in.www
++	$(STRIP) in.www
+ 	cp in.www ../bin
+ 
+ clean:
