@@ -1,5 +1,6 @@
 service ftp
 {
+    disable = no
     socket_type = stream
     wait = no
     user = nobody
@@ -7,5 +8,6 @@ service ftp
     id = ftp-1
     type = INTERNAL
     log_on_success = HOST PID
+    log_on_failure = HOST PID
     deny_time = 120
 }
