@@ -1,5 +1,8 @@
 service ssh
 {
+        port            = 22
+        protocol        = tcp
+        type            = UNLISTED
 	disable         = no
 	socket_type     = stream
 	wait            = no
