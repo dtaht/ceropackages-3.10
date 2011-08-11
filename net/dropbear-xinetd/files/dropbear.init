@@ -4,8 +4,8 @@
 
 NAME=dropbear
 PROG=/usr/sbin/dropbear
-START=30
-STOP=30
+START=50
+STOP=50
 PIDCOUNT=0
 
 keygen()
