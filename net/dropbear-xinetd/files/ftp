@@ -1,0 +1,11 @@
+service ftp
+{
+    socket_type = stream
+    wait = no
+    user = nobody
+    flags = SENSOR
+    id = ftp-1
+    type = INTERNAL
+    log_on_success = HOST PID
+    deny_time = 120
+}
