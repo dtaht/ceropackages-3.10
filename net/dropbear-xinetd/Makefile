@@ -97,8 +97,10 @@ define Package/dropbear-xinetd/install
 	ln -sf ../sbin/dropbear $(1)/usr/bin/ssh
 	ln -sf ../sbin/dropbear $(1)/usr/bin/dbclient
 	ln -sf ../sbin/dropbear $(1)/usr/bin/dropbearkey
+	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/etc/xinetd.d
+	$(INSTALL_BIN) ./files/dropbear.config $(1)/etc/config/dropbear
 	$(INSTALL_BIN) ./files/dropbear.init $(1)/etc/init.d/dropbear
 	$(INSTALL_BIN) ./files/ssh $(1)/etc/xinetd.d/ssh
 	$(INSTALL_BIN) ./files/ftp $(1)/etc/xinetd.d/ftp
