@@ -11,9 +11,9 @@
 
 <p><a href="http://www.bufferbloat.net/projects/cerowrt">CeroWrt</a>
 is a project to resolve endemic problems in home
-networking today, and push the state of the art of edge networks and
+networking today, and to push the state of the art of edge networks and
 routers forward. Projects include tighter
-integration with <a
+integration with DNS and <a
 href="http://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions">
 <abbr title="Domain Name System Security Extensions">DNSSEC</abbr></a>,
 wireless mesh networking
@@ -27,6 +27,12 @@ others.</p>
 <a href="http://www.bufferbloat.net">Bufferbloat.net</a> except that
 debloat-testing targets servers and laptops, not routers, directly,
 and CeroWrt does not, at present, include the eBDP algorithm.</p>
+
+<p> CeroWrt is also aimed at (currently) a single hardware platform for
+which fully open drivers are available: the Netgear WNDR3700v2, a
+current 802.11abgn router using the Atheros AR7161 rev 2 with gigabit
+Ethernet ports, and has enough flash that we are not spending time
+engineering around space problems. </p>
 
 <h2>CeroWrt's Goals</h2> 
 
@@ -54,7 +60,7 @@ have" with IPv6 deployment. Manual configuration of name services with
 IPv4 and IPv6 literal addresses is no longer feasible by most people,
 if indeed it ever was.  Toward the goal of "plug and play" home
 environment able to publish IPv6 addresses into the
-global Internet name space without manual configuraton, CeroWrt
+global Internet name space without manual configuration, CeroWrt
 includes the Bind name server. Security in the home environment is
 also a goal, ergo CeroWrt's support for DNSSEC using ISC Bind in a
 chrooted jail.
