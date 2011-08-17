@@ -28,7 +28,7 @@ others.</p>
 debloat-testing targets servers and laptops, not routers, directly,
 and CeroWrt does not, at present, include the eBDP algorithm.</p>
 
-<h2>About CeroWrt</h2> 
+<h2>CeroWrt's Goals</h2> 
 
 <p><a href="http://www.bufferbloat.net">CeroWrt</a> is
 a build of the <a href="http://www.openwrt.org">OpenWrt</a> routing
@@ -44,26 +44,28 @@ href="http://en.wikipedia.org/wiki/Quality_of_service"><abbr
 title="Quality of Service">QoS</abbr></a> algorithms.</p>
 
 <p>CeroWrt breaks with home router conventions in several ways.  The
-first you are already seeing - it comes with
-a high performance <a href="webserver.html">integral web server</a> 
-with which you can
-establish local web services and provide web content and services 24x7.</p>
+first you are already seeing - it comes with a high
+performance <a href="webserver.html">integral web server</a> with
+which you can establish local web services and provide web content and
+services 24x7.</p>
 
-<p>IPv6 means first class name services become a necessity rather than a
-"nice to have"; use of IP addresses and manual configuration of name
-services is no longer feasible. Toward the goal of "plug and play"
-name services able to publish IPv6 addresses into the global internet
-without manual configuraton of name services, CeroWrt includes the
-Bind name server. Security in the home environment is also a goal,
-ergo CeroWrt's support for DNSSEC using ISC Bind in a chrooted jail.
+<p>First class name services become a necessity rather than a "nice to
+have" with IPv6 deployment. Manual configuration of name services with
+IPv4 and IPv6 literal addresses is no longer feasible by most people,
+if indeed it ever was.  Toward the goal of "plug and play" home
+environment able to publish IPv6 addresses into the
+global Internet name space without manual configuraton, CeroWrt
+includes the Bind name server. Security in the home environment is
+also a goal, ergo CeroWrt's support for DNSSEC using ISC Bind in a
+chrooted jail.
 </p>
 
 <p>A core goal for CeroWrt is to provide a well understood platform,
-where contributors will be able to eventually perform tests with
+where contributors can perform tests with
 confidence that their results can be duplicated by others.</p>
 
-<p>CeroWrt is the base on which other specialized builds may be built
-in the future.  The default build is too big (~9MB) to be compatible
+<p>CeroWrt is the base on which other specialised builds may be built
+in the future. The default build is too big (~9MB) to be compatible
 with more commonly available routers.</p>
 
 <p>There are other <a href="features.html">features</a> all intended
