@@ -42,7 +42,21 @@ href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol"><abbr
 title="Transmission Control Protocol">TCP</abbr></a> & <a
 href="http://en.wikipedia.org/wiki/Quality_of_service"><abbr
 title="Quality of Service">QoS</abbr></a> algorithms.</p>
-Security of the home environment is also a goal.
+
+<p>CeroWrt breaks with home router conventions in several ways.  The
+first you are already seeing - it comes with
+a high performance <a href="webserver.html">integral web server</a> 
+with which you can
+establish local web services and provide web content and services 24x7.</p>
+
+<p>IPv6 means first class name services become a necessity rather than a
+"nice to have"; use of IP addresses and manual configuration of name
+services is no longer feasible. Toward the goal of "plug and play"
+name services able to publish IPv6 addresses into the global internet
+without manual configuraton of name services, CeroWrt includes the
+Bind name server. Security in the home environment is also a goal,
+ergo CeroWrt's support for DNSSEC using ISC Bind in a chrooted jail.
+</p>
 
 <p>A core goal for CeroWrt is to provide a well understood platform,
 where contributors will be able to eventually perform tests with
@@ -52,19 +66,11 @@ confidence that their results can be duplicated by others.</p>
 in the future.  The default build is too big (~9MB) to be compatible
 with more commonly available routers.</p>
 
-<p>CeroWrt breaks with home router conventions in several ways.  The
-first you are already seeing - it comes with
-an <a href="webserver.html">integral web server</a> with which you can
-establish local web services.  This is useful, for example, in
-providing a place where you can share data such as packet captures
-with others in your team, and a place to keep useful information when
-the Internet is down. </p>
-
 <p>There are other <a href="features.html">features</a> all intended
 to help make insight into networking problems easier. In particular,
 bufferbloat, wherever <a href="debloat.html">we could find it</a>, has
-been reduced tremendously, but not eliminated entirely, which is our
-eventual goal.</p>
+been reduced, but not yet eliminated entirely; that requires the research
+in AQM and buffer management for which CeroWrt is intended.</p>
 
 <p>While we have tried very hard to produce a usable web interface for
 the normal use of CeroWrt as your primary Internet router (and do
@@ -78,7 +84,7 @@ href="http://en.wikipedia.org/wiki/Secure_Shell"><abbr
 title="Secure Shell">SSH</abbr></a>.</p>
 
 <p>As this is a research and development platform, there will be no
-long term support for this release. Subsequent releases will likely
+long term support for this release and will likely
 require a complete reflashing and reconfiguration of your router. We
 apologize for the inconvenience but the state of the art and the
 problems we are trying to solve are rapidly moving targets that we
