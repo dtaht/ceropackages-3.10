@@ -48,12 +48,13 @@ apply for connections originating from, not going through, the
 router)</p>
 <p> In practice, enabling these seem to cause no harm in the general
 case, so long as smaller TCP windows are used.</p>
+<a name="tcp"></a>
 <h2 id="tcp">Alternate TCP algorithms</h2>
 <p>The default TCP algorithm in this router is "<a
 href="http://en.wikipedia.org/wiki/TCP_Westwood_plus">Westwood+</a>", which has
 been shown to work better than <a
 href="http://en.wikipedia.org/wiki/TCP_Vegas">Vegas</a>, over wired and wireless
-links. Available as options are Vegas, <a
+links. Available as options are Vegas, Yeah, <a
 href="http://en.wikipedia.org/wiki/TCP_congestion_avoidance_algorithm#TCP_Tahoe_and_Reno">
 Reno</a>, <a href="http://en.wikipedia.org/wiki/CUBIC_TCP">Cubic</a>, and <a
 href="http://en.wikipedia.org/wiki/BIC_TCP">Bic</a> - the last
@@ -100,6 +101,7 @@ doing a test.</p>
 the <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/evaluating_tcp_behavior">evaluating TCP behavior wiki
 pages</a> for more details.</p>
 
+<a name="qos"></a>
 <h2 id="qos">QoS and Traffic shaping</h2>
 <p>Good QoS is a holy grail that has been chased over
 the Internet for very long time. With the advent of streaming video
