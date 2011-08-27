@@ -7,13 +7,13 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=babelz
-PKG_VERSION:=20110715
-PKG_RELEASE:=4
+PKG_NAME:=babeld
+PKG_VERSION:=1.1.99.1
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://huchra.bufferbloat.net/~cero1/software/
-PKG_MD5SUM:=f39c1ff7426d32f73b2263d3a632991d
+PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
+PKG_MD5SUM:=e1a801aa48fe26401c29d2152c1a1887
 
 include $(INCLUDE_DIR)/package.mk
 
