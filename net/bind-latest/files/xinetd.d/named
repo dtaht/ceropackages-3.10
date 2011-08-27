@@ -5,6 +5,7 @@ service domain
 	wait            = yes
 	user            = root
 	group           = bind
+	instances	= 1
 	only_from	= 0.0.0.0/0 ::/0
 	server          = /usr/sbin/named
 	server_args     = -c /etc/bind/conf/named.conf -u bind -t /etc/chroot/named
