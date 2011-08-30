@@ -7,9 +7,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnugol
-PKG_VERSION:=1.0-rc3
-PKG_REV:=b8bf784155b35faf8a8df46b47db98b30c6a7fe0
-PKG_RELEASE:=1
+PKG_VERSION:=1.0
+PKG_REV:=0c060862559a8211a3718dc78b5f3b2960f0f7fa
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=git@github.com:dtaht/Gnugol.git
