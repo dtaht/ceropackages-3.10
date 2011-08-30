@@ -1,0 +1,28 @@
+--- a/src/clients/Makefile
++++ b/src/clients/Makefile
+@@ -21,7 +21,7 @@ COMMON=../common/handy.o ../common/utf8.
+ ENGINES=../common/engines.o
+ 
+ INC=../include
+-INCLUDES=-I../include -I/usr/local/include
++INCLUDES=-I../include
+ DEBUG:=-DDEBUG
+ PROGS=gnugol #gnugol_fcgi.cgi 
+ HTMLDIR=/var/www/gnugol
+--- a/src/engines/Makefile
++++ b/src/engines/Makefile
+@@ -5,12 +5,12 @@ HEADERS=../include/*.h
+ SHAREDLIBDIR=/var/lib/gnugol
+ COMMON=
+ INC=../include
+-INCLUDES=-I../include -I/usr/local/include
++INCLUDES=-I../include
+ DEBUG=-DDEBUG
+ CFLAGS += -g
+ CFLAGS += -Wall -Wextra -pedantic -std=c99 -rdynamic
+ SFLAGS := $(CFLAGS)
+-LDFLAGS += -L/usr/local/lib -ljansson -lcurl
++LDFLAGS += -ljansson -lcurl
+ ENGINES = ../common/engines.o
+ STRIP=strip
+ TESTDIR=../tests/

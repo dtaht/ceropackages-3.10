@@ -1,0 +1,11 @@
+--- a/src/include/gnugol_engines.h
++++ b/src/include/gnugol_engines.h
+@@ -19,7 +19,7 @@
+ #  ifdef __FreeBSD__
+ #    define GNUGOL_SHAREDLIBDIR "/usr/local/lib/gnugol/"
+ #  else
+-#    define GNUGOL_SHAREDLIBDIR "/var/lib/gnugol/"
++#    define GNUGOL_SHAREDLIBDIR "/usr/lib/gnugol/"
+ #  endif
+ #endif
+ 

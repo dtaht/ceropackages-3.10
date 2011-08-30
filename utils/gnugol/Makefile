@@ -19,31 +19,37 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 
 PKG_INSTALL:=1
 
-PKG_BUILD_DEPENDS:=libjansson libiconv
-
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/gnugol
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=The GNU google/bing search utility
   URL:=http://gnugol.taht.net
+  DEPENDS:=+libcurl $(ICONV_DEPENDS) +libjansson
 endef
 
-EXTRA_CFLAGS +=-I$(BUILD_DIR)/jansson-2.0.1/src/
+define Package/gnugol/description
+  Gnugol is a command line web search client, written in C, that can make
+  searching and utilizing the web more efficient.
+endef
 
 MAKE_FLAGS += \
-        DESTDIR="$(PKG_INSTALL_DIR)" \
-        BUILDDIR="$(PKG_BUILD_DIR)" \
-        LDLIBS+="$(LIBGCC_S)" \
-        WITHOUT_XATTR=1
-
-define Build/InstallDev
-endef
+	LIBS="$(TARGET_LDFLAGS) -ljansson -lcurl -ldl -liconv \
+		-Wl,-rpath-link=$(STAGING_DIR)/usr/lib" \
+	BINDIR="/usr/bin" \
+	DOCDIR="/usr/share/man/man1/" \
+	SHAREDLIBDIR="/usr/lib/gnugol" \
+	PLATFORM="Linux"
 
 define Package/gnugol/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/gnugol $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/usr/lib/gnugol
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/usr/lib/gnugol/*.so \
+		$(1)/usr/lib/gnugol/
 endef
 
 $(eval $(call BuildPackage,gnugol))

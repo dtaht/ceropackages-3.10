@@ -1,0 +1,40 @@
+--- a/doc/Makefile
++++ b/doc/Makefile
+@@ -17,13 +17,13 @@ all:
+ 
+ install: 
+ 	mkdir -p $(DESTDIR)$(HTMLDIR) $(DESTDIR)$(IMAGEDIR)
+-	mkdir -p $(DOCDIR)
++	mkdir -p $(DESTDIR)$(DOCDIR)
+ 	cp $(HTML) $(DESTDIR)$(HTMLDIR)
+ 	cp $(IMAGES) $(DESTDIR)$(IMAGEDIR)
+ 	cp gnugol.1 /tmp
+ 	@rm -f /tmp/gnugol.1.gz
+ 	gzip /tmp/gnugol.1 
+-	cp /tmp/gnugol.1.gz $(DOCDIR)gnugol.1.gz
++	cp /tmp/gnugol.1.gz $(DESTDIR)$(DOCDIR)gnugol.1.gz
+ 	rm -f /tmp/gnugol.1.gz
+ 
+ install-stripped: install
+--- a/src/clients/Makefile
++++ b/src/clients/Makefile
+@@ -59,6 +59,7 @@ gnugol_fcgi.cgi: gnugol_fcgi.c $(HEADERS
+ #	$(CC) gnugold.o -o gnugold ${LIBS}
+ 
+ install: $(PROGS)
++	@mkdir -p $(DESTDIR)$(BINDIR)
+ 	cp gnugol $(DESTDIR)$(BINDIR)
+ #	cp gnugol.cgi $(DESTDIR)$(CGIDIR)
+ 
+--- a/src/engines/Makefile
++++ b/src/engines/Makefile
+@@ -64,7 +64,7 @@ credits.$(EXT) : credits.c $(HEADERS) $(
+ 	$(CC) $(CFLAGS) $(INCLUDES) $(DEBUG) credits.c -o $@ $(LDFLAGS)
+ 
+ install: $(OBJECTS)
+-	@mkdir -p $(SHAREDLIBDIR)
+-	cp *.$(EXT) $(SHAREDLIBDIR)
++	@mkdir -p $(DESTDIR)$(SHAREDLIBDIR)
++	cp *.$(EXT) $(DESTDIR)$(SHAREDLIBDIR)
+ clean:
+ 	rm -f $(OBJECTS) $(PROGS) *~
