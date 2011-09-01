@@ -124,7 +124,7 @@ start() {
 	config_foreach babel_addif interface
 	config_foreach babel_filter filter
 	[ -z "$interfaces" ] && return 0
-	eval "/usr/sbin/babeld -z3 -u -D -I $PID_F $args $interfaces"
+	eval "/usr/sbin/babeld -z3 -D -I $PID_F $args $interfaces"
 }
 
 stop() {
