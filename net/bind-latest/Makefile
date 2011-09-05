@@ -99,6 +99,7 @@ CONFIGURE_ARGS += \
 	--with-libxml2=no \
 	--enable-epoll=yes \
 	--with-rlimtype="long int" \
+	--with-gssapi=no \
 	--with-gost=no 
 
 CONFIGURE_VARS += \
