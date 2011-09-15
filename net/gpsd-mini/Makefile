@@ -35,11 +35,11 @@ define Package/gpsd-mini
   URL:=http://gpsd.berlios.de/
 endef
 
-define Package/gpsd/conffiles
+define Package/gpsd-mini/conffiles
 /etc/config/gpsd
 endef
 
-define Package/gpsd/description
+define Package/gpsd-mini/description
   gpsd is a userland daemon acting as a translator between GPS and AIS receivers
   and their clients. gpsd listens on port 2947 for clients requesting
   position/time/velocity information.  The receivers are expected to generate
