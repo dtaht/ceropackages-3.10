@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=gpsd
 PKG_REV:=ca00820a8725a8458a7aeb03dc08e5c4f09f5294
 #PKG_VERSION:=3.1
-PKG_VERSION:=20110914
+PKG_VERSION:=20110917
 PKG_RELEASE:=1
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -27,7 +27,7 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/scons.mk
 
-define Package/gpsd-mini
+define Package/gpsd
   SECTION:=net
   CATEGORY:=Network
   DEPENDS:=+librt +libusb-1.0
@@ -35,11 +35,11 @@ define Package/gpsd-mini
   URL:=http://gpsd.berlios.de/
 endef
 
-define Package/gpsd-mini/conffiles
+define Package/gpsd/conffiles
 /etc/config/gpsd
 endef
 
-define Package/gpsd-mini/description
+define Package/gpsd/description
   gpsd is a userland daemon acting as a translator between GPS and AIS receivers
   and their clients. gpsd listens on port 2947 for clients requesting
   position/time/velocity information.  The receivers are expected to generate
@@ -81,7 +81,7 @@ define Build/InstallDev
 		$(1)/usr/lib/pkgconfig/
 endef
 
-define Package/gpsd-mini/install
+define Package/gpsd/install
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/gpsd.config $(1)/etc/config/gpsd
 	$(INSTALL_DIR) $(1)/etc/init.d
@@ -94,4 +94,4 @@ define Package/gpsd-mini/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/gpsd $(1)/usr/sbin/
 endef
 
-$(eval $(call BuildPackage,gpsd-mini))
+$(eval $(call BuildPackage,gpsd))
