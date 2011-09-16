@@ -11,7 +11,7 @@ PKG_NAME:=gpsd
 PKG_REV:=ca00820a8725a8458a7aeb03dc08e5c4f09f5294
 #PKG_VERSION:=3.1
 PKG_VERSION:=20110917
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=http://download.berlios.de/gpsd
@@ -25,13 +25,14 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 
 #PKG_BUILD_DEPENDS:=libncurses
 
+include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/scons.mk
 
 define Package/gpsd
   SECTION:=net
   CATEGORY:=Network
   DEPENDS:=+librt +libusb-1.0
-  TITLE:=An interface daemon for GPS receivers (without libusb)
+  TITLE:=An interface daemon for GPS receivers
   URL:=http://gpsd.berlios.de/
 endef
 
@@ -48,7 +49,7 @@ define Package/gpsd/description
   protocols.  gpsd takes this information from the GPS and translates it into
   something uniform and easier to understand for clients.
 endef
- 
+
 SCONS_OPTIONS += \
 	dbus=no \
 	tsip=no \
@@ -65,10 +66,9 @@ SCONS_OPTIONS += \
 	strip=no \
 	python=no
 
+EXTRA_CFLAGS:=-I$(STAGING_DIR)/usr/include/libusb-1.0
 
-EXTRA_CFLAGS:=
-
-EXTRA_LDFLAGS:=
+EXTRA_LDFLAGS:=-L.
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
