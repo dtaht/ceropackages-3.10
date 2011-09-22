@@ -8,10 +8,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpsd
-PKG_REV:=ca00820a8725a8458a7aeb03dc08e5c4f09f5294
+PKG_REV:=8bf64049845b133410a957a91a37081273d63057
 #PKG_VERSION:=3.1
-PKG_VERSION:=20110917
-PKG_RELEASE:=3
+PKG_VERSION:=20110921
+PKG_RELEASE:=1
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=http://download.berlios.de/gpsd
@@ -115,8 +115,6 @@ SCONS_OPTIONS += \
 	python=no \
 	usb=no
 
-EXTRA_LDFLAGS:=-L.
-
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/gps.h $(1)/usr/include/
@@ -153,6 +151,10 @@ define Package/libgpsd/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgpsd.so.* $(1)/usr/lib/
 endef
+
+$(eval $(call RequireCommand,chrpath, \
+	$(PKG_NAME) requires chrpath installed on the host-system. \
+))
 
 $(eval $(call BuildPackage,gpsd))
 $(eval $(call BuildPackage,cgps))
