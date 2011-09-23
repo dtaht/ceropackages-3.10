@@ -9,11 +9,12 @@ $TTL    86400
 
 $ORIGIN 42.30.172.in-addr.arpa.
 
-33 	IN PTR gw.home.lan.
+1 	IN PTR gw.home.lan.
 65 	IN PTR gw.home.lan.
 97 	IN PTR gw.home.lan.
 129 	IN PTR gw.home.lan.
 161 	IN PTR gw.home.lan.
+225 	IN PTR gw.home.lan.
 
 31	IN PTR broadcast.home.lan.
 63	IN PTR broadcast.home.lan.
@@ -24,7 +25,7 @@ $ORIGIN 42.30.172.in-addr.arpa.
 223	IN PTR broadcast.home.lan.
 
 0	IN PTR net-0.home.lan.
-1	IN PTR sec-1.home.lan.
+1	IN PTR gw.home.lan.
 2	IN PTR sec-2.home.lan.
 3	IN PTR sec-3.home.lan.
 4	IN PTR sec-4.home.lan.

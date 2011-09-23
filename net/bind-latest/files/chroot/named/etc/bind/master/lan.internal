@@ -8,8 +8,8 @@ lan.    IN      SOA     lan. postmaster.home.lan.  (
        8640 )          ; Minimum
 
 lan.            IN      NS      ns.lan.
-ns.lan.         IN      A       172.30.42.33
+ns.lan.         IN      A       172.30.42.1
 
 home.lan.       IN      NS      gw.home.lan.
-gw.lan.         IN      A       172.30.42.33
+gw.lan.         IN      A       172.30.42.1
 

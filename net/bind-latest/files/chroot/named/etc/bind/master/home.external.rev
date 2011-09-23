@@ -9,5 +9,5 @@ $TTL    86400
 
 $ORIGIN 42.30.172.in-addr.arpa.
 
-33 	IN PTR gw.home.lan.
+1 	IN PTR gw.home.lan.
 

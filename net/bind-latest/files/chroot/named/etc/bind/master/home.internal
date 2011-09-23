@@ -6,11 +6,11 @@ $TTL    8640
 	3600    ; Expire
 	8640 )    ; Minimum
 $ORIGIN home.lan.
-	IN	A	172.30.42.33
+	IN	A	172.30.42.1
 	IN	NS      gw
 	IN	MX      30 gw
 
-gw	IN	A 172.30.42.33
+gw	IN	A 172.30.42.1
 
 my	IN	CNAME gw
 www	IN 	CNAME gw
@@ -25,39 +25,41 @@ broadcast	IN A 172.30.42.255
 		IN A 172.30.42.95
 		IN A 172.30.42.127
 		IN A 172.30.42.159
+		IN A 172.30.42.191
+		IN A 172.30.42.223
 
-sec-0		IN      A       172.30.42.0
-sec-1		IN	A	172.30.42.1
-sec-2		IN	A	172.30.42.2
-sec-3		IN	A	172.30.42.3
-sec-4		IN	A	172.30.42.4
-sec-5		IN	A	172.30.42.5
-sec-6		IN	A	172.30.42.6
-sec-7		IN	A	172.30.42.7
-sec-8		IN	A	172.30.42.8
-sec-9		IN	A	172.30.42.9
-sec-10		IN	A	172.30.42.10
-sec-11		IN	A	172.30.42.11
-sec-12		IN	A	172.30.42.12
-sec-13		IN	A	172.30.42.13
-sec-14		IN	A	172.30.42.14
-sec-15		IN	A	172.30.42.15
-sec-16		IN	A	172.30.42.16
-sec-17		IN	A	172.30.42.17
-sec-18		IN	A	172.30.42.18
-sec-19		IN	A	172.30.42.19
-sec-20		IN	A	172.30.42.20
-sec-21		IN	A	172.30.42.21
-sec-22		IN	A	172.30.42.22
-sec-23		IN	A	172.30.42.23
-sec-24		IN	A	172.30.42.24
-sec-25		IN	A	172.30.42.25
-sec-26		IN	A	172.30.42.26
-sec-27		IN	A	172.30.42.27
-sec-28		IN	A	172.30.42.28
-sec-29		IN	A	172.30.42.29
-sec-30		IN	A	172.30.42.30
+net-0		IN      A       172.30.42.0
+dhcp-2		IN	A	172.30.42.2
+dhcp-3		IN	A	172.30.42.3
+dhcp-4		IN	A	172.30.42.4
+dhcp-5		IN	A	172.30.42.5
+dhcp-6		IN	A	172.30.42.6
+dhcp-7		IN	A	172.30.42.7
+dhcp-8		IN	A	172.30.42.8
+dhcp-9		IN	A	172.30.42.9
+dhcp-10		IN	A	172.30.42.10
+dhcp-11		IN	A	172.30.42.11
+dhcp-12		IN	A	172.30.42.12
+dhcp-13		IN	A	172.30.42.13
+dhcp-14		IN	A	172.30.42.14
+dhcp-15		IN	A	172.30.42.15
+dhcp-16		IN	A	172.30.42.16
+dhcp-17		IN	A	172.30.42.17
+dhcp-18		IN	A	172.30.42.18
+dhcp-19		IN	A	172.30.42.19
+dhcp-20		IN	A	172.30.42.20
+dhcp-21		IN	A	172.30.42.21
+dhcp-22		IN	A	172.30.42.22
+dhcp-23		IN	A	172.30.42.23
+dhcp-24		IN	A	172.30.42.24
+dhcp-25		IN	A	172.30.42.25
+dhcp-26		IN	A	172.30.42.26
+dhcp-27		IN	A	172.30.42.27
+dhcp-28		IN	A	172.30.42.28
+dhcp-29		IN	A	172.30.42.29
+dhcp-30		IN	A	172.30.42.30
 net-32		IN	A	172.30.42.32
+dhcp-33		IN	A	172.30.42.33
 dhcp-34		IN	A	172.30.42.34
 dhcp-35		IN	A	172.30.42.35
 dhcp-36		IN	A	172.30.42.36
