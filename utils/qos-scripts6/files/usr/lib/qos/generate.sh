@@ -398,6 +398,7 @@ start_cg() {
 	local sizerules
 	enum_classes "$cg"
 	add_rules iptrules "$ctrules" "iptables -t mangle -A ${cg}_ct"
+	add_rules iptrules "$ctrules" "ip6tables -t mangle -A ${cg}_ct"
 	config_get classes "$cg" classes
 	for class in $classes; do
 		config_get mark "$class" classnr
@@ -405,9 +406,11 @@ start_cg() {
 		[ -z "$maxsize" -o -z "$mark" ] || {
 			add_insmod ipt_length
 			append pktrules "iptables -t mangle -A ${cg} -m mark --mark $mark -m length --length $maxsize: -j MARK --set-mark 0" "$N"
+			append pktrules "ip6tables -t mangle -A ${cg} -m mark --mark $mark -m length --length $maxsize: -j MARK --set-mark 0" "$N"
 		}
 	done
 	add_rules pktrules "$rules" "iptables -t mangle -A ${cg}"
+	add_rules pktrules "$rules" "ip6tables -t mangle -A ${cg}"
 	for iface in $INTERFACES; do
 		config_get classgroup "$iface" classgroup
 		config_get device "$iface" device
@@ -418,11 +421,15 @@ start_cg() {
 		download="${download:-${halfduplex:+$upload}}"
 		append up "iptables -t mangle -A OUTPUT -o $device -j ${cg}" "$N"
 		append up "iptables -t mangle -A FORWARD -o $device -j ${cg}" "$N"
+		append up "ip6tables -t mangle -A OUTPUT -o $device -j ${cg}" "$N"
+		append up "ip6tables -t mangle -A FORWARD -o $device -j ${cg}" "$N"
 	done
 	cat <<EOF
 $INSMOD
 iptables -t mangle -N ${cg} >&- 2>&-
 iptables -t mangle -N ${cg}_ct >&- 2>&-
+ip6tables -t mangle -N ${cg} >&- 2>&-
+ip6tables -t mangle -N ${cg}_ct >&- 2>&-
 ${iptrules:+${iptrules}${N}iptables -t mangle -A ${cg}_ct -j CONNMARK --save-mark}
 iptables -t mangle -A ${cg} -j CONNMARK --restore-mark
 iptables -t mangle -A ${cg} -m mark --mark 0 -j ${cg}_ct
@@ -438,6 +445,8 @@ start_firewall() {
 	cat <<EOF
 iptables -t mangle -F
 iptables -t mangle -X
+ip6tables -t mangle -F
+ip6tables -t mangle -X
 EOF
 	for group in $CG; do
 		start_cg $group
