@@ -8,12 +8,21 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=babeld
-PKG_VERSION:=1.1.99.1
-PKG_RELEASE:=5
+PKG_VERSION:=20111009
+PKG_RELEASE:=6
+
+#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+#PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
+#PKG_MD5SUM:=e1a801aa48fe26401c29d2152c1a1887
+
+PKG_REV:=856bb8326b3707ea4ca04ac901204f4c299f75ec
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
-PKG_MD5SUM:=e1a801aa48fe26401c29d2152c1a1887
+PKG_SOURCE_URL:=git://git.wifi.pps.jussieu.fr/babeld
+#PKG_SOURCE_SUBDIR:=babeld-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_REV)
+PKG_SOURCE_PROTO:=git
+
 
 include $(INCLUDE_DIR)/package.mk
 
