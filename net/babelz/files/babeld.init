@@ -29,7 +29,7 @@ append_bool() {
 	local option="$2"
 	local value="$3"
 	local _loctmp
-	config_get_bool _loctmp "$section" "$option"
+	config_get_bool _loctmp "$section" "$option" 0
 	[ "$_loctmp" -gt 0 ] && append args "$value"
 }
 
@@ -105,10 +105,12 @@ babel_config() {
 	append_parm "$cfg" 'hello_interval' '-h'
 	append_parm "$cfg" 'wired_hello_interval' '-H'
 	append_parm "$cfg" 'idle_hello_interval' '-i'
+	append_parm "$cfg" 'diversity' '-z'
 	append_parm "$cfg" 'kernel_priority' '-k'
 	append_parm "$cfg" 'duplication_priority' '-A'
 	append_parm "$cfg" 'debug' '-d'
 	append_parm "$cfg" 'local_server' '-g'
+	append_parm "$cfg" 'keep_unfeasible' '-u'
 	append_parm "$cfg" 'export_table' '-t'
 	append_parm "$cfg" 'import_table' '-T'
 	append_parm "$cfg" 'conf_file' '-c'
@@ -124,7 +126,7 @@ start() {
 	config_foreach babel_addif interface
 	config_foreach babel_filter filter
 	[ -z "$interfaces" ] && return 0
-	eval "/usr/sbin/babeld -z3 -D -I $PID_F $args $interfaces"
+	eval "/usr/sbin/babeld -D -I $PID_F $args $interfaces"
 }
 
 stop() {
