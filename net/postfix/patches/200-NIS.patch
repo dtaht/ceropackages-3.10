@@ -1,0 +1,12 @@
+diff -rupN postfix-2.8.1/src/util/sys_defs.h postfix-2.8.1_patched/src/util/sys_defs.h
+--- postfix-2.8.1/src/util/sys_defs.h	2011-03-06 21:07:16.000000000 +0300
++++ postfix-2.8.1_patched/src/util/sys_defs.h	2011-03-06 21:36:39.000000000 +0300
+@@ -722,7 +722,7 @@ extern int initgroups(const char *, int)
+ #define HAS_DB
+ #define DEF_DB_TYPE	"hash"
+ #define ALIAS_DB_MAP	"hash:/etc/aliases"
+-#define HAS_NIS
++//#define HAS_NIS
+ #define GETTIMEOFDAY(t)	gettimeofday(t,(struct timezone *) 0)
+ #define ROOT_PATH	"/bin:/usr/bin:/sbin:/usr/sbin"
+ #define FIONREAD_IN_TERMIOS_H

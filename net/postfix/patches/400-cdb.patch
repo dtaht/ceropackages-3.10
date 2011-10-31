@@ -1,0 +1,65 @@
+diff -rupN postfix-2.8.1/makedefs postfix-2.8.1_patched/makedefs
+--- postfix-2.8.1/makedefs	2011-03-10 17:22:34.000000000 +0300
++++ postfix-2.8.1_patched/makedefs	2011-03-10 17:28:54.000000000 +0300
+@@ -256,21 +256,21 @@ case "$SYSTEM.$RELEASE" in
+ 		;;
+     Linux.2*)	SYSTYPE=LINUX2
+ 		# Postfix no longer needs DB 1.85 compatibility
+-		if [ -f /usr/include/db.h ]
+-		then
+-		    : we are all set
+-		elif [ -f /usr/include/db/db.h ]
+-		then
+-		    CCARGS="$CCARGS -I/usr/include/db"
+-		else
+-		    # No, we're not going to try db1 db2 db3 etc.
+-		    # On a properly installed system, Postfix builds
+-		    # by including <db.h> and by linking with -ldb
+-		    echo "No <db.h> include file found." 1>&2
+-		    echo "Install the appropriate db*-devel package first." 1>&2
+-		    echo "See the RELEASE_NOTES file for more information." 1>&2
+-		    exit 1
+-		fi
++		# if [ -f /usr/include/db.h ]
++		# then
++		#     : we are all set
++		# elif [ -f /usr/include/db/db.h ]
++		# then
++		#     CCARGS="$CCARGS -I/usr/include/db"
++		# else
++		#     # No, we're not going to try db1 db2 db3 etc.
++		#     # On a properly installed system, Postfix builds
++		#     # by including <db.h> and by linking with -ldb
++		#     echo "No <db.h> include file found." 1>&2
++		#     echo "Install the appropriate db*-devel package first." 1>&2
++		#     echo "See the RELEASE_NOTES file for more information." 1>&2
++		#     exit 1
++		# fi
+ 		# GDBM locks the DBM .pag file after open. This breaks postmap.
+ 		# if [ -f /usr/include/gdbm-ndbm.h ]
+ 		# then
+@@ -281,7 +281,7 @@ case "$SYSTEM.$RELEASE" in
+ 		#     CCARGS="$CCARGS -DHAS_DBM -DPATH_NDBM_H='<gdbm/ndbm.h>'"
+ 		#     GDBM_LIBS=gdbm
+ 		# fi
+-		SYSLIBS="-ldb"
++		# SYSLIBS="-ldb"
+ 		for name in nsl resolv $GDBM_LIBS
+ 		do
+ 		    for lib in /usr/lib64 /lib64 /usr/lib /lib
+diff -rupN postfix-2.8.1/src/util/sys_defs.h postfix-2.8.1_patched/src/util/sys_defs.h
+--- postfix-2.8.1/src/util/sys_defs.h	2011-03-10 17:23:58.000000000 +0300
++++ postfix-2.8.1_patched/src/util/sys_defs.h	2011-03-10 16:29:42.000000000 +0300
+@@ -719,9 +719,9 @@ extern int initgroups(const char *, int)
+ #define INTERNAL_LOCK	MYFLOCK_STYLE_FLOCK
+ #define DEF_MAILBOX_LOCK "fcntl, dotlock"	/* RedHat >= 4.x */
+ #define HAS_FSYNC
+-#define HAS_DB
+-#define DEF_DB_TYPE	"hash"
+-#define ALIAS_DB_MAP	"hash:/etc/aliases"
++//#define HAS_DB
++#define DEF_DB_TYPE	"cdb"
++#define ALIAS_DB_MAP	"cdb:/etc/postfix/aliases"
+ //#define HAS_NIS
+ #define GETTIMEOFDAY(t)	gettimeofday(t,(struct timezone *) 0)
+ #define ROOT_PATH	"/bin:/usr/bin:/sbin:/usr/sbin"
