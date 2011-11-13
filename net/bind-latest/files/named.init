@@ -4,7 +4,7 @@
 START=48
 STOP=48
 
-CHRT=/etc/chroot/bind/
+CHRT=/etc/chroot/named/
 
 pid_file=$CHRT/var/run/named/named.pid
 
