@@ -9,6 +9,14 @@ CHRT=/etc/chroot/named/
 pid_file=$CHRT/var/run/named/named.pid
 
 start() {
+  if [ ! -d /var/run/named ]
+  then
+    mkdir -p /var/run/named
+  fi
+  if [ ! -h /var/run/named/session.key ]
+  then
+    ln -s /etc/chroot/named/var/run/named/session.key /var/run/named/session.key
+  fi
   echo Kicking isc-bind in xinetd
   /usr/sbin/named.montime &
   nslookup ::1 ::1 > /dev/null
