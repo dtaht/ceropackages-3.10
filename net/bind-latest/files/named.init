@@ -9,18 +9,16 @@ CHRT=/etc/chroot/named/
 pid_file=$CHRT/var/run/named/named.pid
 
 start() {
-
-    echo Kicking isc-bind in xinetd
-    /usr/sbin/named.montime &
-    nslookup ::1 ::1 > /dev/null
-    if [ $? -ne 0 ]
+  echo Kicking isc-bind in xinetd
+  /usr/sbin/named.montime &
+  nslookup ::1 ::1 > /dev/null
+  if [ $? -ne 0 ]
   then
     echo "  isc-bind failed to start"
     logger " isc-bind failed to start "
   else 
     logger " isc-bind started "
   fi
-
 }
 
 stop() {
@@ -33,11 +31,11 @@ stop() {
     then
       echo "  PID " `cat $pid_file` not found
       echo "  Is the named server running?"
-   fi
+    fi
 
     rm -f $pid_file
 
-    else
+  else
     echo "  $pid_file not found, trying brute force "
     killall named
   fi
