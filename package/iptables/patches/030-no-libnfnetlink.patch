@@ -1,6 +1,6 @@
 --- a/configure
 +++ b/configure
-@@ -10917,75 +10917,7 @@ $as_echo "no" >&6; }
+@@ -10924,75 +10924,7 @@ $as_echo "no" >&6; }
  	fi
  fi
  
@@ -88,5 +88,5 @@
 -AM_CONDITIONAL([HAVE_LIBNFNETLINK], [test "$nfnetlink" = 1])
 +AM_CONDITIONAL([HAVE_LIBNFNETLINK], [false])
  
- regular_CFLAGS="${largefile_cflags} \
- 	-D_REENTRANT -Wall -Waggregate-return -Wmissing-declarations \
+ regular_CFLAGS="-Wall -Waggregate-return -Wmissing-declarations \
+ 	-Wmissing-prototypes -Wredundant-decls -Wshadow -Wstrict-prototypes \

@@ -1,6 +1,6 @@
---- a/xtables.c
-+++ b/xtables.c
-@@ -305,6 +305,7 @@ static char *get_modprobe(void)
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -328,6 +328,7 @@ static char *get_modprobe(void)
  
  int xtables_insmod(const char *modname, const char *modprobe, bool quiet)
  {
