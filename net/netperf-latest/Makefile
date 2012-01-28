@@ -18,7 +18,7 @@ PKG_NAME:=netperf-latest
 PKG_REV:=518
 PKG_VERSION:=2.5.0r$(PKG_REV)
 
-#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 #PKG_SOURCE_URL:=ftp://ftp.netperf.org/netperf/
 
 # Checksum
