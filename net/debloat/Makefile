@@ -22,7 +22,7 @@ define Package/debloat
 endef
 
 define Package/debloat/description
-  Reduce excessive TXQUEUELEN on devices (reduce bufferbloat)
+	Manage TXQUEUE better with various SFQ/QFQ related algorithms
 endef
 
 define Build/Compile
@@ -33,7 +33,9 @@ endef
 
 define Package/debloat/install
 	$(INSTALL_DIR) $(1)/lib/network $(1)/etc/hotplug.d/iface $(1)/etc/config
+	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/00-debloat
+	$(INSTALL_BIN) ./files/debloat $(1)/usr/sbin/debloat
 	$(INSTALL_DATA) ./files/debloat.config $(1)/etc/config/debloat
 endef
 
