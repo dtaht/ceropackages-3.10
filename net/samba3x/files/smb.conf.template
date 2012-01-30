@@ -21,10 +21,10 @@
 	preferred master = yes
 	printable = no
 	reset on zero vc = yes
-	remote announce = 192.168.1.255
+#	remote announce = 192.168.1.255
 	security = user
-	smb encrypt = disableennounce = 192.168.1.255
-        security = user
+	smb encrypt = disable
+	security = user
         smb encrypt = disabled
 	smb passwd file = /etc/samba/smbpasswd
 	socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65535 SO_SNDBUF=65535
@@ -32,6 +32,12 @@
 	writeable = yes
 	unix charset = UTF-8
 	use sendfile = yes
+	domain logons = yes
+	domain master = yes
+	local master = yes
+	preferred master = yes
+	os level = 255
+	wins support = yes
 
 [template]
 	browseable = yes
