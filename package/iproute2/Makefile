@@ -8,12 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=iproute2
-PKG_VERSION:=3.1.0
+PKG_VERSION:=3.2.2git
 PKG_RELEASE:=1
 
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=git://github.com/dtaht/deBloat-iproute2.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://devresources.linux-foundation.org/dev/iproute2/download/
-PKG_MD5SUM:=8a3b6bc77c2ecf752284aa4a6fc630a6
+PKG_SOURCE_VERSION:=50c6f3ee5bc6b6aa3c9f4a0efc79c2621ce3650a
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+#PKG_SOURCE_URL:=http://devresources.linux-foundation.org/dev/iproute2/download/
+#PKG_MD5SUM:=8a3b6bc77c2ecf752284aa4a6fc630a6
 PKG_BUILD_PARALLEL:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/iproute2-$(PKG_VERSION)
