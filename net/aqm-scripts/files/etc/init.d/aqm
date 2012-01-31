@@ -4,13 +4,13 @@
 START=50
 
 boot() {
-	/usr/lib/qos/generate.sh firewall | sh
+	/usr/lib/aqm/generate.sh firewall | sh
 }
 
 start() {
-	qos-start
+	aqm-start
 }
 
 stop() {
-	qos-stop
+	aqm-stop
 }

@@ -1,7 +1,7 @@
-# QoS configuration for OpenWrt
+# AQM configuration for OpenWrt
 
 # INTERFACES:
-config interface wan
+config interface ge00
 	option classgroup  "Default"
 	option enabled      0
 	option upload       128
@@ -41,7 +41,6 @@ config reclassify
 	option mark	        "!Bulk"
 	option tcpflags     "ACK"
 
-
 # Don't change the stuff below unless you
 # really know what it means :)
 
@@ -49,16 +48,15 @@ config classgroup "Default"
 	option classes      "Priority Express Normal Bulk"
 	option default      "Normal"
 
-
 config class "Priority"
 	option packetsize  400
 	option maxsize     400
 	option avgrate     10
 	option priority    20
+
 config class "Priority_down"
 	option packetsize  1000
 	option avgrate     10
-
 
 config class "Express"
 	option packetsize  1000
@@ -71,6 +69,7 @@ config class "Normal"
 	option packetdelay 100
 	option avgrate     10
 	option priority    5
+
 config class "Normal_down"
 	option avgrate     20
 

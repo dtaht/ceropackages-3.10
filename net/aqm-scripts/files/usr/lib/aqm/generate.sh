@@ -264,7 +264,7 @@ cls_var() {
 }
 
 tcrules() {
-	dir=/usr/lib/qos
+	dir=/usr/lib/aqm
 	[ -e $dir/tcrules.awk ] || dir=.
 	echo "$cstr" | awk \
 		-v device="$dev" \
@@ -464,10 +464,10 @@ stop_firewall() {
 
 C="0"
 INTERFACES=""
-[ -e ./qos.conf ] && {
-	. ./qos.conf
+[ -e ./aqm.conf ] && {
+	. ./aqm.conf
 	config_cb
-} || config_load qos
+} || config_load aqm
 
 C="0"
 for iface in $INTERFACES; do
