@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsval
-PKG_VERSION:=1.10
+PKG_VERSION:=1.12
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.dnssec-tools.org/download
-PKG_MD5SUM:=fa906bba3eaedf1aa8fce618b00b4a65
+PKG_MD5SUM:=61ea8957c8ec5117713b3fbd339d81db
 
 PKG_BUILD_DEPENDS:=libopenssl
 PKG_INSTALL:=1
