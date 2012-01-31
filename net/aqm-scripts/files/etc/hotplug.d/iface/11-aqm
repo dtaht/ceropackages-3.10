@@ -1,0 +1,2 @@
+#!/bin/sh
+[ "$ACTION" = ifup ] && /etc/init.d/aqm enabled && /usr/lib/aqm/generate.sh interface "$INTERFACE" | sh
