@@ -20,16 +20,16 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/polipo-latest
+define Package/polipo
   SUBMENU:=Web Servers/Proxies
   SECTION:=net
   CATEGORY:=Network
   TITLE:=A caching web proxy
-  URL:=http://www.pps.jussieu.fr/~jch/software/polipo-latest/
+  URL:=http://www.pps.jussieu.fr/~jch/software/polipo/
   MAINTAINER:=Gabriel Kerneis <kerneis@pps.jussieu.fr>
 endef
 
-define Package/polipo-latest/description
+define Package/polipo/description
  Polipo is a small and fast caching web proxy (a web cache, an HTTP proxy, 
  a proxy server). While Polipo was designed to be used by one person or a 
  small group of people, there is nothing that prevents it from being used 
@@ -43,12 +43,12 @@ define Build/Compile
 		polipo
 endef
 
-define Package/polipo-latest/conffiles
+define Package/polipo/conffiles
 /etc/config/polipo
 /etc/polipo/config
 endef
 
-define Package/polipo-latest/install
+define Package/polipo/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/polipo $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/polipo
@@ -59,4 +59,4 @@ define Package/polipo-latest/install
 	$(INSTALL_BIN) ./files/polipo.init $(1)/etc/init.d/polipo
 endef
 
-$(eval $(call BuildPackage,polipo-latest))
+$(eval $(call BuildPackage,polipo))
