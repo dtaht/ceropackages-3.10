@@ -8,20 +8,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpsd
-PKG_REV:=ca00820a8725a8458a7aeb03dc08e5c4f09f5294
-#PKG_VERSION:=3.1
-PKG_VERSION:=20110917
-PKG_RELEASE:=3
+#PKG_REV:=ca00820a8725a8458a7aeb03dc08e5c4f09f5294
+PKG_VERSION:=3.4
+#PKG_VERSION:=20110917
+PKG_RELEASE:=4
 
-#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-#PKG_SOURCE_URL:=http://download.berlios.de/gpsd
-#PKG_MD5SUM:=f280b914c19da3a91aa5e67d83d35033
+PKG_SOURCE_URL:=http://download-mirror.savannah.gnu.org/releases/gpsd/
+PKG_MD5SUM:=c01353459faa68834309109d4e868460
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=git://git.berlios.de/gpsd
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=$(PKG_REV)
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+#PKG_SOURCE_URL:=git://git.berlios.de/gpsd
+#PKG_SOURCE_PROTO:=git
+#PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+#PKG_SOURCE_VERSION:=$(PKG_REV)
 
 PKG_BUILD_DEPENDS:=libncurses
 
@@ -30,7 +29,7 @@ include $(INCLUDE_DIR)/scons.mk
 
 define Package/gpsd/Default
   DEPENDS:=+librt
-  URL:=http://gpsd.berlios.de/
+  URL:=http://catb.org/gpsd/
 endef
 
 define Package/gpsd/Default/description
