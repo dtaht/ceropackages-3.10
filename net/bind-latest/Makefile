@@ -11,10 +11,11 @@ PKG_NAME:=bind
 PKG_VERSION:=9.9.0rc2
 PKG_RELEASE:=19
 
+#ftp://ftp.isc.org/isc/bind9/9.9.0rc2/bind-9.9.0rc2.tar.gz
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
-	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION)/$(PKG_SOURCE) \
-	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)
+	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION)/ \
+	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)/
 PKG_MD5SUM:=22ed4666da592dd9706ca13f2a050bad
 
 PKG_FIXUP:=libtool
