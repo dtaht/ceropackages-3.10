@@ -7,30 +7,30 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=qos-scripts
+PKG_NAME:=aqm-scripts
 PKG_VERSION:=1.2.1
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/qos-scripts
+define Package/aqm-scripts
   SECTION:=utils
   CATEGORY:=Base system
   DEPENDS:=+tc +kmod-sched +kmod-ifb +iptables +iptables-mod-filter +iptables-mod-ipopt +iptables-mod-conntrack-extra
-  TITLE:=QoS scripts
+  TITLE:=AQM Scripts
   PKGARCH:=all
 endef
 
-define Package/qos-scripts/description
- A set of scripts that abstract QoS configuration into a simple 
- configuration file supporting stanzas that specify any number of QoS 
+define Package/aqm-scripts/description
+ A set of scripts that abstract AQM configuration into a simple 
+ configuration file supporting stanzas that specify any number of AQM
  entries.
 endef
 
-define Package/qos-scripts/conffiles
-/etc/config/qos
+define Package/aqm-scripts/conffiles
+/etc/config/aqm
 endef
 
 define Build/Prepare
@@ -42,9 +42,9 @@ endef
 define Build/Compile
 endef
 
-define Package/qos-scripts/install
+define Package/aqm-scripts/install
 	$(INSTALL_DIR) $(1)
 	$(CP) ./files/* $(1)/
 endef
 
-$(eval $(call BuildPackage,qos-scripts))
+$(eval $(call BuildPackage,aqm-scripts))

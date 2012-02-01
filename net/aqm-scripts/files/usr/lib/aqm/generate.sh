@@ -53,8 +53,8 @@ parse_matching_rule() {
 	done
 	config_get type "$section" TYPE
 	case "$type" in
-		classify) unset pkt; append "$var" "-m mark --mark 0";;
-		default) pkt=1; append "$var" "-m mark --mark 0";;
+		classify) unset pkt; append "$var" "-m mark --mark 0/0xff";;
+		default) pkt=1; append "$var" "-m mark --mark 0/0xff";;
 		reclassify) pkt=1;;
 	esac
 	append "$var" "${proto:+-p $proto}"
@@ -161,8 +161,8 @@ parse_matching_rule() {
 				config_get class "${value##!}" classnr
 				[ -z "$class" ] && continue;
 				case "$value" in
-					!*) append "$var" "-m mark ! --mark $class";;
-					*) append "$var" "-m mark --mark $class";;
+					!*) append "$var" "-m mark ! --mark $class/0xff";;
+					*) append "$var" "-m mark --mark $class/0xff";;
 				esac
 			;;
 			1:TOS)
@@ -264,7 +264,7 @@ cls_var() {
 }
 
 tcrules() {
-	dir=/usr/lib/qos
+	dir=/usr/lib/aqm
 	[ -e $dir/tcrules.awk ] || dir=.
 	echo "$cstr" | awk \
 		-v device="$dev" \
@@ -386,7 +386,7 @@ add_rules() {
 			unset iptrule
 		}
 
-		parse_matching_rule iptrule "$rule" "$options" "$prefix" "-j MARK --set-mark $target"
+		parse_matching_rule iptrule "$rule" "$options" "$prefix" "-j MARK --set-mark $target/0xff"
 		append "$var" "$iptrule" "$N"
 	done
 }
@@ -397,20 +397,17 @@ start_cg() {
 	local pktrules
 	local sizerules
 	enum_classes "$cg"
-	add_rules iptrules "$ctrules" "iptables -t mangle -A ${cg}_ct"
-	add_rules iptrules "$ctrules" "ip6tables -t mangle -A ${cg}_ct"
+	add_rules iptrules "$ctrules" "iptables -t mangle -A qos_${cg}_ct"
 	config_get classes "$cg" classes
 	for class in $classes; do
 		config_get mark "$class" classnr
 		config_get maxsize "$class" maxsize
 		[ -z "$maxsize" -o -z "$mark" ] || {
 			add_insmod ipt_length
-			append pktrules "iptables -t mangle -A ${cg} -m mark --mark $mark -m length --length $maxsize: -j MARK --set-mark 0" "$N"
-			append pktrules "ip6tables -t mangle -A ${cg} -m mark --mark $mark -m length --length $maxsize: -j MARK --set-mark 0" "$N"
+			append pktrules "iptables -t mangle -A qos_${cg} -m mark --mark $mark/0xff -m length --length $maxsize: -j MARK --set-mark 0/0xff" "$N"
 		}
 	done
-	add_rules pktrules "$rules" "iptables -t mangle -A ${cg}"
-	add_rules pktrules "$rules" "ip6tables -t mangle -A ${cg}"
+	add_rules pktrules "$rules" "iptables -t mangle -A qos_${cg}"
 	for iface in $INTERFACES; do
 		config_get classgroup "$iface" classgroup
 		config_get device "$iface" device
@@ -419,20 +416,16 @@ start_cg() {
 		config_get download "$iface" download
 		config_get halfduplex "$iface" halfduplex
 		download="${download:-${halfduplex:+$upload}}"
-		append up "iptables -t mangle -A OUTPUT -o $device -j ${cg}" "$N"
-		append up "iptables -t mangle -A FORWARD -o $device -j ${cg}" "$N"
-		append up "ip6tables -t mangle -A OUTPUT -o $device -j ${cg}" "$N"
-		append up "ip6tables -t mangle -A FORWARD -o $device -j ${cg}" "$N"
+		append up "iptables -t mangle -A OUTPUT -o $device -j qos_${cg}" "$N"
+		append up "iptables -t mangle -A FORWARD -o $device -j qos_${cg}" "$N"
 	done
 	cat <<EOF
 $INSMOD
-iptables -t mangle -N ${cg} >&- 2>&-
-iptables -t mangle -N ${cg}_ct >&- 2>&-
-ip6tables -t mangle -N ${cg} >&- 2>&-
-ip6tables -t mangle -N ${cg}_ct >&- 2>&-
-${iptrules:+${iptrules}${N}iptables -t mangle -A ${cg}_ct -j CONNMARK --save-mark}
-iptables -t mangle -A ${cg} -j CONNMARK --restore-mark
-iptables -t mangle -A ${cg} -m mark --mark 0 -j ${cg}_ct
+iptables -t mangle -N qos_${cg} >&- 2>&-
+iptables -t mangle -N qos_${cg}_ct >&- 2>&-
+${iptrules:+${iptrules}${N}iptables -t mangle -A qos_${cg}_ct -j CONNMARK --save-mark --mask 0xff}
+iptables -t mangle -A qos_${cg} -j CONNMARK --restore-mark --mask 0xff
+iptables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
 $pktrules
 $up$N${down:+${down}$N}
 EOF
@@ -442,23 +435,39 @@ EOF
 start_firewall() {
 	add_insmod ipt_multiport
 	add_insmod ipt_CONNMARK
-	cat <<EOF
-iptables -t mangle -F
-iptables -t mangle -X
-ip6tables -t mangle -F
-ip6tables -t mangle -X
-EOF
+	stop_firewall
 	for group in $CG; do
 		start_cg $group
 	done
 }
 
+stop_firewall() {
+	# Builds up a list of iptables commands to flush the qos_* chains,
+	# remove rules referring to them, then delete them
+
+	# Print rules in the mangle table, like iptables-save
+	iptables -t mangle -S |
+		# Find rules for the qos_* chains
+		grep '^-N qos_\|-j qos_' |
+		# Exclude rules in qos_* chains (inter-qos_* refs)
+		grep -v '^-A qos_' |
+		# Replace -N with -X and hold, with -F and print
+		# Replace -A with -D
+		# Print held lines at the end (note leading newline)
+		sed -e '/^-N/{s/^-N/-X/;H;s/^-X/-F/}' \
+			-e 's/^-A/-D/' \
+			-e '${p;g}' |
+		# Make into proper iptables calls
+		# Note:  awkward in previous call due to hold space usage
+		sed -n -e 's/^./iptables -t mangle &/p'
+}
+
 C="0"
 INTERFACES=""
-[ -e ./qos.conf ] && {
-	. ./qos.conf
+[ -e ./aqm.conf ] && {
+	. ./aqm.conf
 	config_cb
-} || config_load qos
+} || config_load aqm
 
 C="0"
 for iface in $INTERFACES; do
@@ -477,6 +486,13 @@ case "$1" in
 		start_interfaces
 	;;
 	firewall)
-		start_firewall
+		case "$2" in
+			stop)
+				stop_firewall
+			;;
+			start|"")
+				start_firewall
+			;;
+		esac
 	;;
 esac

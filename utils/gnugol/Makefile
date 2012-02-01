@@ -27,7 +27,7 @@ define Package/gnugol
   CATEGORY:=Utilities
   TITLE:=The GNU google/bing search utility
   URL:=http://gnugol.taht.net
-  DEPENDS:=+libcurl $(ICONV_DEPENDS) +libjansson
+  DEPENDS:=+libcurl $(ICONV_DEPENDS) +jansson
 endef
 
 define Package/gnugol/description
