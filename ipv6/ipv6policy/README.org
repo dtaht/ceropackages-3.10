@@ -1,0 +1,75 @@
+* Handling ipv6 is a PITA.
+
+I'd like a network to boot and run with IPv6 on the getgo. Everyone
+is focused on having global connectivity, I'm interested in 
+having my own network, just work, even when the internet is down.
+
+Additionally I'd like to just plug in a given router and 
+have it automagically add itself to the mesh.
+
+The only good way to do this is randomly create an ipv6 address
+range, then assign interfaces sanely to it with short lifetimes.
+
+Then, make sure they are blocked on egress to the internet
+
+example address fdfe:dcba:9876::/48
+
+* Deriving a prefix with RFC4193
+
+  Lacking correct time step one is stupid. 
+
+     1) Obtain the current time of day in 64-bit NTP format [NTP].
+
+     2) Obtain an EUI-64 identifier from the system running this
+        algorithm.  If an EUI-64 does not exist, one can be created from
+        a 48-bit MAC address as specified in [ADDARCH].  If an EUI-64
+        cannot be obtained or created, a suitably unique identifier,
+        local to the node, should be used (e.g., system serial number).
+
+localaddr=`ip -o -6 addr show dev ge00 scope link | awk '{print $4}' | cut 
+-f1 -d/`
+
+fe80::c63d:c7ff:fea3:767a
+
+     3) Concatenate the time of day with the system-specific identifier
+        in order to create a key.
+
+The rfc doesn't specify case, or binary, or ascii, or what.
+
+     4) Compute an SHA-1 digest on the key as specified in [FIPS, SHA1];
+        the resulting value is 160 bits.
+
+echo asdf | openssl dgst -sha1 returns
+
+(stdin)= 7d97e98f8af710c7e7fe703abc8f639e0ee507c4
+
+so the output needs to be split and trimmed
+
+openssl dgst -sha1 /tmp/t | cut -f2 -d" "
+
+     5) Use the least significant 40 bits as the Global ID.
+
+     6) Concatenate FC00::/7, the L bit set to 1, and the 40-bit Global
+        ID to create a Local IPv6 address prefix.
+
+FDXX:XXXX:XXXX::/48
+
+     7) Update DNS to suit
+
+* Anycast
+
+It makes sense to use anycast addressing for dns.
+
+* Rules
+
+PREFIX=
+
+ip rule from fc::/7 to fc::/7 
+
+ip rule ! from fc::/7
+
+* Other ip address ranges
+
+* DNS mirroring
+
+
