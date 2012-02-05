@@ -850,7 +850,7 @@ local function efq(parent, handle, speed, flows)
 end
 
 local function efqr(parent, handle, speed, flows)
-   qap("%s handle %x: est 1sec 4sec sfq limit 200 quantum 3000 perturb 600 headdrop flows %d depth 24 divisor 16384 redflowlimit 40000 min 4500 max 18000 probability 0.20 ecn",parent,handle,flows)
+   qap("%s handle %x: est 1sec 4sec sfq limit 200 quantum 3028 perturb 600 headdrop flows %d depth 24 divisor 16384 redflowlimit 40000 min 4500 max 18000 probability 0.20 ecn",parent,handle,flows)
 end
 
 function iptables4(...)
