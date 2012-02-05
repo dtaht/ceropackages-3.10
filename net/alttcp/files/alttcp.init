@@ -1,0 +1,44 @@
+#!/bin/sh /etc/rc.common
+START=40
+
+PDIR=/proc/sys/net/ipv4/
+
+check_available() {
+    local cong=$1
+    local a=`cat $PDIR/tcp_available_congestion_control`
+    local y=1
+    insmod tcp_$cong
+    for i in $a
+    do
+	if [ $i -eq $cong ] then
+	    y = 0
+	fi
+    done
+    echo $y
+    return $y
+}
+
+parse_allowed() {
+    config_list_foreach $1 $2 $3
+}
+
+# foreach
+init_config() {
+	include /lib/network
+	config_load alttcp
+	config_get allowed "allowed" altcp_allowed
+
+	config_get default "default" alttcp_default
+	echo $altcp_allowed > $PDIR/tcp_allowed_congestion_control
+	check_available $alttcp_default && {
+	    echo $altcp_default > $PDIR/tcp_congestion_control
+	    }
+}
+
+start() {
+    init_config
+}
+
+stop() {
+
+}
