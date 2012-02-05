@@ -72,4 +72,127 @@ ip rule ! from fc::/7
 
 * DNS mirroring
 
+* It would be nice if we used multiple tables right
 
+static
+dhcp
+babel
+etc
+
+* Policy Routing is required
+** Tables are numbered and have no aliases
+   Grump
+** Basic rules
+
+ip rule add from fc::/7 to fc::/7
+ip rule add from 2002::/16 to 2002::/16
+ip rule add from ::/0 to fe80::/10
+** Block example addresses entirely
+ip rule add 
+
+* Special rules
+
+2001:2::/48 BMWG
+2001:10::/28 ORCHID
+2001:db8::/32
+
+2001::/32 TEREDO
+
+* Then there's deprecated addresses
+
+fec0::/10 site-local
+0200::/7 NSAP
+
+* And these were returned to the address pool but should probably be blocked anyway
+ip rule add from 3ffe::/16 to ::/0
+   disallow
+and 5F00::/8 as well
+
+::/96 ipv4_mapped
+
+* Then there's multicast...
+
+* Then we have the default rules that need to be generated on a per router basis, depending on the
+Kind of router it is.
+
+case defgw_type in
+     real) ip route ::/0 via 
+     6to4)
+     6in4)
+     rfc)
+     none)
+esac
+
+* So to capture all that, somehow, we don't have 
+Ipset support for ipv6, so we need separate rules...
+
+ip6tables -A BLOCK -i 
+
+* And we need our routing protocol to not ship them around either
+
+TBD
+
+* And then, there's also hipl
+
+    iptables -A INPUT -p 139 -j ACCEPT
+    iptables -A OUTPUT -p 139 -j ACCEPT
+    iptables -A INPUT -p udp --sport 10500 -j ACCEPT
+    iptables -A OUTPUT -p udp --dport 10500 -j ACCEPT
+    iptables -A INPUT -p 50 -j ACCEPT
+    iptables -A OUTPUT -p 50 -j ACCEPT
+    iptables -A INPUT -p 58 -j ACCEPT
+    iptables -A OUTPUT -p 58 -j ACCEPT
+    iptables -A INPUT -s 1.0.0.0/8 -d 1.0.0.0/8 -j ACCEPT
+    iptables -A OUTPUT -s -s 1.0.0.0/8 -d -s 1.0.0.0/8 -j ACCEPT
+    ip6tables -A INPUT -s 2001:0010::/28 -d 2001:0010::/28 -j ACCEPT
+    ip6tables -A OUTPUT -s 2001:0010::/28 -d 2001:0010::/28 -j ACCEPT
+
+* And THEN there is matching on acks and stuff like that
+
+Ip6tables -m ip6header --soft --header proto 7
+
+Or maybe 
+
+ip6tables --protocol tcp 
+
+* And then there is 'recent'
+
+* And allowing sctp would be good
+
+* prototypes
+** Blocking
+
+-- reject with destination unreachable actually
+-- but rate limit to below available bandwidth
+
+ip6tables -A INPUT --source 2001:db8::/32 -j DROP
+
+-- but it is better to have a chattier network 
+internally
+
+ip6tables -A INPUT --source 2001:db8::/32 -j REJECT --reject-with icmp-net-unreachable
+
+Except that icmp-net-unreachable is not available, at least in the version of ip6tables that I have...
+
+** Rate limiting
+
+And if we're going to reject this stuff, we really
+want to rate limit the results, too
+
+** Qos Marking
+ip6tables -A INPUT --protocol udp -m multiport --ports 53,123 -j CONNMARK --set-xmark 0x01
+
+ip rule add from fc::/7 to fc::/7
+ip rule add from 2002::/16 to 2002::/16
+ip rule add from ::/0 to fe80::/10
+
+** Block example addresses entirely
+ip rule add 
+
+* Special rules
+
+2001:2::/48 BMWG
+2001:10::/28 ORCHID
+2001:db8::/32
+
+2001::/32 TEREDO

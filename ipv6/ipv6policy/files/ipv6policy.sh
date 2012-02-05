@@ -1,5 +1,11 @@
-# 6in4.sh - IPv6-in-IPv4 tunnel backend
-# Copyright (c) 2010 OpenWrt.org
+# ipv6policy.sh - rfc
+# Copyright (c) 2012 OpenWrt.org
+
+# some ip rules are easy
+# ip rule from fc::/7 to fc::/7
+# ip rule from 2002::/ to 2002::/
+# Some are not
+# 
 
 find_6in4_wanif() {
 	local if=$(ip -4 r l e 0.0.0.0/0); if="${if#default* dev }"; if="${if%% *}"
