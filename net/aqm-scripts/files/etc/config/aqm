@@ -1,4 +1,14 @@
-# AQM configuration for OpenWrt
+# AQM configuration for Cerowrt
+
+config models
+	list 'model' 'sfqred'
+	list 'model' 'openwrt'
+	list 'model' 'sfq'
+	list 'model' 'qfq_drop_head'
+	list 'model' 'qfq_red'
+	list 'model' 'fourtier'
+	list 'model' 'twotier'
+	option 'model_default' 'fourtier'
 
 # INTERFACES:
 config interface ge00
@@ -6,6 +16,8 @@ config interface ge00
 	option enabled      0
 	option upload       128
 	option download     1024
+	option qmodel	    'sfqred'
+	option ingress	    1
 
 # RULES:
 config classify
