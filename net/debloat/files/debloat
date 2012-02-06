@@ -17,9 +17,9 @@
 
 params = { "MDISC", "BIGDISC", "NORMDISC", "BINS", "MAX_HWQ_BYTES", 
 	   "QMODEL", "FORCE_SPEED", "FORCE_RING", "QDEBUG", "VERBOSE",
-	   "UPLINK", "DOWNLINK", "IFACE", "SPEED", "DEPTH",
+	   "UPLINK", "DOWNLINK", "IFACE", "SPEED", "DEPTH", "DEBLOATLOG",
 	   "NAT", "NAT64", "CLAMP_MSS", "SYN_FLOOD", "MTU",
-	   "TC", "TCARG", "ETHTOOL", "INSMOD", "LSMOD", "IPTABLES",	
+	   "TC", "TCARG", "ETHTOOL", "INSMOD", "LSMOD", "IPTABLES",
 	   "IP6TABLES", "PINGOPT", "FLOWS", "TSO", "BURST", "IPV6",
 	   "NOPRIOHOSTSRC","NOPRIOHOSTDST","NOPRIOPORTSRC", 
 	   "NOPRIOPORTDST", "EST_MIN", "EST_MAX", "HEADDROP", "ECNMASK" }
@@ -43,7 +43,9 @@ env = { ["TC"] = "/sbin/tc",
 	["ECNMASK"] = 0xfc,
 	["EST_MIN"] = 1,
 	["EST_MAX"] = 4,
-	["IPV6"] = true
+	["IPV6"] = true,
+	["DEBLOATLOG"] = "/dev/null",
+	["MTU"] = 1500
      }
 
 -- various shortcuts for commonly used functions
@@ -52,6 +54,8 @@ local sf=string.format
 local exec=os.execute
 local popen=io.popen
 local open=io.open
+
+-- FIXME, override above to redirect stderr
 
 VO=0x10; VI=0x20; BE=0x30; BK=0x40
 local WQUEUES = { BE, VO, VI, BK }
@@ -288,11 +292,25 @@ end
 local function getconf()
 end
 
+-- getenv pulls in everything as strings, 
+-- so do the conversion here
+
+local function fromenv(v)
+   local s = os.getenv(v)
+   if s == nil then return nil end
+-- FIXME allow .
+   local m = string.match(s,"^%d+") 
+   if m ~= nil then return tonumber(s) end
+   if s == "true" then return true end
+   if s == "false" then return false end
+   return s
+end
+
 -- From the possible parameters in t, override o
 
 local function getenvs(t,o)
    for i,v in pairs(t) do
-      local s = os.getenv(v)
+      local s = fromenv(v)
       if s ~= nil then o[v] = s end
    end
    return o
@@ -415,11 +433,11 @@ return ('ethernet')
 end
 
 local function ethtool_popen(...)
-   return popen(sf("%s %s",env.ETHTOOL,sf(...)),"r")
+   return popen(sf("%s %s 2>> %s",env.ETHTOOL,sf(...),env.DEBLOATLOG),"r")
 end
 
 local function ethtool(...)
-   exec(sf("%s %s",env.ETHTOOL,sf(...)))
+   exec(sf("%s %s 2>> %s",env.ETHTOOL,sf(...),env.DEBLOATLOG))
 end
 
 -- lua doesn't have a split function. Grr.
@@ -549,12 +567,21 @@ end
 
 function offloads(iface)
    local t = { }
-   for i,v in ipairs(tslurpc(sf("%s -k %s",env.ETHTOOL,iface))) do
-      local h = v:split(":")
-      local j = h[1]:split(" ")
-      if j[1] ~= "Offload" then
-	 t[h[1]:trim()] = h[2]:trim()
-	 -- FIXME: should probably change 'off' and 'on' to false and true
+   local s = tslurpc(sf("%s -k %s",env.ETHTOOL,iface))
+   if s ~= nil then
+      for i,v in ipairs(s) do
+	 if v == "no offload info available" then
+	    return nil
+	 end
+      end
+	 
+      for i,v in ipairs(s) do
+	 local h = v:split(":")
+	 local j = h[1]:split(" ")
+	 if j[1] ~= "Offload" then
+	    t[h[1]:trim()] = h[2]:trim()
+	    -- FIXME: should probably change 'off' and 'on' to false and true
+	 end
       end
    end
    return t
@@ -565,10 +592,14 @@ end
 
 function test_offloads(iface) 
    local o = offloads(iface)
-   for i,v in pairs(o) do
-      print(sf("%s %s",i,v))
+   if o ~= nil then
+      for i,v in pairs(o) do
+	 print(sf("%s %s",i,v))
+      end
    end
 end
+
+-- test_offloads("eth1")
 
 -- FIXME - could use a little more thought on creating the
 -- hash
@@ -819,7 +850,7 @@ local function efq(parent, handle, speed, flows)
 end
 
 local function efqr(parent, handle, speed, flows)
-   qap("%s handle %x: est 1sec 4sec sfq limit 60 perturb 600 headdrop flows %d depth 24 divisor 16384 redflowlimit 40000 min 4500 max 18000 probability 0.20 ecn",parent,handle,flows)
+   qap("%s handle %x: est 1sec 4sec sfq limit 200 quantum 3028 perturb 600 headdrop flows %d depth 24 divisor 16384 redflowlimit 40000 min 4500 max 18000 probability 0.20 ecn",parent,handle,flows)
 end
 
 function iptables4(...)
@@ -841,6 +872,49 @@ function recreate_filter(t)
    iptables(sf("-t %s -F %s", t.table, t.chain))
    iptables(sf("-t %s -X %s", t.table,t.chain))
    iptables(sf("-t %s -N %s", t.table,t.chain))
+end
+
+
+-- Builds up a list of iptables commands to flush the qos_* chains,
+-- remove rules referring to them, then delete them
+
+-- Print rules in the mangle table, like iptables-save
+-- Find rules for the qos_* chains
+-- Exclude rules in qos_* chains (inter-qos_* refs)
+      -- Replace -N with -X and hold, with -F and print
+-- Replace -A with -D
+-- Print held lines at the end (note leading newline)
+-- Make into proper iptables calls
+-- Note:  awkward in previous call due to hold space usage
+-- Magic borrowed from openwrt generate.sh
+
+function iptables_aqm_clean() 
+   tstr="-t mangle -S | grep '^-N qos_\|-j qos_' | grep -v '^-A qos_' | sed -e '/^-N/{s/^-N/-X/;H;s/^-X/-F/}' -e 's/^-A/-D/' -e '${p;g}' | sed -n -e 's/^./iptables -t mangle &/p'"
+   iptables(tstr)
+end
+
+-- ${iptrules:+${iptrules}${N}iptables -t mangle -A qos_${cg}_ct -j CONNMARK --save-mark --mask 0xff}
+-- iptables -t mangle -A qos_${cg} -j CONNMARK --restore-mark --mask 0xff
+-- iptables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
+-- $pktrules
+-- $up$N${down:+${down}$N}
+
+FW_PREREQ = { "ipt_multiport", "ipt_CONNMARK" }
+DL_PREREQ = { "cls_u32", "em_u32", "act_connmark", "act_mirred", "sch_ingress" }
+OWRT_PREREQ = { "cls_fw", "sch_hfsc","sch_sfq", "sch_red" }
+
+function iptm(...)
+   iptables(sf("-t mangle %s", sf(...)))
+end
+
+function aqm_init(cg)
+   iptm("-N qos_%s",cg)
+   iptm("-N qos_%s_ct",cg)
+   iptm("-A qos_%s_ct -j CONNMARK --save-mark --mask 0xff",cg)
+   iptm("-A qos_%s -j CONNMARK --restore-mark --mask 0xff",cg)
+   iptm("-A qos_%s -m mark --mark 0/0xff -j qos_%s_ct",cg,cg)
+-- $pktrules
+-- $up$N${down:+${down}$N}
 end
 
 local function mcast_classify(chain,class) 
@@ -947,7 +1021,7 @@ local function wireless_efqr()
    qa("handle 1 root mq")
    efqr("1:1",VO,20,30)
    efqr("1:2",VI,50,20)
-   efqr("1:3",BE,150,100)
+   efqr("1:3",BE,150,2000)
    efqr("1:4",BK,30,10)
    wireless_filters()
 end
@@ -1055,7 +1129,7 @@ end
 
 local function ethernet_efqr(queues)
 -- FIXME, we can do sane things with speed here
-	 qa("root handle %x: est 1sec 4sec sfq limit 300 headdrop perturb 60000 flows %d divisor 16384 redflowlimit 70000 min 8000 max 60000 probability 0.20 ecn",10,150)
+	 qa("root handle %x: est 1sec 4sec sfq limit 300 headdrop perturb 60000 flows %d divisor 16384 redflowlimit 32000 min 4500 max 18000 probability 0.20 ecn harddrop",10,2000)
 end
 
 -- FIXME: just stubs for now
@@ -1068,12 +1142,102 @@ local function ethernet_red(queues)
 	 qa("handle %x root red",10)
 end
 
+-- I don't know when a good time to have a larger quantum would be good
+
+local function rate_quantum(rate)
+   if rate < 10000 then return(1500) end
+   return(1500)
+end
+
+-- Proto all makes more sense maybe
+local function fw_fap(parent, class, v, pref)
+   local mask = 0xff
+-- tc filter add dev ge00 parent 1: prio 4 protocol ip handle 4/0xff fw flowid 1:40
+
+--   fap("%s protocol ip pref %d fw 0x%x/0x%x classid %s", parent,pref, v, mask, class )
+--   fap("%s protocol ipv6 pref %d fw 0x%x/0x%x classid %s", parent,pref, v, mask, class 
+   fap("%s protocol all pref %d handle %x/0x%x fw flowid %s", parent, pref, v, mask, class )
+end
+
+-- return min, max
+
+local function uplink_to_red(uplink)
+   
+end
+
+local function wireless_sfqr(queues)
+   --      local quantum = rate_quantum(up) -- convert to number
+      local quantum = rate_quantum(4000) 
+      local mtu = env.MTU
+--      local mtu = 1500
+
+-- trying to find an operating point that does useful stuff on
+-- wireless yet lets packet agg work better
+
+      local function red(parent,handle,prio,mark)
+	 qap("1:%x handle %x: sfq limit 120 headdrop perturb 60000 flows %d divisor 16384 quantum 3000 depth 24 redflowlimit 60000 min 18000 max 50000 probability 0.20 ecn harddrop", parent, handle, 2000)
+--	 qap("1:%x handle %x: sfq limit 120 headdrop perturb 60000 flows %d divisor 16384 quantum 4500 depth 24 redflowlimit 30000 min 6000 max 18000 probability 0.20 ecn harddrop", parent, handle, 2000)
+--	 fw_fap("1:",sf("1:%x",handle),prio,mark)
+      end
+      
+      qa("root handle 1: mq ")
+      red(1,10,1,1)
+      red(2,20,2,2)
+      red(3,30,3,3)
+      red(4,40,4,4)
+
+end
+
+local function fourtier(queues)
+   if env.UPLINK ~= nil then
+      local up=env.UPLINK
+      local quantum = rate_quantum(up) -- convert to number
+--      local quantum = rate_quantum(4000) 
+      local est = sf("est %dsec %dsec", env.EST_MIN, env.EST_MAX)
+      local mtu = env.MTU
+--      local mtu = 1500
+
+      local function red(parent,handle,prio,mark)
+	 cap("1: classid 1:%x %s htb rate %skbit mtu %d quantum %d", 
+	     parent, est, up, mtu, quantum)
+	 qap("1:%x handle %x: %s sfq limit 200 headdrop perturb 60000 flows %d divisor 16384 depth 24 redflowlimit 40000 min 4500 max 9000 probability 0.20 ecn harddrop",
+	     parent, handle, est, 2000)
+	 fw_fap("1:",sf("1:%x",handle),prio,mark)
+      end
+      
+      qa("root handle 1: %s htb default 1", est)
+      red(1,10,1,1)
+      red(2,20,2,2)
+      red(3,30,3,3)
+      red(4,40,4,4)
+   end
+
+end
+
+
 -- Openwrt emulation
 -- The current openwrt shaper uses a combination of
 -- HFSC, SFQ, and RED
 
+function tcrules(cstr,rate) 
+   dir="/usr/lib/aqm"
+   if file(sf("%s/tcrules.awk")) then
+      spewc(sf("awk -v device=\"%s\" -v linespeed=\"%s\" -f %s/tcrules.awk",env.IFACE,rate,dir), cstr)
+   end
+end
+
 function oopenwrt(queues)
+   if env.UPLINK == nil or env.DOWNLINK == nil then
+      usage("UPLINK and DOWNLINK environment variables are required")
+   end
+   local ul = env.UPLINK
+   qa("root handle 1: hfsc default 3")
+   cap("1: classid 1:1 hfsc sc rate %dkbit ul rate %dkbit",ul,ul)
    usage("Not complete yet")
+   if env.DOWNLOAD then
+      qa("ingress")
+      fap("ffff: protocol ip prio 1 u32 match u32 0 0 flowid 1:1 action connmark action mirred egress redirect dev ifb%d",ifbdev,n) 
+   end
 end
 
 -- Wondershaper emulation
@@ -1103,6 +1267,7 @@ local function wshaper(queues)
 
    local UPLINK = env.UPLINK
    local DOWNLINK = env.DOWNLINK
+   local v6 = env.IPV6
 
    qa("root handle 1: htb default 20")
 
@@ -1130,8 +1295,6 @@ local function wshaper(queues)
 
    pingopt("1:0","1:10")
 
--- There is no IPv6 support in old wondershaper
-
 -- This is just so wrong in so many cases:
 
 -- To speed up downloads while an upload is going on, put ACK packets
@@ -1143,12 +1306,19 @@ fap([[1: protocol ip prio 10 u32 \
 	       match u16 0x0000 0xffc0 at 2 \
 	       match u8 0x10 0xff at 33 flowid 1:10]])
 
+-- There is no IPv6 support in old wondershaper
+-- FIXME - figure out how to find acks in ipv6
+
 -- some traffic however suffers a worse fate
 
 local function np(args,prio,match,h)
    for i,v in pairs(args:split(" ")) do
    fap("1: protocol ip prio %d u32 \
         match ip %s %s %s flowid 1:30",prio,match,v, h)
+   if v6 then
+--   fap("1: protocol ipv6 prio %d u32 \
+--        match ip %s %s %s flowid 1:30",prio,match,v, h)
+   end
    end
 end
 
@@ -1217,10 +1387,13 @@ WCALLBACKS = { ["qfq"] = wireless_qfq,
 	       ["sfq"] = wireless_sfq,
 	       ["efq"] = wireless_efq,
 	       ["sfqred"] = wireless_efqr, 
+	       ["sfqr"] = wireless_sfqr, 
 	       ["htb_sfq_red"] = unsupported_shaper,
 	       ["oopenwrt"] = unsupported_shaper, 
 	       ["owshaper"] = unsupported_shaper,
-	       ["wshaper"] = wireless_wshaper
+	       ["wshaper"] = wireless_wshaper,
+	       ["twotier"] = unsupported_shaper,
+	       ["fourtier"] = unsupported_shaper
 }
 
 ECALLBACKS = { ["qfq"] = ethernet_qfq, 
@@ -1235,6 +1408,9 @@ ECALLBACKS = { ["qfq"] = ethernet_qfq,
 	       ["oopenwrt"] = oopenwrt,
 	       ["wshaper"] = wshaper,
 	       ["owshaper"] = owshaper,
+	       ["owshaper"] = owshaper,
+	       ["twotier"] = twotier,
+	       ["fourtier"] = fourtier,
 }
 
 -- couple other models - dsl, wshaper, etc, needed
@@ -1259,7 +1435,7 @@ local function ethernet(model)
 end
 
 local function opentc()
-   return popen(sf("%s %s",env.TC,env.TCARG),'w')
+   return popen(sf("%s %s",env.TC, env.TCARG),'w')
 end
 
 -- It's annoying to get deletion as an error
@@ -1288,6 +1464,7 @@ end
 if env.QDEBUG then
    env.TC="/bin/cat"
    env.TCARG=" "
+   env.DEBLOATLOG="/tmp/debloat.log"
 end
 
 -- FIXME - do something intelligent when faced with a bridge or vlan

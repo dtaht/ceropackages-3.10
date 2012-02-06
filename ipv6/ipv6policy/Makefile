@@ -16,7 +16,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/ipv6policy
   SECTION:=ipv6
   CATEGORY:=IPv6
-  DEPENDS:=+ip +kmod-ipv6 +kmod-sit
+  DEPENDS:=+ip +kmod-ipv6 +openssl-util
   TITLE:=Policy routing for ipv6 tunnels and interfaces
   MAINTAINER:=<d@teklibre.org>
   PKGARCH:=all
