@@ -15,7 +15,7 @@ PKG_RELEASE:=3
 #If we need to go back to tracking svn versions in the future
 #This is what we would do
 PKG_NAME:=netperf-latest
-PKG_REV:=518
+PKG_REV:=534
 PKG_VERSION:=2.5.0r$(PKG_REV)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
@@ -39,6 +39,8 @@ define Package/netperf-latest
   TITLE:=Network performance measurement tool
   URL:=http://www.netperf.org/
 endef
+
+CONFIGURE_ARGS += --enable-demo --enable-omni
 
 define Package/netperf-latest/install
 	$(INSTALL_DIR) $(1)/etc/xinetd.d
