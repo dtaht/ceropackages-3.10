@@ -60,6 +60,23 @@ FDXX:XXXX:XXXX::/48
 
 It makes sense to use anycast addressing for dns.
 
+* example 
+ip -6 addr add fdd7:503b:738a::1/64 label se00 dev se00 valid_lf
+t 600  preferred_lft 300 # secondary would be good, too
+
+I'd like to use anycast, too...
+
+	RDNSS fd2d:acfb:74cc:2::1
+	{
+		AdvRDNSSLifetime 55;
+	};
+
+* Some notes elsewhere:
+
+http://zaitcev.livejournal.com/207667.html
+ 
+te that client /etc/gai.conf do not have an exception rule for fc00/7. Either Uli is a slowpoke or the pseudo-unique prefixes obviate the need for exceptions of this nature.
+
 * Rules
 
 PREFIX=
@@ -72,6 +89,33 @@ ip rule ! from fc::/7
 
 * DNS mirroring
 
+* writing radvd correctly is tough
+
+
+       interface name {
+            list of interface specific options
+            list of prefix definitions
+            list of clients (IPv6 addresses) to advertise to
+            list of route definitions
+            list of RDNSS definitions
+            list of DNSSL definitions
+       };
+       prefix prefix/length {
+            list of prefix specific options
+       };
+
+       RDNSS (Recursive DNS server) definitions are of the form:
+
+       RDNSS ip [ip] [ip] {
+            list of rdnss specific options
+       };
+
+       DNSSL (DNS Search List) definitions are of the form:
+
+       DNSSL suffix [suffix] [suffix] [...] {
+            list of dnssl specific options
+       };
+=======
 * It would be nice if we used multiple tables right
 
 static
