@@ -34,7 +34,7 @@
 #	Thanks to Reinard Max for the fix
 #	
 PATH=/usr/local/bin:/bin:/usr/bin:/usr/sbin:/sbin
-
+DEV=$1
 debug=0
 USE_NTPQ=1
 NTPSERVER=localhost
@@ -62,7 +62,7 @@ else
 		tr -d "."`
 fi
 
-secondpart=`ifconfig se00 |
+secondpart=`ifconfig $DEV |
 	grep "inet6 addr: fe80" |
 	sed  -n "s|^.*::\([^/]*\)/.*|\1|p" |
 	tr -d ":"`
