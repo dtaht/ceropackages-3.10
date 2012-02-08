@@ -17,15 +17,14 @@ define Package/ipv6policy
   SECTION:=ipv6
   CATEGORY:=IPv6
   DEPENDS:=+ip +kmod-ipv6 +openssl-util
-  TITLE:=Policy routing for ipv6 tunnels and interfaces
+  TITLE:=IPv6 configuration and policy routing for ipv6 tunnels and interfaces
   MAINTAINER:=<d@teklibre.org>
   PKGARCH:=all
 endef
 
 define Package/ipv6policy/description
-Provides support for policy routing of various types of ipv6 tunnels
-Refer to http://wiki.openwrt.org/doc/uci/network for
-configuration details.
+Provides support for enabling ipv6 addressing via various means, and
+policy routing of various types of ipv6 tunnels
 endef
 
 define Build/Compile
@@ -39,6 +38,10 @@ define Package/ipv6policy/install
 	$(INSTALL_DATA) ./files/ipv6policy.sh $(1)/lib/network/ipv6policy.sh
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_DATA) ./files/ipv6policy.hotplug $(1)/etc/hotplug.d/iface/90-ipv6policy
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_BIN ./files/ipv6policy.config $(1)/etc/config/ipv6policy
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN ./files/generate-rfc4193-addr $(1)/usr/sbin
 endef
 
 $(eval $(call BuildPackage,ipv6policy))
