@@ -151,7 +151,7 @@ define Package/quagga-ripngd/conffiles
 endef
 
 define Package/quagga-babeld/conffiles
-/etc/quagga/babel.conf
+/etc/quagga/babeld.conf
 endef
 
 ifneq ($(SDK),)
@@ -246,7 +246,7 @@ define Package/quagga-babeld/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/babeld $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/quagga
 	chmod 0750 $(1)/etc/quagga
-	$(INSTALL_CONF) ./files/babel.conf $(1)/etc/quagga/babel.conf
+	$(INSTALL_CONF) ./files/babeld.conf $(1)/etc/quagga/babeld.conf
 endef
 
 define Package/quagga-ripd/install
