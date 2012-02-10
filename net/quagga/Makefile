@@ -9,8 +9,20 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quagga
 
+PKG_VERSION:=0.99.17.6git
+PKG_RELEASE:=1
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=git://code.quagga.net/quagga-RE.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.quagga.net/download/ \
+PKG_SOURCE_VERSION:=32ee9f76324eaff17ab47e527a4a68845059b676
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+
+#PKG_SOURCE_URL:=http://devresources.linux-foundation.org/dev/iproute2/download/
+#PKG_MD5SUM:=8a3b6bc77c2ecf752284aa4a6fc630a6
+
+#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+#PKG_SOURCE_URL:=http://www.quagga.net/download/ \
                 http://www.de.quagga.net/download/ \
                 http://www.uk.quagga.net/download/
 
@@ -25,7 +37,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_quagga-ripngd \
 	CONFIG_PACKAGE_quagga-babeld \
 	CONFIG_PACKAGE_quagga-vtysh 
-	
+
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -61,11 +73,6 @@ endef
 define Package/quagga-libospf
   $(call Package/quagga/Default)
   TITLE:=OSPF library
-endef
-
-define Package/quagga-libbabeld
-  $(call Package/quagga/Default)
-  TITLE:=Babeld library
 endef
 
 define Package/quagga-bgpd
@@ -105,7 +112,7 @@ endef
 
 define Package/quagga-babeld
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libbabeld @IPV6
+  DEPENDS+=+quagga-libzebra @IPV6
   TITLE:=Babeld routing engine
 endef
 
@@ -266,11 +273,6 @@ endef
 define Package/quagga-libospf/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libospf.so.* $(1)/usr/lib/
-endef
-
-define Package/quagga-libbabeld/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libbabel.so.* $(1)/usr/lib/
 endef
 
 define Package/quagga-libzebra/install
