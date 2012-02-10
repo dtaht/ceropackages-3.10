@@ -1,28 +1,45 @@
-From: Josh Karlin <karlinjf@cs.unm.edu>
-Date: Mon, 18 Aug 2008 13:17:21 +0000 (+0100)
-Subject: [bgp] Add support for Pretty-Good BGP
-X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705cad607f4b86ff143f7af92d538dc946
+From 6ad73616e0177c7609fe8ee04ef8f2ab936726af Mon Sep 17 00:00:00 2001
+From: Dave Taht <dave.taht@bufferbloat.net>
+Date: Fri, 10 Feb 2012 15:49:12 +0000
+Subject: [PATCH 4/4] Pretty Good BGP support
 
-[bgp] Add support for Pretty-Good BGP
+Quagga based Pretty Good BGP:
 
-2008-7-7 Josh Karlin <karlinjf@cs.unm.edu>
+Summary
+-------
+Pretty Good BGP (PGBGP) is a soft security enhancement to BGP.
+It uses independently collected (therefore completely distributed)
+historical routing information to determine network topology and
+prefix ownership.  Abberations to the historical database are considered
+anomalous and avoided when possible.
 
-	* bgpd/bgp_pgbgp.c: Added file
-	* bgpd/bgp_pgbgp.h: Added file
-	* bgpd/Makefile.am: Added bgp_pgbgp.h and bgp_pgbgp.c
-	* bgpd/bgp_aspath.h: Externed the hash of as paths (ashash)
-	* bgpd/bgp_route.c: . Added PGBGP depref check to decision process.
-	                    . Informs PGBGP of new updates and selected routes
-	                    . Added anomaly status for show ip bgp
-	                    . Added PGBGP commands
-	* bgpd/bgp_route.h: Added suspicious route flags
-	* bgpd/bgp_table.h: Added PGBGP history pointer to struct bgp_node
-	* bgpd/bgpd.h:      Defined BGP_CONFIG_PGBGP
-	* lib/hash.c:	    Added "hash_iterate_until" to be able to break out
-	* lib/hash.h:       Definition for "hash_iterate_until"
-	* lib/memtypes.c:   Added PGBGP memory types
+What PGBGP can protect against: prefix hijacks, sub-prefix hijacks, and
+spoofed edges.
+
+Further reading is available at http://cs.unm.edu/~karlinjf/pgbgp/
+
+Route updates are forwarded to PGBGP, which determines if the route
+is anomalous.  Anomalous routes are flagged as suspicious and
+avoided where feasible for 24 hours.  If the anomalous
+characteristic is still in the RIB after 24 hours, consider it valid
+and enter it into the normal database.
 ---
+ bgpd/Makefile.am |    4 +-
+ bgpd/bgp_pgbgp.c | 2445 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bgpd/bgp_pgbgp.h |  286 +++++++
+ bgpd/bgp_route.c |  147 ++++-
+ bgpd/bgp_route.h |    7 +-
+ bgpd/bgp_table.h |    2 +
+ bgpd/bgpd.h      |    1 +
+ lib/hash.c       |   29 +
+ lib/hash.h       |    3 +-
+ lib/memtypes.c   |    9 +
+ 10 files changed, 2922 insertions(+), 11 deletions(-)
+ create mode 100644 bgpd/bgp_pgbgp.c
+ create mode 100644 bgpd/bgp_pgbgp.h
 
+diff --git a/bgpd/Makefile.am b/bgpd/Makefile.am
+index 1b17d38..c20e26d 100644
 --- a/bgpd/Makefile.am
 +++ b/bgpd/Makefile.am
 @@ -15,14 +15,14 @@ libbgp_a_SOURCES = \
@@ -42,9 +59,12 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  
  bgpd_SOURCES = bgp_main.c
  bgpd_LDADD = libbgp.a ../lib/libzebra.la @LIBCAP@ @LIBM@
+diff --git a/bgpd/bgp_pgbgp.c b/bgpd/bgp_pgbgp.c
+new file mode 100644
+index 0000000..73ca4bd
 --- /dev/null
 +++ b/bgpd/bgp_pgbgp.c
-@@ -0,0 +1,2401 @@
+@@ -0,0 +1,2445 @@
 +/* 
 +   BGP Pretty Good BGP
 +   Copyright (C) 2008 University of New Mexico (Josh Karlin)
@@ -274,7 +294,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +edge_neighbor_iterator (struct hash_backet *backet, struct nsearch *pns)
 +{
 +  struct bgp_pgbgp_edge *hedge = backet->data;
-+  if ((hedge->e.a == pns->asn || hedge->e.b == pns->asn)
++  if ((!pns->asn || hedge->e.a == pns->asn || hedge->e.b == pns->asn)
 +      && hedge->e.a != hedge->e.b)
 +    {
 +      struct vty *vty = pns->pvty;
@@ -301,13 +321,39 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +  return CMD_SUCCESS;
 +}
 +
++static void
++bgp_pgbgp_stats_origin_one (struct vty *vty, struct bgp_node *rn,
++                            time_t t_now)
++{
++  char str[INET6_BUFSIZ];
++  
++  if (!rn->hist)
++    return;
++  
++  prefix2str (&rn->p, str, sizeof(str));
++  vty_out (vty, "%s%s", str, VTY_NEWLINE);
++  
++  for (struct bgp_pgbgp_origin * cur = rn->hist->o; cur != NULL;
++       cur = cur->next)
++    {
++      if (cur->deprefUntil > t_now)
++        vty_out (vty, "Untrusted Origin AS: %d%s", cur->originAS,
++                 VTY_NEWLINE);
++      else
++        vty_out (vty, "Trusted Origin AS: %d%s", cur->originAS,
++                 VTY_NEWLINE);
++    } 
++}
++
 +static int
 +bgp_pgbgp_stats_origins (struct vty *vty, afi_t afi, safi_t safi,
 +                         const char *prefix)
 +{
 +  struct bgp *bgp;
 +  struct bgp_table *table;
++  struct bgp_node *rn;
 +  time_t t_now = time (NULL);
++  
 +  bgp = bgp_get_default ();
 +  if (bgp == NULL)
 +    return CMD_WARNING;
@@ -316,28 +362,22 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +  table = bgp->rib[afi][safi];
 +  if (table == NULL)
 +    return CMD_WARNING;
-+
-+  struct prefix p;
-+  str2prefix (prefix, &p);
-+  struct bgp_node *rn = bgp_node_match (table, &p);
-+  vty_out (vty, "%s%s", prefix, VTY_NEWLINE);
-+  if (rn)
++  
++  if (prefix)
 +    {
++      struct prefix p;
++      str2prefix (prefix, &p);
++      rn = bgp_node_match (table, &p);
 +      if (rn->hist)
-+        {
-+          for (struct bgp_pgbgp_origin * cur = rn->hist->o; cur != NULL;
-+               cur = cur->next)
-+            {
-+              if (cur->deprefUntil > t_now)
-+                vty_out (vty, "Untrusted Origin AS: %d%s", cur->originAS,
-+                         VTY_NEWLINE);
-+              else
-+                vty_out (vty, "Trusted Origin AS: %d%s", cur->originAS,
-+                         VTY_NEWLINE);
-+            }
-+        }
++        bgp_pgbgp_stats_origin_one (vty, rn, t_now);
 +      bgp_unlock_node (rn);
++      return CMD_SUCCESS;
 +    }
++  
++  for (rn = bgp_table_top (table); rn; rn = bgp_route_next (rn))
++    if (rn->hist)
++      bgp_pgbgp_stats_origin_one (vty, rn, t_now);
++
 +  return CMD_SUCCESS;
 +}
 +
@@ -424,7 +464,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +DEFUN (show_ip_bgp_pgbgp,
 +       show_ip_bgp_pgbgp_cmd,
 +       "show ip bgp pgbgp",
-+       SHOW_STR IP_STR BGP_STR "Display PGBGP statistics\n")
++       SHOW_STR IP_STR BGP_STR "Pretty-Good BGP statistics\n")
 +{
 +  return bgp_pgbgp_stats (vty, AFI_IP, SAFI_UNICAST);
 +}
@@ -432,15 +472,23 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +DEFUN (show_ip_bgp_pgbgp_neighbors,
 +       show_ip_bgp_pgbgp_neighbors_cmd,
 +       "show ip bgp pgbgp neighbors WORD",
++       SHOW_STR IP_STR BGP_STR
++       "Pretty-Good BGP statistics\n"
++       "PG-BGP neighbor information\n"
++       "AS to show neighbors of\n")
++{
++  return bgp_pgbgp_stats_neighbors (vty, AFI_IP, SAFI_UNICAST,
++                                    argc == 1 ? atoi (argv[0]) : 0);
++}
++
++ALIAS (show_ip_bgp_pgbgp_neighbors,
++       show_ip_bgp_pgbgp_neighbors_all_cmd,
++       "show ip bgp pgbgp neighbors",
 +       SHOW_STR
 +       IP_STR
 +       BGP_STR
-+       "BGP pgbgp\n"
-+       "BGP pgbgp neighbors\n" "ASN whos neighbors should be displayed\n")
-+{
-+  return bgp_pgbgp_stats_neighbors (vty, AFI_IP, SAFI_UNICAST,
-+                                    atoi (argv[0]));
-+}
++       "Pretty-Good BGP statistics\n"
++       "PG-BGP neighbors information\n")
 +
 +DEFUN (show_ip_bgp_pgbgp_origins,
 +       show_ip_bgp_pgbgp_origins_cmd,
@@ -448,13 +496,22 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +       SHOW_STR
 +       IP_STR
 +       BGP_STR
-+       "BGP pgbgp\n"
-+       "BGP pgbgp neighbors\n" "Prefix to look up origin ASes of\n")
++       "Pretty-Good BGP statistics\n"
++       "PG-BGP prefix origin information\n"
++       "Prefix to look up origin ASes of\n")
 +{
-+  return bgp_pgbgp_stats_origins (vty, AFI_IP, SAFI_UNICAST, argv[0]);
++  return bgp_pgbgp_stats_origins (vty, AFI_IP, SAFI_UNICAST,
++                                  argc == 1 ? argv[0] : NULL);
 +}
 +
-+
++ALIAS (show_ip_bgp_pgbgp_origins,
++       show_ip_bgp_pgbgp_origins_all_cmd,
++       "show ip bgp pgbgp origins",
++       SHOW_STR
++       IP_STR
++       BGP_STR
++       "Pretty-Good BGP statistics\n"
++       "PG-BGP prefixes origin information")
 +
 +
 +/*! --------------- VTY (others exist in bgp_route.c)  ------------------ !*/
@@ -796,12 +853,19 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +  pgbgp->lastgc = time (NULL);
 +  pgbgp->lastStore = time (NULL);
 +  pgbgp->startTime = time (NULL);
++  install_element (RESTRICTED_NODE, &show_ip_bgp_pgbgp_cmd);
++  install_element (RESTRICTED_NODE, &show_ip_bgp_pgbgp_neighbors_cmd);
++  install_element (RESTRICTED_NODE, &show_ip_bgp_pgbgp_origins_cmd);
 +  install_element (VIEW_NODE, &show_ip_bgp_pgbgp_cmd);
-+  install_element (ENABLE_NODE, &show_ip_bgp_pgbgp_cmd);
 +  install_element (VIEW_NODE, &show_ip_bgp_pgbgp_neighbors_cmd);
-+  install_element (ENABLE_NODE, &show_ip_bgp_pgbgp_neighbors_cmd);
 +  install_element (VIEW_NODE, &show_ip_bgp_pgbgp_origins_cmd);
++  install_element (VIEW_NODE, &show_ip_bgp_pgbgp_neighbors_all_cmd);
++  install_element (VIEW_NODE, &show_ip_bgp_pgbgp_origins_all_cmd);
++  install_element (ENABLE_NODE, &show_ip_bgp_pgbgp_cmd);
++  install_element (ENABLE_NODE, &show_ip_bgp_pgbgp_neighbors_cmd);
 +  install_element (ENABLE_NODE, &show_ip_bgp_pgbgp_origins_cmd);
++  install_element (ENABLE_NODE, &show_ip_bgp_pgbgp_neighbors_all_cmd);
++  install_element (ENABLE_NODE, &show_ip_bgp_pgbgp_origins_all_cmd);
 +  pgbgp->edgeT = hash_create_size (131072, edge_key_make, edge_cmp);
 +  bgp_pgbgp_restore ();
 +  return 0;
@@ -2446,6 +2510,9 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +
 +  return 0;
 +}
+diff --git a/bgpd/bgp_pgbgp.h b/bgpd/bgp_pgbgp.h
+new file mode 100644
+index 0000000..45da615
 --- /dev/null
 +++ b/bgpd/bgp_pgbgp.h
 @@ -0,0 +1,286 @@
@@ -2735,9 +2802,11 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
 +                       struct bgp_info *new_best);
 +
 +#endif
+diff --git a/bgpd/bgp_route.c b/bgpd/bgp_route.c
+index ee5ab7d..740f4be 100644
 --- a/bgpd/bgp_route.c
 +++ b/bgpd/bgp_route.c
-@@ -51,6 +51,7 @@ Software Foundation, Inc., 59 Temple Pla
+@@ -51,6 +51,7 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  #include "bgpd/bgp_mplsvpn.h"
  #include "bgpd/bgp_nexthop.h"
  #include "bgpd/bgp_damp.h"
@@ -2745,14 +2814,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  #include "bgpd/bgp_advertise.h"
  #include "bgpd/bgp_zebra.h"
  #include "bgpd/bgp_vty.h"
-@@ -332,12 +333,19 @@ bgp_info_cmp (struct bgp *bgp, struct bg
-   int confed_as_route = 0;
-   int ret;
- 
-+
-   /* 0. Null check. */
-   if (new == NULL)
-     return 0;
+@@ -338,6 +339,12 @@ bgp_info_cmp (struct bgp *bgp, struct bgp_info *new, struct bgp_info *exist)
    if (exist == NULL)
      return 1;
  
@@ -2765,7 +2827,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
    /* 1. Weight check. */
    if (new->attr->extra)
      new_weight = new->attr->extra->weight;
-@@ -1508,6 +1516,10 @@ bgp_process_main (struct work_queue *wq,
+@@ -1506,6 +1513,10 @@ bgp_process_main (struct work_queue *wq, void *data)
        bgp_info_unset_flag (rn, new_select, BGP_INFO_ATTR_CHANGED);
      }
  
@@ -2776,7 +2838,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  
    /* Check each BGP peer. */
    for (ALL_LIST_ELEMENTS (bgp->peer, node, nnode, peer))
-@@ -1831,6 +1843,11 @@ bgp_update_rsclient (struct peer *rsclie
+@@ -1829,6 +1840,11 @@ bgp_update_rsclient (struct peer *rsclient, afi_t afi, safi_t safi,
    /* If the update is implicit withdraw. */
    if (ri)
      {
@@ -2788,7 +2850,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
        ri->uptime = bgp_clock ();
  
        /* Same attribute comes in. */
-@@ -2262,6 +2279,11 @@ bgp_update_main (struct peer *peer, stru
+@@ -2260,6 +2276,11 @@ bgp_update_main (struct peer *peer, struct prefix *p, struct attr *attr,
    /* Increment prefix */
    bgp_aggregate_increment (bgp, p, new, afi, safi);
    
@@ -2800,36 +2862,60 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
    /* Register new BGP information. */
    bgp_info_add (rn, new);
    
-@@ -5474,6 +5496,20 @@ enum bgp_display_type
- static void
- route_vty_short_status_out (struct vty *vty, struct bgp_info *binfo)
- {
-+  if (ANOMALOUS(binfo->flags))
+@@ -5490,6 +5511,17 @@ route_vty_short_status_out (struct vty *vty, struct bgp_info *binfo)
+   /* Selected */
+   if (CHECK_FLAG (binfo->flags, BGP_INFO_HISTORY))
+     vty_out (vty, "h");
++  else if (ANOMALOUS(binfo->flags))
 +    {
-+      vty_out(vty, "a[");
-+      if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_P))
-+	vty_out(vty, "i");
-+      if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_O))
-+	vty_out(vty, "p");
++      if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_O)) 
++        vty_out(vty, "p");
++      else if (CHECK_FLAG(binfo->flags, BGP_INFO_IGNORED_P))
++        vty_out(vty, "P");
++      else if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_P))
++        vty_out(vty, "a");
 +      if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_E))
-+	vty_out(vty, "e");
-+      if (CHECK_FLAG(binfo->flags, BGP_INFO_IGNORED_P))
-+	vty_out(vty, "s");
-+      vty_out(vty, "] ");
++        vty_out(vty, "a");
 +    }
+   else if (CHECK_FLAG (binfo->flags, BGP_INFO_DAMPED))
+     vty_out (vty, "d");
+   else if (CHECK_FLAG (binfo->flags, BGP_INFO_SELECTED))
+@@ -5963,7 +5995,22 @@ route_vty_out_detail (struct vty *vty, struct bgp *bgp, struct prefix *p,
+       if (binfo->extra && binfo->extra->damp_info)
+ 	bgp_damp_info_vty (vty, binfo);
+ 
+-      /* Line 7 display Uptime */
++      /* 8: PGBGP status */
++      if (ANOMALOUS(binfo->flags))
++        {
++	  vty_out (vty, "      Anomalous:");
++	  if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_P))
++	    vty_out (vty, " divergent sub-prefixes,");
++	  if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_O))
++	    vty_out (vty, " origin AS (prefix hijack?),");
++	  if (CHECK_FLAG(binfo->flags, BGP_INFO_SUSPICIOUS_E))
++	    vty_out (vty, " new edge in path,");
++	  if (CHECK_FLAG(binfo->flags, BGP_INFO_IGNORED_P))
++	    vty_out (vty, " origin AS (sub-prefix hijack?),");
++	  vty_out (vty, "%s", VTY_NEWLINE);
++	} 
 +
-  /* Route status display. */
-   if (CHECK_FLAG (binfo->flags, BGP_INFO_REMOVED))
-     vty_out (vty, "R");
-@@ -5974,6 +6010,7 @@ route_vty_out_detail (struct vty *vty, s
++      /* Line 9 display Uptime */	
+ #ifdef HAVE_CLOCK_MONOTONIC
+       tbuf = time(NULL) - (bgp_clock() - binfo->uptime);
+       vty_out (vty, "      Last update: %s", ctime(&tbuf));
+@@ -5974,7 +6021,9 @@ route_vty_out_detail (struct vty *vty, struct bgp *bgp, struct prefix *p,
+   vty_out (vty, "%s", VTY_NEWLINE);
  }  
  
- #define BGP_SHOW_SCODE_HEADER "Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,%s              r RIB-failure, S Stale, R Removed%s"
-+#define BGP_SHOW_PCODE_HEADER "Status code: a (anomalous) of:  [p] prefix hijack, [s] sub-prefix hijack,%s              [i] informant of sub-prefix [e] new edge%s"
+-#define BGP_SHOW_SCODE_HEADER "Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,%s              r RIB-failure, S Stale, R Removed%s"
++#define BGP_SHOW_SCODE_HEADER "Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,%s" \
++  "              r RIB-failure, S Stale, R Removed, %s" \
++  "              p prefix hijack, P sub-prefix hijack, a other anomaly%s"
  #define BGP_SHOW_OCODE_HEADER "Origin codes: i - IGP, e - EGP, ? - incomplete%s%s"
  #define BGP_SHOW_HEADER "   Network          Next Hop            Metric LocPrf Weight Path%s"
  #define BGP_SHOW_DAMP_HEADER "   Network          From             Reuse    Path%s"
-@@ -6005,7 +6042,8 @@ enum bgp_show_type
+@@ -6006,7 +6055,8 @@ enum bgp_show_type
    bgp_show_type_flap_route_map,
    bgp_show_type_flap_neighbor,
    bgp_show_type_dampend_paths,
@@ -2839,7 +2925,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  };
  
  static int
-@@ -6172,11 +6210,17 @@ bgp_show_table (struct vty *vty, struct
+@@ -6173,11 +6223,16 @@ bgp_show_table (struct vty *vty, struct bgp_table *table, struct in_addr *router
  		    || CHECK_FLAG (ri->flags, BGP_INFO_HISTORY))
  		  continue;
  	      }
@@ -2852,12 +2938,12 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  	    if (header)
  	      {
  		vty_out (vty, "BGP table version is 0, local router ID is %s%s", inet_ntoa (*router_id), VTY_NEWLINE);
- 		vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
-+		vty_out (vty, BGP_SHOW_PCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
+-		vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
++		vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE, VTY_NEWLINE);
  		vty_out (vty, BGP_SHOW_OCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
  		if (type == bgp_show_type_dampend_paths
  		    || type == bgp_show_type_damp_neighbor)
-@@ -6254,6 +6298,7 @@ bgp_show (struct vty *vty, struct bgp *b
+@@ -6255,6 +6310,7 @@ bgp_show (struct vty *vty, struct bgp *bgp, afi_t afi, safi_t safi,
    return bgp_show_table (vty, table, &bgp->router_id, type, output_arg);
  }
  
@@ -2865,7 +2951,34 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  /* Header of detailed BGP route information */
  static void
  route_vty_out_detail_header (struct vty *vty, struct bgp *bgp,
-@@ -11823,6 +11868,64 @@ DEFUN (bgp_damp_set,
+@@ -9432,7 +9488,7 @@ show_adj_route (struct vty *vty, struct peer *peer, afi_t afi, safi_t safi,
+ 			  PEER_STATUS_DEFAULT_ORIGINATE))
+     {
+       vty_out (vty, "BGP table version is 0, local router ID is %s%s", inet_ntoa (bgp->router_id), VTY_NEWLINE);
+-      vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
++      vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE, VTY_NEWLINE);
+       vty_out (vty, BGP_SHOW_OCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
+ 
+       vty_out (vty, "Originating default network 0.0.0.0%s%s",
+@@ -9449,7 +9505,7 @@ show_adj_route (struct vty *vty, struct peer *peer, afi_t afi, safi_t safi,
+ 	      if (header1)
+ 		{
+ 		  vty_out (vty, "BGP table version is 0, local router ID is %s%s", inet_ntoa (bgp->router_id), VTY_NEWLINE);
+-		  vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
++		  vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE, VTY_NEWLINE);
+ 		  vty_out (vty, BGP_SHOW_OCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
+ 		  header1 = 0;
+ 		}
+@@ -9473,7 +9529,7 @@ show_adj_route (struct vty *vty, struct peer *peer, afi_t afi, safi_t safi,
+ 	      if (header1)
+ 		{
+ 		  vty_out (vty, "BGP table version is 0, local router ID is %s%s", inet_ntoa (bgp->router_id), VTY_NEWLINE);
+-		  vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
++		  vty_out (vty, BGP_SHOW_SCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE, VTY_NEWLINE);
+ 		  vty_out (vty, BGP_SHOW_OCODE_HEADER, VTY_NEWLINE, VTY_NEWLINE);
+ 		  header1 = 0;
+ 		}
+@@ -11048,6 +11104,64 @@ DEFUN (bgp_damp_set,
  			  half, reuse, suppress, max);
  }
  
@@ -2930,7 +3043,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  ALIAS (bgp_damp_set,
         bgp_damp_set2_cmd,
         "bgp dampening <1-45>",
-@@ -11872,6 +11975,19 @@ DEFUN (show_ip_bgp_dampened_paths,
+@@ -11097,6 +11211,19 @@ DEFUN (show_ip_bgp_dampened_paths,
                     NULL);
  }
  
@@ -2950,7 +3063,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  DEFUN (show_ip_bgp_flap_statistics,
         show_ip_bgp_flap_statistics_cmd,
         "show ip bgp flap-statistics",
-@@ -12398,6 +12514,7 @@ bgp_route_init (void)
+@@ -11606,6 +11733,7 @@ bgp_route_init (void)
    install_element (VIEW_NODE, &show_ip_bgp_neighbor_received_prefix_filter_cmd);
    install_element (VIEW_NODE, &show_ip_bgp_ipv4_neighbor_received_prefix_filter_cmd);
    install_element (VIEW_NODE, &show_ip_bgp_dampened_paths_cmd);
@@ -2958,7 +3071,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
    install_element (VIEW_NODE, &show_ip_bgp_flap_statistics_cmd);
    install_element (VIEW_NODE, &show_ip_bgp_flap_address_cmd);
    install_element (VIEW_NODE, &show_ip_bgp_flap_prefix_cmd);
-@@ -12531,6 +12648,7 @@ bgp_route_init (void)
+@@ -11713,6 +11841,7 @@ bgp_route_init (void)
    install_element (ENABLE_NODE, &show_ip_bgp_neighbor_received_prefix_filter_cmd);
    install_element (ENABLE_NODE, &show_ip_bgp_ipv4_neighbor_received_prefix_filter_cmd);
    install_element (ENABLE_NODE, &show_ip_bgp_dampened_paths_cmd);
@@ -2966,7 +3079,7 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
    install_element (ENABLE_NODE, &show_ip_bgp_flap_statistics_cmd);
    install_element (ENABLE_NODE, &show_ip_bgp_flap_address_cmd);
    install_element (ENABLE_NODE, &show_ip_bgp_flap_prefix_cmd);
-@@ -12918,6 +13036,10 @@ bgp_route_init (void)
+@@ -12073,6 +12202,10 @@ bgp_route_init (void)
    install_element (BGP_IPV4_NODE, &bgp_damp_unset_cmd);
    install_element (BGP_IPV4_NODE, &bgp_damp_unset2_cmd);
    
@@ -2977,6 +3090,8 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
    /* Deprecated AS-Pathlimit commands */
    install_element (BGP_NODE, &bgp_network_ttl_cmd);
    install_element (BGP_NODE, &bgp_network_mask_ttl_cmd);
+diff --git a/bgpd/bgp_route.h b/bgpd/bgp_route.h
+index 7adc573..c1e1c49 100644
 --- a/bgpd/bgp_route.h
 +++ b/bgpd/bgp_route.h
 @@ -1,3 +1,4 @@
@@ -3004,6 +3119,8 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  /* Macro to check BGP information is alive or not.  Sadly,
   * not equivalent to just checking previous, because of the
   * sense of the additional VALID flag.
+diff --git a/bgpd/bgp_table.h b/bgpd/bgp_table.h
+index 53df0bc..6391d31 100644
 --- a/bgpd/bgp_table.h
 +++ b/bgpd/bgp_table.h
 @@ -65,6 +65,8 @@ struct bgp_node
@@ -3015,6 +3132,8 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
    u_char flags;
  #define BGP_NODE_PROCESS_SCHEDULED	(1 << 0)
  };
+diff --git a/bgpd/bgpd.h b/bgpd/bgpd.h
+index 07f8b2e..3be4f1e 100644
 --- a/bgpd/bgpd.h
 +++ b/bgpd/bgpd.h
 @@ -123,6 +123,7 @@ struct bgp
@@ -3025,9 +3144,11 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  
    /* Static route configuration.  */
    struct bgp_table *route[AFI_MAX][SAFI_MAX];
+diff --git a/lib/hash.c b/lib/hash.c
+index 672327e..1d587ca 100644
 --- a/lib/hash.c
 +++ b/lib/hash.c
-@@ -166,6 +166,35 @@ hash_iterate (struct hash *hash,
+@@ -155,6 +155,35 @@ hash_iterate (struct hash *hash,
        }
  }
  
@@ -3063,9 +3184,11 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  /* Clean up hash.  */
  void
  hash_clean (struct hash *hash, void (*free_func) (void *))
+diff --git a/lib/hash.h b/lib/hash.h
+index f4b1c23..5089024 100644
 --- a/lib/hash.h
 +++ b/lib/hash.h
-@@ -66,7 +66,8 @@ extern void *hash_release (struct hash *
+@@ -66,7 +66,8 @@ extern void *hash_release (struct hash *, void *);
  
  extern void hash_iterate (struct hash *, 
  		   void (*) (struct hash_backet *, void *), void *);
@@ -3075,9 +3198,11 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
  extern void hash_clean (struct hash *, void (*) (void *));
  extern void hash_free (struct hash *);
  
+diff --git a/lib/memtypes.c b/lib/memtypes.c
+index 2c6b4da..5aa5773 100644
 --- a/lib/memtypes.c
 +++ b/lib/memtypes.c
-@@ -147,6 +147,15 @@ struct memory_list memory_list_bgp[] =
+@@ -146,6 +146,15 @@ struct memory_list memory_list_bgp[] =
    { MTYPE_PEER_UPDATE_SOURCE,	"BGP peer update interface"	},
    { MTYPE_BGP_DAMP_INFO,	"Dampening info"		},
    { MTYPE_BGP_DAMP_ARRAY,	"BGP Dampening array"		},
@@ -3093,3 +3218,6 @@ X-Git-Url: http://git.ozo.com/?p=quagga-pgbg.git;a=commitdiff_plain;h=c2ee55705c
    { MTYPE_BGP_REGEXP,		"BGP regexp"			},
    { MTYPE_BGP_AGGREGATE,	"BGP aggregate"			},
    { -1, NULL }
+-- 
+1.7.5.4
+
