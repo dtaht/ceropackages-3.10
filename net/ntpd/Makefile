@@ -43,6 +43,7 @@ define Package/ntpd
 $(call Package/ntpd/Default)
   TITLE+= server
   VARIANT:=nossl
+  DEPENDS+= +libpthread
 endef
 
 define Package/ntpd/description
@@ -55,7 +56,7 @@ define Package/ntpd-ssl
 $(call Package/ntpd/Default)
   TITLE+= server (with OpenSSL support)
   VARIANT:=ssl
-  DEPENDS+= +libopenssl
+  DEPENDS+= +libopenssl +libpthread
 endef
 
 define Package/ntpd-ssl/description
@@ -123,7 +124,9 @@ TARGET_CPPFLAGS += \
 CONFIGURE_VARS += \
 	ac_cv_header_md5_h=no \
 	ac_cv_lib_rt_sched_setscheduler=no \
-	ac_cv_header_dns_sd_h=no
+	ac_cv_header_dns_sd_h=no \
+	ol_cv_pthread_select_yield=yes \
+	ac_cv_pthread_select_yield=yes
 
 CONFIGURE_ARGS += \
 	--disable-all-clocks \
@@ -135,7 +138,13 @@ CONFIGURE_ARGS += \
 	--enable-SHM \
 	--enable-linuxcaps \
 	--enable-autokey \
-	--with-dnsval
+	--with-yielding_select=yes \
+	--with-dnsval \
+	--enable-ignore-dns-errors
+
+# I have no idea why we'd need threads
+#	--disable-thread-support
+
 
 ifeq ($(BUILD_VARIANT),ssl)
   CONFIGURE_ARGS += \
