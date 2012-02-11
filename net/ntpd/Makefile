@@ -133,7 +133,9 @@ CONFIGURE_ARGS += \
 	--enable-NMEA \
 	--enable-LOCAL-CLOCK \
 	--enable-SHM \
-	--enable-linuxcaps
+	--enable-linuxcaps \
+	--enable-autokey \
+	--with-dnsval
 
 ifeq ($(BUILD_VARIANT),ssl)
   CONFIGURE_ARGS += \
