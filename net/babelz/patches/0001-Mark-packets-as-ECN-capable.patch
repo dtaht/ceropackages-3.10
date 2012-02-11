@@ -1,0 +1,28 @@
+From 636fe6457857910c7c78441f49a08112430d6a9c Mon Sep 17 00:00:00 2001
+From: Dave Taht <dave.taht@bufferbloat.net>
+Date: Sat, 11 Feb 2012 13:46:31 +0000
+Subject: [PATCH] Mark packets as ECN capable
+
+I am sometimes using very agressive settings on red or red-like
+algorithms. Marking packets as ECN capable decreases the risk of
+a drop due to probalistic dropping.
+---
+ net.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/net.c b/net.c
+index 9e53eb2..6077a1a 100644
+--- a/net.c
++++ b/net.c
+@@ -44,7 +44,7 @@ babel_socket(int port)
+     int s, rc;
+     int saved_errno;
+     int one = 1, zero = 0;
+-    const int ds = 0xc0;        /* CS6 - Network Control */
++    const int ds = 0xc2;        /* CS6 - Network Control */
+ 
+     s = socket(PF_INET6, SOCK_DGRAM, 0);
+     if(s < 0)
+-- 
+1.7.5.4
+
