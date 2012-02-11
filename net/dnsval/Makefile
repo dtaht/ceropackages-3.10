@@ -78,6 +78,7 @@ define Build/InstallDev
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/lib/lib{sres,val{_shim,-threads}}.{a,la,so*} \
 		$(1)/usr/lib/
+
 endef
 
 define Package/dnsval/install
