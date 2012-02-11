@@ -15,7 +15,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://code.quagga.net/quagga-RE.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_VERSION:=32ee9f76324eaff17ab47e527a4a68845059b676
+PKG_SOURCE_VERSION:=4d293d977fe48b2c4e59a06b2fc1a27c5816bbce
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 #PKG_SOURCE_URL:=http://devresources.linux-foundation.org/dev/iproute2/download/
