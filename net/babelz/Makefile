@@ -15,7 +15,7 @@ PKG_RELEASE:=7
 #PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
 #PKG_MD5SUM:=e1a801aa48fe26401c29d2152c1a1887
 
-PKG_REV:=4933f230a5c50351978127c64389a29e9af2deef
+PKG_REV:=8302ad91524e361d04ac6cb7ffb62b88bfaabc1b
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://git.wifi.pps.jussieu.fr/babeld
