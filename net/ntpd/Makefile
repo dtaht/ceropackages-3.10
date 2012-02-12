@@ -130,7 +130,8 @@ CONFIGURE_VARS += \
 	ac_cv_header_dns_sd_h=no \
 	ol_cv_pthread_select_yield=yes \
 	ac_cv_pthread_select_yield=yes \
-	ac_cv_lib_val_threads_val_getaddrinfo=yes
+	ac_cv_lib_val_threads_val_getaddrinfo=yes \
+	ac_cv_func_adjtimex=yes
 
 CONFIGURE_ARGS += \
 	--disable-all-clocks \
