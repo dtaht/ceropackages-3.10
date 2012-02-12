@@ -1,0 +1,31 @@
+diff --git a/ntpd/cmd_args.c b/ntpd/cmd_args.c
+index a1e5e39..3a40a67 100644
+--- a/ntpd/cmd_args.c
++++ b/ntpd/cmd_args.c
+@@ -82,7 +82,7 @@ getCmdOpts(
+ #ifdef HAVE_DNSVAL
+ 	if (HAVE_OPT( PANICGATE )) {
+         /* Disable DNSSEC Validation */
+-		if (VAL_NO_ERROR != val_context_setqflags(NULL, VAL_CTX_FLAG_SET, VAL_QUERY_IGNORE_SKEW)) {
++		if (VAL_NO_ERROR != val_context_setqflags(NULL, VAL_CTX_FLAG_SET, VAL_QUERY_DONT_VALIDATE)) {
+ 		    msyslog(LOG_ERR, "Failed to create DNSSEC validator context.");
+ 		    exit(1);
+         }
+diff --git a/ntpd/ntp_loopfilter.c b/ntpd/ntp_loopfilter.c
+index 00b243f..c466946 100644
+--- a/ntpd/ntp_loopfilter.c
++++ b/ntpd/ntp_loopfilter.c
+@@ -453,10 +453,10 @@ local_clock(
+ 		default:
+ #ifdef HAVE_DNSVAL
+ 		    if (allow_panic) {
+-                /* Enable DNSSEC Validation */
+-                if (VAL_NO_ERROR != val_context_setqflags(NULL, VAL_CTX_FLAG_RESET, VAL_QUERY_IGNORE_SKEW)) {
++                /* Disable DNSSEC Validation */
++                if (VAL_NO_ERROR != val_context_setqflags(NULL, VAL_CTX_FLAG_RESET, VAL_QUERY_DONT_VALIDATE)) {
+                     /* something didn't work right, log and keep trying */
+-		            msyslog(LOG_NOTICE, "DNSSEC clock-skew tolerance could not be disabled. Panic correction still in effect.");
++		            msyslog(LOG_NOTICE, "DNSSEC clock-skew tolerance could not be enable. Panic correction still in effect.");
+                 } else {
+ 		            msyslog(LOG_NOTICE, "DNSSEC clock-skew tolerance disabled.");
+ 			        allow_panic = FALSE;
