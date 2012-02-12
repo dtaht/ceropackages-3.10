@@ -184,7 +184,7 @@ CONFIGURE_ARGS+= \
 	$(call autoconf_bool,CONFIG_PACKAGE_quagga-ripd,ripd) \
 	$(call autoconf_bool,CONFIG_PACKAGE_quagga-ripngd,ripngd) \
 	$(call autoconf_bool,CONFIG_PACKAGE_quagga-babeld,babeld) \
-	$(call autoconf_bool,CONFIG_PACKAGE_quagga-vtysh,vtysh) \
+	$(call autoconf_bool,CONFIG_PACKAGE_quagga-vtysh,vtysh) 
 
 MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS) -std=gnu99"
