@@ -21,6 +21,8 @@ PKG_BUILD_DEPENDS:=libelf
 PKG_FIXUP:=libtool
 PKG_LIBTOOL_PATHS:=. sntp
 
+PKG_BUILD_PARALLEL:=8
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/ntpd/Default
