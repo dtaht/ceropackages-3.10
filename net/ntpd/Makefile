@@ -121,6 +121,9 @@ endef
 TARGET_CPPFLAGS += \
 	-I$(STAGING_DIR)/usr/include/libelf
 
+TARGET_CFLAGS += \
+	-DHAVE_NO_NICE
+
 CONFIGURE_VARS += \
 	ac_cv_header_md5_h=no \
 	ac_cv_lib_rt_sched_setscheduler=no \
