@@ -132,6 +132,8 @@ END {
 	
 	# filter rule
 	for (i = 1; i <= n; i++) {
+		a = class[i] * 100
+		print "tc filter add dev "device" parent 1: prio "a" protocol ipv6 handle "class[i]"/0xff fw flowid 1:"class[i] "0" 
 		print "tc filter add dev "device" parent 1: prio "class[i]" protocol ip handle "class[i]"/0xff fw flowid 1:"class[i] "0" 
 		filterc=1
 		if (filter[i] != "") {

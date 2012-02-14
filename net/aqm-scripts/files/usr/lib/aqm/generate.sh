@@ -336,11 +336,13 @@ tc class add dev $dev parent 1: classid 1:1 hfsc sc rate ${rate}kbit ul rate ${r
 	if [ -n "$halfduplex" ]; then
 		export dev_up="tc qdisc del dev $device root >&- 2>&-
 tc qdisc add dev $device root handle 1: hfsc
+tc filter add dev $device parent 1: protocol ipv6 prio 9 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb$ifbdev"
 tc filter add dev $device parent 1: protocol ip prio 10 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb$ifbdev"
 	elif [ -n "$download" ]; then
 		append dev_${dir} "tc qdisc del dev $device ingress >&- 2>&-
 tc qdisc add dev $device ingress
-tc filter add dev $device parent ffff: protocol ip prio 1 u32 match u32 0 0 flowid 1:1 action connmark action mirred egress redirect dev ifb$ifbdev" "$N"
+tc filter add dev $device parent ffff: protocol ipv6 prio 1 u32 match u32 0 0 flowid 1:1 action connmark action mirred egress redirect dev ifb$ifbdev" "$N"
+tc filter add dev $device parent ffff: protocol ip prio 2 u32 match u32 0 0 flowid 1:1 action connmark action mirred egress redirect dev ifb$ifbdev" "$N"
 	fi
 	add_insmod cls_fw
 	add_insmod sch_hfsc
