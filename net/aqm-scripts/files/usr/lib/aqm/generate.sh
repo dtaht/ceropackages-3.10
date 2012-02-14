@@ -398,6 +398,7 @@ start_cg() {
 	local sizerules
 	enum_classes "$cg"
 	add_rules iptrules "$ctrules" "iptables -t mangle -A qos_${cg}_ct"
+	add_rules iptrules "$ctrules" "ip6tables -t mangle -A qos_${cg}_ct"
 	config_get classes "$cg" classes
 	for class in $classes; do
 		config_get mark "$class" classnr
@@ -405,6 +406,7 @@ start_cg() {
 		[ -z "$maxsize" -o -z "$mark" ] || {
 			add_insmod ipt_length
 			append pktrules "iptables -t mangle -A qos_${cg} -m mark --mark $mark/0xff -m length --length $maxsize: -j MARK --set-mark 0/0xff" "$N"
+			append pktrules "ip6tables -t mangle -A qos_${cg} -m mark --mark $mark/0xff -m length --length $maxsize: -j MARK --set-mark 0/0xff" "$N"
 		}
 	done
 	add_rules pktrules "$rules" "iptables -t mangle -A qos_${cg}"
@@ -418,14 +420,21 @@ start_cg() {
 		download="${download:-${halfduplex:+$upload}}"
 		append up "iptables -t mangle -A OUTPUT -o $device -j qos_${cg}" "$N"
 		append up "iptables -t mangle -A FORWARD -o $device -j qos_${cg}" "$N"
+		append up "ip6tables -t mangle -A OUTPUT -o $device -j qos_${cg}" "$N"
+		append up "ip6tables -t mangle -A FORWARD -o $device -j qos_${cg}" "$N"
 	done
 	cat <<EOF
 $INSMOD
 iptables -t mangle -N qos_${cg} >&- 2>&-
 iptables -t mangle -N qos_${cg}_ct >&- 2>&-
+ip6tables -t mangle -N qos_${cg} >&- 2>&-
+ip6tables -t mangle -N qos_${cg}_ct >&- 2>&-
 ${iptrules:+${iptrules}${N}iptables -t mangle -A qos_${cg}_ct -j CONNMARK --save-mark --mask 0xff}
+${iptrules:+${iptrules}${N}ip6tables -t mangle -A qos_${cg}_ct -j CONNMARK --save-mark --mask 0xff}
 iptables -t mangle -A qos_${cg} -j CONNMARK --restore-mark --mask 0xff
 iptables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
+ip6tables -t mangle -A qos_${cg} -j CONNMARK --restore-mark --mask 0xff
+ip6tables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
 $pktrules
 $up$N${down:+${down}$N}
 EOF
@@ -460,6 +469,20 @@ stop_firewall() {
 		# Make into proper iptables calls
 		# Note:  awkward in previous call due to hold space usage
 		sed -n -e 's/^./iptables -t mangle &/p'
+	ip6tables -t mangle -S |
+		# Find rules for the qos_* chains
+		grep '^-N qos_\|-j qos_' |
+		# Exclude rules in qos_* chains (inter-qos_* refs)
+		grep -v '^-A qos_' |
+		# Replace -N with -X and hold, with -F and print
+		# Replace -A with -D
+		# Print held lines at the end (note leading newline)
+		sed -e '/^-N/{s/^-N/-X/;H;s/^-X/-F/}' \
+			-e 's/^-A/-D/' \
+			-e '${p;g}' |
+		# Make into proper iptables calls
+		# Note:  awkward in previous call due to hold space usage
+		sed -n -e 's/^./ip6tables -t mangle &/p'
 }
 
 C="0"
