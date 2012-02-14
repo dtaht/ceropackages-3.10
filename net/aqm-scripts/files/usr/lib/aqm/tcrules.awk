@@ -97,13 +97,14 @@ END {
 		
 		if( plimit < 60) plimit = 60
 		if( plimit > 200) plimit = 200
+		redflowlimit = int (limit / 2)
 
 		if (qdisc[i] != "") {
 			# user specified qdisc
 			print qdisc[i] " limit " plimit
 		} else if (rtm1[i] > 0) {
 			# rt class - use sfq
-			print "sfq limit "  plimit " depth 24 " 
+			print "sfq limit " plimit " headdrop depth 24 flows 2000 min " min " max " max " avpkt " avpkt " redflowlimit " redflowlimit " probability 0.12 ecn harddrop "
 		} else {
 			# non-rt class - use RED
 
@@ -117,11 +118,15 @@ END {
 			# according to http://www.cs.unc.edu/~jeffay/papers/IEEE-ToN-01.pdf a drop
 			# probability somewhere between 0.1 and 0.2 should be a good tradeoff
 			# between link utilization and response time (0.1: response; 0.2: utilization)
+			# This needs to be reviewed against this implementation
+			
 			prob="0.12"
 		
 			rburst=int((2*min + max) / (3 * avpkt))
 			if (rburst < 2) rburst = 2
-			print "red min " min " max " max " burst " rburst " avpkt " avpkt " limit " limit " probability " prob " ecn"
+			#
+			print "sfq limit " plimit " headdrop depth 24 flows 2000 min " min " max " max " avpkt " avpkt " redflowlimit " redflowlimit " probability 0.12 ecn harddrop "
+			# print "red min " min " max " max " burst " rburst " avpkt " avpkt " limit " limit " probability " prob " ecn"
 		}
 	}
 	
