@@ -92,13 +92,18 @@ END {
 		else min = int(maxrate[i] * 1024 / 8 * 0.05)
 		max = 3 * min
 		limit = (min + max) * 3
+		plimit = int(limit / avpkt)
+		# put some sane bounds on the packet limits
+		
+		if( plimit < 60) plimit = 60
+		if( plimit > 200) plimit = 200
 
 		if (qdisc[i] != "") {
 			# user specified qdisc
-			print qdisc[i] " limit " limit
+			print qdisc[i] " limit " plimit
 		} else if (rtm1[i] > 0) {
 			# rt class - use sfq
-			print "sfq perturb 2 limit "  limit
+			print "sfq limit "  plimit " depth 24 " 
 		} else {
 			# non-rt class - use RED
 
