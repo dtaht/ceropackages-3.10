@@ -15,7 +15,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://code.quagga.net/quagga-RE.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_VERSION:=32ee9f76324eaff17ab47e527a4a68845059b676
+PKG_SOURCE_VERSION:=d61c732679b0c0a1ee6a20eb2d56e0a51aa24553
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 #PKG_SOURCE_URL:=http://devresources.linux-foundation.org/dev/iproute2/download/
@@ -48,7 +48,6 @@ define Package/quagga/Default
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Routing and Redirection
-  DEPENDS:=quagga
   TITLE:=The Quagga Software Routing Suite (RE version)
   URL:=http://www.quagga.net
   MAINTAINER:=Vasilis Tsiligiannis <b_tsiligiannis@silverton.gr>
@@ -184,7 +183,7 @@ CONFIGURE_ARGS+= \
 	$(call autoconf_bool,CONFIG_PACKAGE_quagga-ripd,ripd) \
 	$(call autoconf_bool,CONFIG_PACKAGE_quagga-ripngd,ripngd) \
 	$(call autoconf_bool,CONFIG_PACKAGE_quagga-babeld,babeld) \
-	$(call autoconf_bool,CONFIG_PACKAGE_quagga-vtysh,vtysh) \
+	$(call autoconf_bool,CONFIG_PACKAGE_quagga-vtysh,vtysh) 
 
 MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS) -std=gnu99"

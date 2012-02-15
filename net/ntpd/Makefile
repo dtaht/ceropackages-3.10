@@ -7,19 +7,21 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=ntp
-PKG_VERSION:=4.2.6p5
+PKG_NAME:=ntp-dev
+PKG_VERSION:=4.2.7p256
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/
-PKG_MD5SUM:=00df80a84ec9528fcfb09498075525bc
+PKG_SOURCE_URL:=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-dev/
+PKG_MD5SUM:=4134f7ae7c758d0688f3d77a4a63f0d4
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=libelf
 PKG_FIXUP:=libtool
 PKG_LIBTOOL_PATHS:=. sntp
+
+PKG_BUILD_PARALLEL:=8
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -30,7 +32,7 @@ define Package/ntpd/Default
   TITLE:=ISC ntp
   MAINTAINER:=Peter Wagner <tripolar@gmx.at>
   URL:=http://www.ntp.org/
-  DEPENDS:=+libcap
+  DEPENDS:=+libcap +libval
 endef
 
 define Package/ntpd/Default/description
@@ -43,6 +45,7 @@ define Package/ntpd
 $(call Package/ntpd/Default)
   TITLE+= server
   VARIANT:=nossl
+  DEPENDS+= +libpthread
 endef
 
 define Package/ntpd/description
@@ -55,7 +58,7 @@ define Package/ntpd-ssl
 $(call Package/ntpd/Default)
   TITLE+= server (with OpenSSL support)
   VARIANT:=ssl
-  DEPENDS+= +libopenssl
+  DEPENDS+= +libopenssl +libpthread
 endef
 
 define Package/ntpd-ssl/description
@@ -120,10 +123,17 @@ endef
 TARGET_CPPFLAGS += \
 	-I$(STAGING_DIR)/usr/include/libelf
 
+TARGET_CFLAGS += \
+	-DHAVE_NO_NICE
+
 CONFIGURE_VARS += \
 	ac_cv_header_md5_h=no \
 	ac_cv_lib_rt_sched_setscheduler=no \
-	ac_cv_header_dns_sd_h=no
+	ac_cv_header_dns_sd_h=no \
+	ol_cv_pthread_select_yield=yes \
+	ac_cv_pthread_select_yield=yes \
+	ac_cv_lib_val_threads_val_getaddrinfo=yes \
+	ac_cv_func_adjtimex=yes
 
 CONFIGURE_ARGS += \
 	--disable-all-clocks \
@@ -133,7 +143,15 @@ CONFIGURE_ARGS += \
 	--enable-NMEA \
 	--enable-LOCAL-CLOCK \
 	--enable-SHM \
-	--enable-linuxcaps
+	--enable-linuxcaps \
+	--enable-autokey \
+	--with-yielding_select=yes \
+	--with-dnsval \
+	--enable-ignore-dns-errors
+
+# I have no idea why we'd need threads
+#	--disable-thread-support
+
 
 ifeq ($(BUILD_VARIANT),ssl)
   CONFIGURE_ARGS += \

@@ -1,0 +1,13 @@
+diff --git a/sntp/libevent/m4/openldap-thread-check.m4 b/sntp/libevent/m4/openldap-thread-check.m4
+index 2b31919..c94b865 100644
+--- a/sntp/libevent/m4/openldap-thread-check.m4
++++ b/sntp/libevent/m4/openldap-thread-check.m4
+@@ -76,7 +76,7 @@ fi
+ dnl ----------------------------------------------------------------
+ dnl Threads?
+ ol_link_threads=no
+-ol_with_yielding_select=${ol_with_yielding_select-auto}
++ol_with_yielding_select=${with_yielding_select-auto}
+ 
+ case $ol_with_threads in auto | yes | nt)
+ 

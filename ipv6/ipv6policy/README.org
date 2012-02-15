@@ -79,11 +79,17 @@ te that client /etc/gai.conf do not have an exception rule for fc00/7. Either Ul
 
 * Rules
 
-PREFIX=
+the ip rule database lets you do stuff like this:
 
 ip rule from fc::/7 to fc::/7 
 
+But not like this:
+
 ip rule ! from fc::/7
+
+ip6tables can do it, but doesn't do the right icmp messages
+
+ip6tables -I FORWARD --source fc::/7 ! --dest fc::/7 -j REJECT --reject-with icmp-network-unreachable
 
 * Other ip address ranges
 
