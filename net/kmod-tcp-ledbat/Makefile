@@ -20,30 +20,23 @@ PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
-define KernelPackage/kmod-tcp-ledbat
+define KernelPackage/tcp-ledbat
   SUBMENU:=Other modules
   TITLE:=TCP LEDBAT congestion control module
   URL:=https://github.com/silviov/TCP-LEDBAT
   FILES:=$(PKG_BUILD_DIR)/src/tcp_ledbat.ko
-  CATEGORY:=Kernel
   VERSION:=$(LINUX_VERSION)-$(LINUX_RELEASE)
   AUTOLOAD:=$(call AutoLoad,30,tcp_ledbat)
 endef
 
 include $(INCLUDE_DIR)/kernel-defaults.mk
 
-define KernelPackage/kmod-tcp-ledbat/description
+define KernelPackage/tcp-ledbat/description
   TCP-LEDBAT congestion control module implementing draft v9 of the standard
 endef
 
 define Build/Compile
-	cd src
-	$(MAKE) $(KERNEL_MAKEOPTS) SUBDIRS="$(PKG_BUILD_DIR)" modules
+	$(MAKE) $(KERNEL_MAKEOPTS) SUBDIRS="$(PKG_BUILD_DIR)/src" modules
 endef
 
-define KernelPackage/kmod-tcp-ledbat/install
-	$(INSTALL_DIR) $(1)/lib/modules/
-	$(INSTALL_BIN) ./src/tcp_ledbat.ko $(1)/lib/modules/
-endef
-
-$(eval $(call KernelPackage,kmod-tcp-ledbat))
+$(eval $(call KernelPackage,tcp-ledbat))
