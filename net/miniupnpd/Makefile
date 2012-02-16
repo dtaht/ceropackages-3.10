@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=miniupnpd
-PKG_VERSION:=1.6.20110730
+PKG_VERSION:=1.6.20120207
 PKG_RELEASE:=4
 
 PKG_SOURCE_URL:=http://miniupnp.free.fr/files
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=8bd5c0447b6dc1101b96e958ee67d3ea
+PKG_MD5SUM:=75b7db74a7657dba474ffaea90dfb0fa
 
 include $(INCLUDE_DIR)/package.mk
 
