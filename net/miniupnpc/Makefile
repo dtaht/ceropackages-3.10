@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=miniupnpc
-PKG_VERSION:=1.6
+PKG_VERSION:=1.6.20120125
 PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=http://miniupnp.free.fr/files
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=88055f2d4a061cfd4cfe25a9eae22f67
+PKG_MD5SUM:=61f136f1302add9d89d329a6c1e338ca
 
 PKG_INSTALL:=1
 
