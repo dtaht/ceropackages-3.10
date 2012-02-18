@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+<<<<<<< HEAD
+=======
+STOP=90
+>>>>>>> 437aeaa1d712f5de5e3ed4063112397838707f4e
+
+start() {
+	mkdir -p /var/lib/dibbler
+	dibbler-client start
+}
+
+stop() {
+	dibbler-client stop
+}
