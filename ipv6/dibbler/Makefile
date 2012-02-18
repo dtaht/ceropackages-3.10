@@ -8,12 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dibbler
-PKG_VERSION:=0.8.1
+PKG_VERSION:=0.8.2git
 PKG_RELEASE:=1
 
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=git://github.com/tomaszmrugalski/dibbler.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://klub.com.pl/dhcpv6/dibbler
-PKG_MD5SUM:=0e52acedd838c43a264441a933780ead
+PKG_SOURCE_VERSION:=bd7a0f166cd678003e64cb2bfc965efba4829248
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+
+#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+#PKG_SOURCE_URL:=http://klub.com.pl/dhcpv6/dibbler
+#PKG_MD5SUM:=0e52acedd838c43a264441a933780ead
 
 include $(INCLUDE_DIR)/package.mk
 
