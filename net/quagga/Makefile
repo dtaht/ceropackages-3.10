@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quagga
 
-PKG_VERSION:=0.99.17.6git
+PKG_VERSION:=0.99.17.6-2-git
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git

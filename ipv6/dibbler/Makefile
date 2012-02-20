@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dibbler
-PKG_VERSION:=0.8.2git
+PKG_VERSION:=0.8.2-2git
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
