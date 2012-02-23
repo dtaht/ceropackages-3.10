@@ -412,6 +412,7 @@ start_cg() {
 		}
 	done
 	add_rules pktrules "$rules" "iptables -t mangle -A qos_${cg}"
+	add_rules pktrules "$rules" "ip6tables -t mangle -A qos_${cg}"
 	for iface in $INTERFACES; do
 		config_get classgroup "$iface" classgroup
 		config_get device "$iface" device
@@ -438,6 +439,7 @@ iptables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
 ip6tables -t mangle -A qos_${cg} -j CONNMARK --restore-mark --mask 0xff
 ip6tables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
 $pktrules
+ip6tables -t mangle -A qos_${cg} --source fe80::/8 -j MARK --set-mark 1/0xff
 $up$N${down:+${down}$N}
 EOF
 	unset INSMOD
