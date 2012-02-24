@@ -112,9 +112,8 @@ SCONS_OPTIONS += \
 	bluez=no \
 	strip=no \
 	python=no \
-	usb=no
-
-EXTRA_LDFLAGS:=-L.
+	usb=no \
+	implicit_link=no
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
