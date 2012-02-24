@@ -1,0 +1,13 @@
+diff --git a/ip/ipnetns.c b/ip/ipnetns.c
+index e41a598..89fdae5 100644
+--- a/ip/ipnetns.c
++++ b/ip/ipnetns.c
+@@ -40,6 +40,8 @@ static int setns(int fd, int nstype)
+ }
+ #endif /* HAVE_SETNS */
+ 
++/* uclibc doesn't have unshare apparently */
++static int unshare(int a) { return 0; }
+ 
+ static void usage(void) __attribute__((noreturn));
+ 

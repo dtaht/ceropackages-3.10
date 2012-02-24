@@ -1,28 +1,24 @@
+From 6df1575a41f105e8b4155aad8b7c94c0ecb64ab0 Mon Sep 17 00:00:00 2001
+From: Dave Taht <dave.taht@bufferbloat.net>
+Date: Mon, 20 Feb 2012 21:36:58 +0100
+Subject: [PATCH] make the install dir always
+
+---
+ csrc/lib/dir.mk |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/csrc/lib/dir.mk b/csrc/lib/dir.mk
+index 33de73b..5bfad4e 100644
 --- a/csrc/lib/dir.mk
 +++ b/csrc/lib/dir.mk
-@@ -56,8 +56,7 @@ all: basicparsetest ccn_verifysig
+@@ -59,7 +59,6 @@ all: basicparsetest ccn_verifysig
  
  install: install_headers
  install_headers:
--	test -d $(INSTALL_INCLUDE)
--	mkdir -p $(INSTALL_INCLUDE)/ccn
-+	test -d $(INSTALL_INCLUDE) || mkdir -p $(INSTALL_INCLUDE)/ccn
+-	@test -d $(INSTALL_INCLUDE) || (echo $(INSTALL_INCLUDE) does not exist.  Please mkdir -p $(INSTALL_INCLUDE) if this is what you intended. && exit 2)
+ 	mkdir -p $(INSTALL_INCLUDE)/ccn
  	for i in `cd ../include/ccn && echo *.h`; do                \
  	    cmp -s ../include/ccn/$$i $(INSTALL_INCLUDE)/ccn/$$i || \
- 	        cp ../include/ccn/$$i $(INSTALL_INCLUDE)/ccn/$$i || \
---- a/csrc/subr.mk
-+++ b/csrc/subr.mk
-@@ -31,11 +31,11 @@ $(OBJDIR)/dir.mk: dir.mk
- 	cp -p dir.mk $(OBJDIR)/dir.mk
- 
- install_libs: $(LIBS)
--	test -d $(INSTALL_LIB)
-+	test -d $(INSTALL_LIB) || mkdir -p $(INSTALL_LIB)
- 	for i in $(LIBS) ""; do test -z "$$i" || $(INSTALL) $$i $(INSTALL_LIB); done
- 
- install_programs: $(INSTALLED_PROGRAMS)
--	test -d $(INSTALL_BIN)
-+	test -d $(INSTALL_BIN) || mkdir -p $(INSTALL_BIN)
- 	for i in $(INSTALLED_PROGRAMS) ""; do test -z "$$i" || $(INSTALL) $$i $(INSTALL_BIN); done
- 
- install: install_libs install_programs
+-- 
+1.7.5.4
+

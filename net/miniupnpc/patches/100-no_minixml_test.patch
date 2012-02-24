@@ -1,0 +1,27 @@
+From 86b77343c16699996853d2887eb17eca496db038 Mon Sep 17 00:00:00 2001
+From: Dave Taht <dave.taht@bufferbloat.net>
+Date: Thu, 16 Feb 2012 08:40:52 -0800
+Subject: [PATCH 1/2] No minixml test
+
+---
+ Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 8b58ec1..61535be 100644
+--- a/Makefile
++++ b/Makefile
+@@ -111,8 +111,8 @@ installpythonmodule:	pythonmodule
+ 	python setup.py install
+ 
+ validateminixml:	minixmlvalid
+-	@echo "minixml validation test"
+-	./minixmlvalid
++	@echo "(skipping) minixml validation test"
++#	./minixmlvalid
+ 	touch $@
+ 
+ validateminiwget:	testminiwget minihttptestserver testminiwget.sh
+-- 
+1.7.1
+

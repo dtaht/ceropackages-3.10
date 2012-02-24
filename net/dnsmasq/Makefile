@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsmasq
-PKG_VERSION:=2.60git
+PKG_VERSION:=2.60-1-1-git
 PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
