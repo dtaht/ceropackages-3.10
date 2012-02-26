@@ -17,7 +17,7 @@ without any configuration required.
 includes <a href="http://ftp.isc.org/isc/bind9/cur/9.8/doc/arm/Bv9ARM.html">Bind 9</a>
 running in a <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/Bind9_chroot_jail_and_xinetd">chrooted jail</a>
 for additional security. This enables the router to support advanced name services, including zone transfers, split views, and DNSSEC. For more
-details, <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/OCEAN_CITY_RELEASE_NOTES">see the release notes</a> 
+details, <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/BQL_series_release_notes">see the release notes</a> 
 as not all of this intended functionality is complete.
 
 <h2>DNSSEC support</h2>
@@ -36,6 +36,18 @@ requests validates the signatures received from authoritative servers
 to ensure that the data received was not tampered with.  If the data
 in the response cannot be proven to be valid and secure, the name server
 will reject it and return a "server failed" message to the client.
+
+<h2>Local DNS Addressing</h2>
+The CeroWrt router is always available to its LAN interfaces as 'gw.home.lan'. 
+This makes it easy to connect with the router without requiring you to know 
+the IP address ranges used by the router.
+
+<h2>mDNS Addressing</h2>
+By default, CeroWrt has a <a href="http://en.wikipedia.org/wiki/MDNS">multicast DNS</a> 
+(aka "Zeroconfig" or "Bonjour" naming) reflector 
+(the <a href="http://en.wikipedia.org/wiki/Avahi_(software)">Avahi package</a>) 
+enabled for all the LAN interfaces. 
+This allows you to locate devices without knowing their IP addresses.
 </div>
 <div class="menu">
 <nav>

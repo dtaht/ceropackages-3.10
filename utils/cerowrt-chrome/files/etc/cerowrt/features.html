@@ -32,7 +32,10 @@ title="Internet Protocol version 6">IPv6</abbr> support</a></li>
 <li><a href="proxy.html">The polipo web proxy</a></li>
 <li><a href="webserver.html">Local lighttpd web server</a></li>
 <li><a href="rsync.html">Rsync</a></li>
-<li>Bridging different radios and ethernet has become very problematic, particularly in the face of multicast traffic and radically different wireless bandwidth. CeroWrt routes rather than bridges.</li>
+<li>Bridging different radios and ethernet has become very problematic, particularly 
+in the face of multicast traffic and radically different wireless bandwidth. 
+CeroWrt routes between its interfaces (which have different /27 subnets by defaults), 
+rather than bridging traffic between them.</li>
 </ul>
 <p>Many additional packages are not installed by default, but are available in the CeroWrt package repository.</p>
 </div>
