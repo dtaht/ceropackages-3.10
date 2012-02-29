@@ -993,22 +993,28 @@ end
 -- for TSO/GSO to work.  These quantums are way too large for lower
 -- speeds
 
+--[[ FIXME: Add ADSL support
+My crude hack was adding:
+tc_stab_string="stab overhead 18 mtu 2048 mpu 53 linklayer atm"
+to generate.sh; and then modifying the addition of root disc like the following
+tc qdisc add dev $dev root handle 1: ${tc_stab_string} hfsc default ${class_default}0
+Then I only needed to reduce the uplink and downlink speed marginally (5%) and got good and stable ping latencies even in the lieu of massive uploads and opening 100 browser tabs at the same time. Without the stab option I had to reduce nominal speeds to around 65%-70% of the line rate and still got worse ping latencies than with the stab option.
+--]]
+
 local function htb_sfq(speed,flows)
    qa("root handle 1: est 1sec 8sec htb default 1")
    cap("1: classid 1:1 est 1sec 8sec htb rate 200Mbit mtu 1500 quantum 80000")
    qap("1:1 handle 10: est 1sec 8sec sfq limit 2000 depth 10 headdrop flows 1000 divisor 16384")
 end
 
--- Hard coded for specific test case for now of 4Mbit and closer to openwrt
 -- local function htb_sfq_red(speed,flows)
+-- hard coded, no math, reasonable for ~4Mbit
 
 local function htb_sfq_red(queues)
    qa("root handle 1: est 1sec 8sec htb default 1")
-   cap("1: classid 1:1 est 1sec 8sec htb rate 4Mbit mtu 1500 quantum 4500")
-   qap("1:1 handle 10: est 1sec 4sec sfq limit 120 headdrop flows 64 divisor 16384 redflowlimit 40000 min 1500 max 18000 depth 16 probability 0.12 ecn")
+   cap("1: classid 1:1 est 1sec 8sec htb rate %dkbit mtu 1500 quantum 1514",env.UPLINK)
+   qap("1:1 handle 10: est 1sec 4sec sfq limit 200 headdrop flows 500 divisor 16384 redflowlimit 24000 min 3000 max 18000 depth 16 probability 0.12 ecn harddrop")
 end
-
--- I haven't backported REDSFQ to cerowrt yet
 
 local function htb_sfq_red_cero(queues)
    qa("root handle 1: est 1sec 8sec htb default 1")
@@ -1061,7 +1067,9 @@ end
 
 function iptables_aqm_clean() 
    tstr="-t mangle -S | grep '^-N qos_\|-j qos_' | grep -v '^-A qos_' | sed -e '/^-N/{s/^-N/-X/;H;s/^-X/-F/}' -e 's/^-A/-D/' -e '${p;g}' | sed -n -e 's/^./iptables -t mangle &/p'"
-   iptables(tstr)
+   iptables4(tstr)
+   tstr="-t mangle -S | grep '^-N qos_\|-j qos_' | grep -v '^-A qos_' | sed -e '/^-N/{s/^-N/-X/;H;s/^-X/-F/}' -e 's/^-A/-D/' -e '${p;g}' | sed -n -e 's/^./ip6tables -t mangle &/p'"
+   iptables6(tstr)
 end
 
 -- ${iptrules:+${iptrules}${N}iptables -t mangle -A qos_${cg}_ct -j CONNMARK --save-mark --mask 0xff}
