@@ -22,16 +22,18 @@ measurements of networking and censorship issues
 (<a href="http://projectbismark.net"><abbr
 title="Broadband Internet Service BenchMARK">BISMark</abbr></a>), among others.</p>
 
-<p>It is closely related to the ongoing debloat-testing efforts of
-<a href="http://www.bufferbloat.net">Bufferbloat.net</a> except that
-debloat-testing targets servers and laptops, not routers, directly,
-and CeroWrt does not, at present, include the eBDP algorithm.</p>
+<p>Most importantly, CeroWrt is targeted at reducing bufferbloat in both the wired and wireless 
+components of the home router stack. We are working closely with the ongoing 
+debloat-testing efforts of <a href="http://www.bufferbloat.net">Bufferbloat.net</a>.</p>
 
-<p> CeroWrt is also aimed at (currently) a single hardware platform
-for which fully open drivers are available: the Netgear WNDR3700v2, a
-current 802.11abgn router using the Atheros AR7161 rev 2 with gigabit
-Ethernet ports with 16Mbytes of flash, providing sufficient space for
-functionality needed in a home router today. </p>
+<p> CeroWrt is currently aimed at a single hardware platform
+for which fully open drivers are available: the Netgear WNDR3700v2 and WNDR3800 routers. 
+These are current 802.11abgn routers using the Atheros AR7161 rev 2 with gigabit
+Ethernet ports. 
+They have a capable processor and 16Mbytes of flash and 64MBytes of RAM (the WNDR3800 has 128MBytes) 
+to provide sufficient space for functionality needed in a home router today. 
+The WNDR3700v3 model that has recently appeared on the market does not work with CeroWrt; 
+purchase the WNDR3800 if you want to be future-proof.</p>
 
 <h2>CeroWrt's Goals</h2> 
 
@@ -90,6 +92,7 @@ title="Graphical User Interface">GUI</abbr></a> editing via <a
 href="http://en.wikipedia.org/wiki/Secure_Shell"><abbr
 title="Secure Shell">SSH</abbr></a>.</p>
 
+<h2>Current Status</h2>
 <p>As this is a research and development platform, there will be no
 long term support for this release and will likely
 require a complete reflashing and reconfiguration of your router. We
