@@ -1,0 +1,14 @@
+--- a/Makefile
++++ b/Makefile
+@@ -55,9 +55,9 @@ MISC     = Makefile README
+ #	compile/load options
+ #
+ CC	 = gcc
+-CFLAGS   = -Wall -Wno-implicit-function-declaration
++CFLAGS   += -Wall -Wno-implicit-function-declaration
+ LDLIBS   = 
+-LDFLAGS  = 
++LDFLAGS  +=
+ #
+ #
+ ${EXE}: ${OBJ} ${INC} Makefile

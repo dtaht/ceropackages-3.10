@@ -1,0 +1,144 @@
+--- a/lisp_mod/lisp_output.c
++++ b/lisp_mod/lisp_output.c
+@@ -102,6 +102,15 @@ void lisp_encap4(struct sk_buff *skb, in
+     printk(KERN_INFO "lisp_encap4: saddr for route lookup: %pI4\n",
+                       &globals.my_rloc.address.ip.s_addr);
+   {
++#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,38)
++    struct flowi fl;
++    fl.flowi_oif   = 0;
++    fl.flowi_tos   = RT_TOS(old_iph->tos);
++    fl.flowi_proto = IPPROTO_UDP;
++    fl.u.ip4.daddr = locator_addr;
++    fl.u.ip4.saddr = globals.my_rloc.address.ip.s_addr;
++    if (ip_route_output_key(&init_net, &fl.u.ip4)) {
++#else
+     struct flowi fl = { .oif = 0,
+ 			.nl_u = { .ip4_u = 
+ 				  { .daddr = locator_addr,
+@@ -109,6 +118,7 @@ void lisp_encap4(struct sk_buff *skb, in
+ 				    .tos = RT_TOS(old_iph->tos) } },
+ 			.proto = IPPROTO_UDP };
+     if (ip_route_output_key(&init_net, &rt, &fl)) {
++#endif
+       printk(KERN_INFO "Route lookup for locator %pI4 failed\n", &locator_addr);
+       /*
+        * PN: Fix skb memory leaks
+@@ -311,11 +321,25 @@ void lisp_encap6(struct sk_buff *skb, li
+    * the iptunnel6.c code.
+    */
+   {
++#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,38)
++    ipv6_addr_copy(&fl.u.ip6.daddr, &locator_addr.address.ipv6);
++#else
+     ipv6_addr_copy(&fl.fl6_dst, &locator_addr.address.ipv6);
++#endif
+     if (globals.my_rloc_af != AF_INET6) {
+       printk(KERN_INFO "No AF_INET6 source rloc available\n");
+       return;
+     }
++#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,38)
++    ipv6_addr_copy(&fl.u.ip6.saddr, &globals.my_rloc.address.ipv6);
++    fl.flowi_oif = 0;
++
++    fl.u.ip6.flowlabel = 0;
++    fl.flowi_proto = IPPROTO_UDP;
++  }
++
++  dst = ip6_route_output(&init_net, NULL, &fl.u.ip6);
++#else
+     ipv6_addr_copy(&fl.fl6_src, &globals.my_rloc.address.ipv6);
+     fl.oif = 0;
+ 
+@@ -324,6 +348,7 @@ void lisp_encap6(struct sk_buff *skb, li
+   }
+ 
+   dst = ip6_route_output(&init_net, NULL, &fl);
++#endif
+ 
+   if (dst->error) {
+     printk(KERN_INFO "  Failed v6 route lookup for RLOC\n");
+@@ -441,8 +466,13 @@ void lisp_encap6(struct sk_buff *skb, li
+   ipv6_change_dsfield(iph, ~INET_ECN_MASK, dsfield);
+   iph->hop_limit = 10; // XXX grab from inner header.
+   iph->nexthdr = IPPROTO_UDP;
++#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,38)
++  ipv6_addr_copy(&iph->saddr, &fl.u.ip6.saddr);
++  ipv6_addr_copy(&iph->daddr, &fl.u.ip6.daddr);
++#else
+   ipv6_addr_copy(&iph->saddr, &fl.fl6_src);
+   ipv6_addr_copy(&iph->daddr, &fl.fl6_dst);
++#endif
+   nf_reset(skb);
+ 
+ #ifdef DEBUG_PACKETS
+@@ -584,9 +614,15 @@ bool is_v4addr_local(struct iphdr *iph,
+ #endif
+ 
+     memset(&fl, 0, sizeof(fl));
++#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,38)
++    fl.u.ip4.daddr = iph->daddr;
++    fl.flowi_tos = RTO_ONLINK;
++    if (ip_route_output_key(dev_net(packet_buf->dev), &fl.u.ip4))
++#else
+     fl.fl4_dst = iph->daddr;
+     fl.fl4_tos = RTO_ONLINK;
+     if (ip_route_output_key(dev_net(packet_buf->dev), &rt, &fl))
++#endif
+         return 0;
+ #if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,35)
+     dev = rt->dst.dev;
+--- a/lisp_mod/tables.c
++++ b/lisp_mod/tables.c
+@@ -378,10 +378,10 @@ void add_db_entry_locator(lisp_database_
+      */
+       locator_entry  = kmem_cache_alloc(lisp_database_loctype, GFP_KERNEL);
+       printk(KERN_INFO "Allocating database locator from %s\n",
+-             kmem_cache_name(lisp_database_loctype));
++             lisp_database_loctype->name);
+       if (!locator_entry) {
+           printk(KERN_INFO "Couldn't allocate from %s\n",
+-                 kmem_cache_name(lisp_database_loctype));
++                 lisp_database_loctype->name);
+           return;
+       }
+       db_entry->locator_list[index] = locator_entry;
+@@ -436,10 +436,10 @@ void add_eid_db_entry(lisp_db_add_msg_t
+ 
+       db_entry = kmem_cache_alloc(lisp_database, GFP_KERNEL);
+       printk(KERN_INFO "Allocating new map-database entry from %s\n",
+-             kmem_cache_name(lisp_database));
++             lisp_database->name);
+       if (!db_entry) {
+           printk(KERN_INFO "Couldn't allocate from %s\n",
+-                 kmem_cache_name(lisp_database));
++                 lisp_database->name);
+           return;               /* XXX: correct? */
+       }
+ 
+@@ -632,10 +632,10 @@ void add_cache_entry_locator(lisp_map_ca
+      */
+       locator_entry  = kmem_cache_alloc(lisp_map_cache_loctype, GFP_KERNEL);
+       printk(KERN_INFO "Allocating map-cache locator from %s\n",
+-             kmem_cache_name(lisp_map_cache_loctype));
++             lisp_map_cache_loctype->name);
+       if (!locator_entry) {
+           printk(KERN_INFO "Couldn't allocate from %s\n",
+-                 kmem_cache_name(lisp_map_cache_loctype));
++                 lisp_map_cache_loctype->name);
+           return;
+       }
+       memset(locator_entry, 0, sizeof(lisp_map_cache_loc_t));
+@@ -755,10 +755,10 @@ void add_eid_cache_entry(lisp_eid_map_ms
+   if (!map_entry) {
+       map_entry = kmem_cache_alloc(lisp_map_cache, GFP_KERNEL);
+       printk(KERN_INFO "Allocating new map-cache entry from %s\n",
+-             kmem_cache_name(lisp_map_cache));
++             lisp_map_cache->name);
+       if (!map_entry) {
+           printk(KERN_INFO "Couldn't allocate from %s\n",
+-                 kmem_cache_name(lisp_map_cache));
++                 lisp_map_cache->name);
+           return;               /* XXX: correct? */
+       }
+ 

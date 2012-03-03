@@ -1,0 +1,41 @@
+--- a/lisp_int/Makefile
++++ b/lisp_int/Makefile
+@@ -1,14 +1,3 @@
+ EXTRA_CFLAGS += -Wno-strict-prototypes
+ obj-m += lisp_int.o
+ lispint-objs += lisp_int.o
+-INCLUDE_DIR += /usr/src/linux/include
+-PWD := $(shell pwd)
+-all:
+-	make -I $(INCLUDE_DIR) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+-
+-clean:
+-	make -I $(INCLUDE_DIR) -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+-
+-install:
+-	make -I $(INCLUDE_DIR) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules_install && \
+-		depmod -a
+--- a/lisp_mod/Makefile
++++ b/lisp_mod/Makefile
+@@ -1,21 +1,3 @@
+ EXTRA_CFLAGS += -Wno-strict-prototypes
+-
+ obj-m += lisp.o 
+-
+ lisp-objs += ./lib/patricia/patricia.o lisp_mod.o tables.o lisp_input.o lisp_ipc.o lisp_output.o lisp_slab.o
+-INCLUDE_DIR += /usr/src/linux/include
+-PWD := $(shell pwd)
+-all:
+-	make -I $(INCLUDE_DIR) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+-
+-.PHONY: clean
+-clean:
+-	make -I $(INCLUDE_DIR) -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+-	rm -f cscope.out
+-
+-install: $(obj-m)
+-	make -I $(INCLUDE_DIR) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules_install && \
+-		depmod -a
+-
+-tags:
+-	cscope -R -b

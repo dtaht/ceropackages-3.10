@@ -1,0 +1,19 @@
+--- a/lispconf/Makefile
++++ b/lispconf/Makefile
+@@ -22,4 +22,4 @@ distclean: clean
+ 	rm -f cmdline.[ch]
+ 
+ install: lispconf
+-	mkdir -p $(PREFIX) && cp lispconf $(PREFIX)
++	mkdir -p $(DESTDIR)$(PREFIX) && cp lispconf $(DESTDIR)$(PREFIX)
+--- a/lispd/Makefile
++++ b/lispd/Makefile
+@@ -44,7 +44,7 @@ distclean: clean
+ 	rm -f cmdline.[ch]
+ 
+ install: $(EXE)
+-	mkdir -p $(PREFIX) && cp $(EXE) $(PREFIX)
++	mkdir -p $(DESTDIR)$(PREFIX) && cp $(EXE) $(DESTDIR)$(PREFIX)
+ 
+ tags:
+ 	cscope -R -b

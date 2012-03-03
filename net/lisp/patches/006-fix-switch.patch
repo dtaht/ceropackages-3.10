@@ -1,0 +1,10 @@
+--- a/lispd/lispd_ipc.c
++++ b/lispd/lispd_ipc.c
+@@ -500,6 +500,7 @@ int process_netlink_msg(void) {
+ #ifdef DEBUG
+             syslog(LOG_DAEMON,"Received NETLINK message type %d", cmd->type);
+ #endif
++            break;
+     }
+ 
+     free(nlh);
