@@ -1,0 +1,49 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+
+START=65
+STOP=65
+
+HIPD_OPTS="-bkN"
+PID_FILE="/var/lock/hipd.lock"
+
+# check if daemon is already running
+is_running() {
+    if test -f $PID_FILE; then
+        pgrep hipd | grep -q -f $PID_FILE
+        return $?
+    else
+        return 1
+    fi
+}
+
+stop_daemon() {
+    PID=$(cat $PID_FILE)
+    kill $PID
+}
+
+start() {
+    if is_running; then
+       echo -n "hipd is already running"
+    else
+       echo -n "Starting hipd"
+       hipd ${HIPD_OPTS}
+    fi
+    echo "."
+}
+
+restart() {
+    echo "Restarting hipd."
+    is_running && echo "Stopping hipd." && stop_daemon && sleep 5
+    start
+}
+
+stop() {
+    if is_running; then
+        echo -n "Stopping hipd"
+        stop_daemon
+    else
+        echo -n "hipd is not running"
+    fi
+    echo "."
+}
