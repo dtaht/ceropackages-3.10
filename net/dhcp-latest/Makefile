@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dhcp
-PKG_VERSION:=4.2.1-P1
+PKG_VERSION:=4.2.3-P2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://ftp.isc.org/isc/dhcp/
-PKG_MD5SUM:=22e6f1eff6d5cfe2621a06cc62ba5b70
+PKG_MD5SUM:=14f57fd580d01633d0fad4809007a801
 
-BIND_VERSION:=bind-9.8.0
+BIND_VERSION:=bind-9.9.0
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -53,10 +53,10 @@ CONFIGURE_ARGS+= \
 	--localstatedir=/tmp \
 	--enable-delayed-ack \
 	ac_cv_file__dev_random=yes \
-	--with-libbind=/home/d/src/iscwrt/build_dir/target-mips_r2_uClibc-0.9.32/bind-9.8.0/lib/isc/ \
+	--with-libbind=$(BUILD_DIR)/bind-9.9.0/lib/isc/ \
 	UNAME_S=Linux \
 	UNAME_M=$(ARCH) \
-	UNAME_R=2.6.38
+	UNAME_R=3.3.0
 
 define Package/dhcp-latest-relay/install
 	$(INSTALL_DIR) $(1)/usr/sbin
