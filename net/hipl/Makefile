@@ -59,16 +59,16 @@ define Package/hipl-daemon/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipd $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipconf $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipdnsproxy $(1)/usr/sbin/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hipd.conf $(1)/etc/hip/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hosts $(1)/etc/hip/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/nsupdate.conf $(1)/etc/hip/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/relay.conf $(1)/etc/hip/
+#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hipd.conf $(1)/etc/hip/
+#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hosts $(1)/etc/hip/
+#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/nsupdate.conf $(1)/etc/hip/
+#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/relay.conf $(1)/etc/hip/
 endef
 
 define Package/hipl-daemon/conffiles
-/etc/hip/hipd.conf
-/etc/hip/nsupdate.conf
-/etc/hip/relay.conf
+#/etc/hip/hipd.conf
+#/etc/hip/nsupdate.conf
+#/etc/hip/relay.conf
 endef
 
 define Package/hipl-firewall/install
@@ -78,13 +78,13 @@ define Package/hipl-firewall/install
 
 	$(INSTALL_BIN) ./files/hipfw.init $(1)/etc/init.d/hipfw
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipfw $(1)/usr/sbin/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/esp_prot.conf $(1)/etc/hip/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hipfw.conf $(1)/etc/hip/
+#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/esp_prot.conf $(1)/etc/hip/
+#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hipfw.conf $(1)/etc/hip/
 endef
 
 define Package/hipl-firewall/conffiles
-/etc/hip/esp_prot.conf
-/etc/hip/hipfw.conf
+#/etc/hip/esp_prot.conf
+#/etc/hip/hipfw.conf
 endef
 
 $(eval $(call BuildPackage,hipl-daemon))
