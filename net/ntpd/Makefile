@@ -45,7 +45,7 @@ define Package/ntpd
 $(call Package/ntpd/Default)
   TITLE+= server
   VARIANT:=nossl
-  DEPENDS+= +libpthread
+  DEPENDS+= +libpthread +libsres
 endef
 
 define Package/ntpd/description
