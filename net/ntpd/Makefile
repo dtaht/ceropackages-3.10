@@ -58,7 +58,7 @@ define Package/ntpd-ssl
 $(call Package/ntpd/Default)
   TITLE+= server (with OpenSSL support)
   VARIANT:=ssl
-  DEPENDS+= +libopenssl +libpthread
+  DEPENDS+= +libopenssl +libpthread +libsres
 endef
 
 define Package/ntpd-ssl/description
