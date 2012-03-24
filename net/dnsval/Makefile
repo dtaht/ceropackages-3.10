@@ -31,13 +31,14 @@ define Package/dnsval
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
   TITLE+= utilities
-  DEPENDS:=+libopenssl +libpthread +libsres +libval
+  DEPENDS:=+libsres 
 endef
 
 define Package/libsres
   $(call Package/dnsval/Default)
   SECTION:=libs
   CATEGORY:=Libraries
+  DEPENDS:=+libopenssl +libpthread +libval
   TITLE+= resolver library
 endef
 
@@ -46,7 +47,7 @@ define Package/libval-shim
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= validator shim library
-  DEPENDS:=+libopenssl +libpthread +libsres +libval
+  DEPENDS:=+libsres
 endef
 
 define Package/libval
