@@ -22,6 +22,8 @@ define Package/bulk-update
   PKGARCH:=all
 endef
 
+# I swear I finished this package
+
 define Package/bulk-update/description
   A set of scripts that ease network renumbering and renaming
 endef
