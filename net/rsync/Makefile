@@ -8,12 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rsync
-PKG_VERSION:=3.0.9
+PKG_VERSION:=3.0.9-git-1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://rsync.samba.org/ftp/rsync/src
-PKG_MD5SUM:=5ee72266fe2c1822333c407e1761b92b
+#PKG_SOURCE_URL:=http://rsync.samba.org/ftp/rsync/src
+#PKG_MD5SUM:=5ee72266fe2c1822333c407e1761b92b
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=git://git.samba.org/rsync.git
+PKG_REV:=b55115ec6f127f7def2dfcc907bf6e28d775e53c
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_REV)
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
