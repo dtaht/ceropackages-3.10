@@ -1,0 +1,29 @@
+From a7eb64b6286e2a3ef187d21ad0b437cad5ab4fd6 Mon Sep 17 00:00:00 2001
+From: Dave Taht <dave.taht@bufferbloat.net>
+Date: Thu, 29 Mar 2012 13:28:18 -0700
+Subject: [PATCH] Disable debugging by default
+
+These params should be soft, rather than hard, but for now,
+quiet them.
+---
+ src/tcp_ledbat.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/tcp_ledbat.c b/src/tcp_ledbat.c
+index 10b4535..0eb5b5f 100644
+--- a/src/tcp_ledbat.c
++++ b/src/tcp_ledbat.c
+@@ -19,8 +19,8 @@
+ #define LP_RESOL       1000
+ 
+ #define  DEBUG_SLOW_START    0
+-#define  DEBUG_DELAY         1
+-#define  DEBUG_OWD_HZ        1
++#define  DEBUG_DELAY         0
++#define  DEBUG_OWD_HZ        0
+ #define  DEBUG_NOISE_FILTER  0
+ #define  DEBUG_BASE_HISTO    0
+ 
+-- 
+1.7.5.4
+
