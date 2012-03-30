@@ -35,7 +35,7 @@ endef
 define Package/alttcp/install
 	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/alttcp.init $(1)/etc/init.d/alttcp
-	$(INSTALL_DATA) ./files/alttcp.config $(1)/etc/config/alttcp
+	$(INSTALL_DATA) ./files/alttcp.conf $(1)/etc/config/alttcp
 endef
 
 $(eval $(call BuildPackage,alttcp))
