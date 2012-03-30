@@ -32,7 +32,7 @@ endef
 define Build/Configure
 endef
 
-define Package/alttcps/install
+define Package/alttcp/install
 	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/alttcp.init $(1)/etc/init.d/alttcp
 	$(INSTALL_DATA) ./files/alttcp.config $(1)/etc/config/alttcp
