@@ -52,11 +52,11 @@ define Package/openhip-daemon/install
 	$(INSTALL_DIR) $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/usr/sbin/
 
-	$(INSTALL_BIN) ./files/hipd.init $(1)/etc/init.d/hipd
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipd $(1)/usr/sbin/
+	$(INSTALL_BIN) ./files/hip.init $(1)/etc/init.d/hip
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hip $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hitgen $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipdnsproxy $(1)/usr/sbin/
-#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hipd.conf $(1)/etc/hip/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipstatus $(1)/usr/sbin/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hip.conf $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hosts $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/nsupdate.conf $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/relay.conf $(1)/etc/hip/
@@ -64,6 +64,7 @@ endef
 
 define Package/openhip-daemon/conffiles
 /etc/hip/known_host_identities.xml
+/etc/hip/hip.conf
 # my_host_identities.xml somehow need to generate this at install time with suitable randomness
 #/etc/hip/nsupdate.conf
 #/etc/hip/relay.conf
