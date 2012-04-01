@@ -56,7 +56,7 @@ define Package/openhip-daemon/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hip $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hitgen $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipstatus $(1)/usr/sbin/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hip.conf $(1)/etc/hip/
+	$(INSTALL_DATA) ./files/hip.conf $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hosts $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/nsupdate.conf $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/relay.conf $(1)/etc/hip/
