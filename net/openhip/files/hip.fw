@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Need to punch appropriate holes for hip to work
+# I note that udp tunneling is the default now
+# but I'd really like the native protocol to 
+# work over ipv6
