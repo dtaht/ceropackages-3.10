@@ -21,7 +21,7 @@ endef
 
 define Package/openhip-daemon
     $(call Package/openhip/Default)
-    DEPENDS:=+ip +kmod-tun +libpthread
+    DEPENDS:=+ip +kmod-tun +libpthread +libxml2
     TITLE:=openhip hip daemon
 endef
 
@@ -57,7 +57,7 @@ define Package/openhip-daemon/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hitgen $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipstatus $(1)/usr/sbin/
 	$(INSTALL_DATA) ./files/hip.conf $(1)/etc/hip/
-#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hosts $(1)/etc/hip/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/known_host_identities.xml $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/nsupdate.conf $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/relay.conf $(1)/etc/hip/
 endef
@@ -77,7 +77,7 @@ define Package/openhip-firewall/install
 
 	$(INSTALL_BIN) ./files/hipfw.init $(1)/etc/init.d/hipfw
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/hipfw $(1)/usr/sbin/
-#	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/esp_prot.conf $(1)/etc/hip/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/.conf $(1)/etc/hip/
 #	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/hip/hipfw.conf $(1)/etc/hip/
 endef
 
