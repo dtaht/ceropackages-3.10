@@ -1,7 +1,7 @@
 # This file was extracted from http://www.freebsd.org/doc/handbook/network-dns.html
 
 // The traditional root hints mechanism. Use this, OR the slave zones below.
-// zone "." { type hint; file "/etc/bind/named.root"; };
+zone "." { type hint; file "/etc/bind/default/root.db"; };
 
 /*  Slaving the following zones from the root name servers has some
     significant advantages:
@@ -24,6 +24,7 @@
     xfr.lax.dns.icann.org, xfr.cjr.dns.icann.org
 */
 
+/*
 zone "." {
     type slave;
     file "/etc/bind/slave/root.slave";
@@ -83,6 +84,8 @@ zone "arpa" {
     };
     notify no;
 };
+
+*/
 
 /*  Serving the following zones locally will prevent any queries
     for these zones leaving your network and going to the root
