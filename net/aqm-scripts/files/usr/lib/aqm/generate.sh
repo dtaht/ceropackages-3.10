@@ -426,6 +426,7 @@ start_cg() {
 		append up "ip6tables -t mangle -A OUTPUT -o $device -j qos_${cg}" "$N"
 		append up "ip6tables -t mangle -A FORWARD -o $device -j qos_${cg}" "$N"
 	done
+# The only thing I think that's wrong with this is connmark...
 	cat <<EOF
 $INSMOD
 iptables -t mangle -N qos_${cg} >&- 2>&-
@@ -439,7 +440,7 @@ iptables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
 ip6tables -t mangle -A qos_${cg} -j CONNMARK --restore-mark --mask 0xff
 ip6tables -t mangle -A qos_${cg} -m mark --mark 0/0xff -j qos_${cg}_ct
 $pktrules
-ip6tables -t mangle -A qos_${cg} --source fe80::/8 -j MARK --set-mark 1/0xff
+ip6tables -t mangle -A qos_${cg} --source fe80::/10 -j MARK --set-mark 1/0xff
 $up$N${down:+${down}$N}
 EOF
 	unset INSMOD
