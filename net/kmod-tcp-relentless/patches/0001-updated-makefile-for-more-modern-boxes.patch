@@ -1,0 +1,40 @@
+From f34559537103310bc3e3f9bf1f8aa9bbd62f61eb Mon Sep 17 00:00:00 2001
+From: Dave Taht <dave.taht@bufferbloat.net>
+Date: Wed, 4 Apr 2012 16:22:43 -0700
+Subject: [PATCH] updated makefile for more modern boxes
+
+---
+ Makefile |   18 ++++--------------
+ 1 files changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index bdfecfd..819e146 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,19 +1,9 @@
+-# Makefile for tcp_relentless.c
+-# this includes an implicit Kbuild, per Documentation/kbuild/modules.txt
+-
+-ifneq ($(KERNELRELEASE),)
+-# the kbuild imbedded in this makefile
+ obj-m := tcp_relentless.o
++KDIR := /lib/modules/$(shell uname -r)/build
++PWD := $(shell pwd)
+ 
+-else
+-# The real Makefile is nearly empty
+-
+-KERNELDIR := /lib/modules/`uname -r`/build
+-all::
+-	$(MAKE) -C $(KERNELDIR) M=`pwd` $@
++default:
++	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+ 
+ clean:
+ 	rm -f *.o *.ko .tcp*.o Module.symvers
+-
+-# that's all folks
+-endif
+-- 
+1.7.5.4
+
