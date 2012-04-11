@@ -7,8 +7,6 @@ Subject: [PATCH] make the install dir always
  csrc/lib/dir.mk |    1 -
  1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/csrc/lib/dir.mk b/csrc/lib/dir.mk
-index 33de73b..5bfad4e 100644
 --- a/csrc/lib/dir.mk
 +++ b/csrc/lib/dir.mk
 @@ -59,7 +59,6 @@ all: basicparsetest ccn_verifysig
@@ -19,6 +17,19 @@ index 33de73b..5bfad4e 100644
  	mkdir -p $(INSTALL_INCLUDE)/ccn
  	for i in `cd ../include/ccn && echo *.h`; do                \
  	    cmp -s ../include/ccn/$$i $(INSTALL_INCLUDE)/ccn/$$i || \
--- 
-1.7.5.4
-
+--- a/csrc/subr.mk
++++ b/csrc/subr.mk
+@@ -31,11 +31,11 @@ $(OBJDIR)/dir.mk: dir.mk
+ 	cp -p dir.mk $(OBJDIR)/dir.mk
+ 
+ install_libs: $(LIBS)
+-	@test -d $(INSTALL_LIB) || (echo $(INSTALL_LIB) does not exist.  Please mkdir -p $(INSTALL_LIB) if this is what you intended. && exit 2)
++	mkdir -p $(INSTALL_LIB)
+ 	for i in $(LIBS) ""; do test -z "$$i" || $(INSTALL) $$i $(INSTALL_LIB); done
+ 
+ install_programs: $(INSTALLED_PROGRAMS)
+-	@test -d $(INSTALL_BIN) || (echo $(INSTALL_BIN) does not exist.  Please mkdir -p $(INSTALL_BIN) if this is what you intended. && exit 2)
++	mkdir -p $(INSTALL_BIN)
+ 	for i in $(INSTALLED_PROGRAMS) ""; do test -z "$$i" || $(INSTALL) $$i $(INSTALL_BIN); done
+ 
+ install: install_libs install_programs
