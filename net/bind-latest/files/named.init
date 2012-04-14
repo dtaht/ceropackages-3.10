@@ -18,7 +18,6 @@ start() {
     ln -s /etc/chroot/named/var/run/named/session.key /var/run/named/session.key
   fi
   echo Kicking isc-bind in xinetd
-  /usr/sbin/named.montime &
   nslookup ::1 ::1 > /dev/null
   if [ $? -ne 0 ]
   then
@@ -26,7 +25,9 @@ start() {
     logger " isc-bind failed to start "
   else 
     logger " isc-bind started "
+    rndc validation disable;
   fi
+  /usr/sbin/named.montime &
 }
 
 stop() {
