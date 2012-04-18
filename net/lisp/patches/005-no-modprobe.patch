@@ -23,7 +23,7 @@
      }
 --- a/lispd/lispd_iface_mgmt.c
 +++ b/lispd/lispd_iface_mgmt.c
-@@ -1626,7 +1626,8 @@ void exit_cleanup(void) {
+@@ -1624,7 +1624,8 @@ void exit_cleanup(void) {
      close(netlink_fd);
  
      /* Remove lisp modules */

@@ -11,7 +11,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=lispmob
 #PKG_REV:=bdc7b19b46993b6847d9158b9b8c398bce95784a
-PKG_VERSION:=0.2.1
+PKG_VERSION:=0.2.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -19,7 +19,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_PROTO:=git
 #PKG_SOURCE_URL:=git://github.com/LISPmob/lispmob.git
 PKG_SOURCE_URL:=http://downloads.lispmob.org
-PKG_MD5SUM:=e93d09b2c8cd4403d29490af4dcd4af0
+PKG_MD5SUM:=d9647bde5ada1d8ccf1909d8c9c23385
 #PKG_SOURCE_VERSION:=$(PKG_REV)
 
 PKG_BUILD_DEPENDS:=confuse libopenssl
