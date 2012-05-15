@@ -330,7 +330,8 @@ BINS=env.BINS
 MULTICAST=BINS+1
 DEFAULTB=BINS+2
 
-PREREQS = { "sch_qfq", "sch_codel", "cls_u32", "cls_flow", "sch_sfq", "sch_red", "sch_htb", "cls_fw" }
+PREREQS = { "sch_qfq", "sch_codel", "sch_fq_codel", "cls_u32", "cls_flow", 
+	    "sch_sfq", "sch_red", "sch_htb", "cls_fw" }
 
 -- we can get more complex later
 
@@ -1242,6 +1243,14 @@ end
 
 -- Various models
 
+local function wireless_fq_codel()
+   wireless_setup("fq_codel")
+end
+
+local function wireless_codel()
+   wireless_setup("codel")
+end
+
 local function wireless_sfq()
    wireless_setup("sfq limit 40 perturb 6000")
 end
@@ -1522,6 +1531,13 @@ local function ethernet_qfq(queues)
    model_qfq_subdisc(10)
 end
 
+local function ethernet_fq_codel(queues)
+	 qa("handle %x root fq_codel target 5ms",10)
+end
+
+local function ethernet_codel(queues)
+	 qa("handle %x root codel",10)
+end
 local function ethernet_sfq(queues)
 	 qa("handle %x root sfq",10)
 end
@@ -1810,6 +1826,8 @@ WCALLBACKS = { ["qfq"] = wireless_qfq,
 	       ["efq"] = wireless_efq,
 	       ["sfqred"] = wireless_efqr, 
 	       ["sfqr"] = wireless_sfqr, 
+	       ["codel"] = wireless_codel,
+	       ["fq_codel"] = wireless_fq_codel,
 	       ["htb_sfq_red"] = unsupported_shaper,
 	       ["oopenwrt"] = unsupported_shaper, 
 	       ["owshaper"] = unsupported_shaper,
@@ -1823,6 +1841,8 @@ ECALLBACKS = { ["qfq"] = ethernet_qfq,
 	       ["red"] = ethernet_red,
 	       ["ared"] = ethernet_ared,
 	       ["sfq"] = ethernet_sfq,
+	       ["codel"] = ethernet_codel,
+	       ["fq_codel"] = ethernet_fq_codel,
 	       ["efq"] = ethernet_efq,
 	       ["sfqred"] = ethernet_efqr,
 	       ["htb_qfq_sfqred"] = htb_qfq_sfqred,
