@@ -1,0 +1,179 @@
+diff -ur scamper-cvs-20111202b//scamper/trace/scamper_trace_do.c scamper_ecn//scamper/trace/scamper_trace_do.c
+--- scamper-cvs-20111202b//scamper/trace/scamper_trace_do.c	2012-03-21 00:15:31.000000000 +0530
++++ scamper_ecn//scamper/trace/scamper_trace_do.c	2012-05-15 18:53:14.426435904 +0530
+@@ -365,11 +365,13 @@
+ #define TRACE_OPT_GSSENTRY    21
+ #define TRACE_OPT_LSSNAME     22
+ #define TRACE_OPT_OFFSET      23
++#define TRACE_OPT_ECN         24
+ 
+ static const scamper_option_in_t opts[] = {
+   {'c', NULL, TRACE_OPT_CONFIDENCE,  SCAMPER_OPTION_TYPE_NUM},
+   {'d', NULL, TRACE_OPT_DPORT,       SCAMPER_OPTION_TYPE_STR},
+   {'f', NULL, TRACE_OPT_FIRSTHOP,    SCAMPER_OPTION_TYPE_NUM},
++  {'E', NULL, TRACE_OPT_ECN,         SCAMPER_OPTION_TYPE_NULL},
+   {'g', NULL, TRACE_OPT_GAPLIMIT,    SCAMPER_OPTION_TYPE_NUM},
+   {'G', NULL, TRACE_OPT_GAPACTION,   SCAMPER_OPTION_TYPE_NUM},
+   {'l', NULL, TRACE_OPT_LOOPS,       SCAMPER_OPTION_TYPE_NUM},
+@@ -4030,6 +4032,7 @@
+       /* these parameters are validated at execution time */
+       break;
+ 
++    case TRACE_OPT_ECN:
+     case TRACE_OPT_PMTUD:
+     case TRACE_OPT_ALLATTEMPTS:
+     case TRACE_OPT_TTLDST:
+@@ -4162,6 +4165,10 @@
+ 	    }
+ 	  break;
+ 
++	case TRACE_OPT_ECN:
++	  flags |= SCAMPER_TRACE_FLAG_ECN;
++	  break;
++
+ 	case TRACE_OPT_PMTUD:
+ 	  flags |= SCAMPER_TRACE_FLAG_PMTUD;
+ 	  break;
+diff -ur scamper-cvs-20111202b//scamper/trace/scamper_trace.h scamper_ecn//scamper/trace/scamper_trace.h
+--- scamper-cvs-20111202b//scamper/trace/scamper_trace.h	2011-09-21 04:53:54.000000000 +0530
++++ scamper_ecn//scamper/trace/scamper_trace.h	2012-05-15 18:52:41.214436259 +0530
+@@ -50,6 +50,7 @@
+ #define SCAMPER_TRACE_FLAG_IGNORETTLDST 0x08 /* ignore ttl exp. rx f/ dst */
+ #define SCAMPER_TRACE_FLAG_DOUBLETREE   0x10 /* doubletree */
+ #define SCAMPER_TRACE_FLAG_ICMPCSUMDP   0x20 /* icmp csum found in dport */
++#define SCAMPER_TRACE_FLAG_ECN	        0x40 /* report ECN relevant fields */
+ 
+ #define SCAMPER_TRACE_TYPE_ICMP_ECHO       0x01 /* ICMP echo requests */
+ #define SCAMPER_TRACE_TYPE_UDP             0x02 /* UDP to unused ports */
+@@ -135,6 +136,9 @@
+ #define SCAMPER_TRACE_TYPE_IS_UDP_PARIS(trace) (		\
+  (trace)->type == SCAMPER_TRACE_TYPE_UDP_PARIS)
+ 
++#define SCAMPER_TRACE_IS_ECN(trace) (			\
++ (trace)->flags & SCAMPER_TRACE_FLAG_ECN)
++
+ /*
+  * macros for dealing with scamper trace flags.
+  */
+diff -ur scamper-cvs-20111202b//scamper/trace/scamper_trace_text.c scamper_ecn//scamper/trace/scamper_trace_text.c
+--- scamper-cvs-20111202b//scamper/trace/scamper_trace_text.c	2011-10-25 08:50:01.000000000 +0530
++++ scamper_ecn//scamper/trace/scamper_trace_text.c	2012-05-15 18:52:41.214436259 +0530
+@@ -181,6 +181,26 @@
+ }
+ 
+ /*
++ * tos_tostr
++ *
++ * the caller must pass a pointer to a str buffer at least 14 chars in length
++ * to be safe.
++ */
++static char *tos_tostr(const scamper_trace_hop_t *hop,
++			char *str, const size_t len, const scamper_trace_t *trace)
++{
++  str[0] = '\0';
++  if (SCAMPER_TRACE_HOP_IS_ICMP_Q(hop) && SCAMPER_TRACE_IS_ECN(trace))
++    {
++      	snprintf(str, len, " {%d,%d}", (hop->hop_icmp_q_tos & 0xfc) >> 2, ( hop->hop_icmp_q_tos & 0x2));
++	}
++  return str;
++}
++
++
++
++
++/*
+  * header_tostr
+  *
+  */
+@@ -225,6 +245,7 @@
+   char     str_addr[64];
+   char     str_rtt[24];
+   char     str_icmp[24];
++  char     str_tos[24];
+   int      spare;
+   int      replyc;
+ 
+@@ -260,9 +281,10 @@
+       scamper_addr_tostr(hop->hop_addr, str_addr, sizeof(str_addr));
+       timeval_tostr(&hop->hop_rtt, str_rtt, sizeof(str_rtt));
+       icmp_tostr(hop, str_icmp, sizeof(str_icmp));
+-      
++      tos_tostr(hop, str_tos, sizeof(str_tos), trace);
++
+       snprintf(str_hop, sizeof(str_hop),
+-	       "%2d  %s  %s ms%s", h+1, str_addr, str_rtt, str_icmp);
++	       "%2d  %s  %s ms%s%s", h+1, str_addr, str_rtt, str_icmp, str_tos);
+       return strdup(str_hop);
+     }
+ 
+@@ -301,10 +323,11 @@
+        */
+       timeval_tostr(&hop->hop_rtt, str_rtt, sizeof(str_rtt));
+       icmp_tostr(hop, str_icmp, sizeof(str_icmp));
+-      len = strlen(str_rtt) + 3 + strlen(str_icmp);
++      tos_tostr(hop, str_tos, sizeof(str_tos), trace);
++      len = strlen(str_rtt) + 3 + strlen(str_icmp) + strlen(str_tos);
+       if((str_rtts[i] = malloc(len+1)) == NULL)
+ 	goto out;
+-      snprintf(str_rtts[i],len+1,"%s ms%s",str_rtt,str_icmp);
++      snprintf(str_rtts[i],len+1,"%s ms%s%s",str_rtt,str_icmp,str_tos);
+       len_rtts[i] = len;
+ 
+       i++;
+diff -ur scamper-cvs-20111202b//utils/sc_analysis_dump/sc_analysis_dump.c scamper_ecn//utils/sc_analysis_dump/sc_analysis_dump.c
+--- scamper-cvs-20111202b//utils/sc_analysis_dump/sc_analysis_dump.c	2012-04-04 05:35:59.000000000 +0530
++++ scamper_ecn//utils/sc_analysis_dump/sc_analysis_dump.c	2012-05-15 18:52:41.218436173 +0530
+@@ -55,6 +55,7 @@
+ #define OPT_HIDEPATH      0x01000
+ #define OPT_HIDEIRTT      0x02000
+ #define OPT_HELP          0x04000
++#define OPT_ECN           0x08000
+ 
+ static uint32_t options = 0;
+ 
+@@ -116,6 +117,10 @@
+ 	case 'e':
+ 	  options |= OPT_DSTEND;
+ 	  break;
++	
++	case 'E':
++	  options |= OPT_DSTEND;
++	  break;
+ 
+ 	case 'o':
+ 	  options |= OPT_OLDFORMAT;
+@@ -227,6 +232,8 @@
+   "\n"
+   "  e - add Destination to Ending\n"
+   "\n"
++  "  E - show DIFFSERV/ECN fields \n"
++  "\n"
+   "  D numline - debug mode that only reads the first numline\n"
+   "      of arts objects\n"
+   "  S numline - skips first numline of art objects in the file\n"
+@@ -339,6 +346,11 @@
+  "#       RTT -- RTT of the TTL expired packet                             \n"
+  "#       num_tries -- num tries before response received from TTL.        \n"
+  "#                                                                        \n"
++ "#       If the -E option is given each hop will also report              \n"
++ "#                                                                        \n"
++ "# 	  DIFFSERV -- diffserv code point	                               \n"
++ "# 	  ECN -- ECN code point	                                           \n"
++ "#                                                                        \n"
+  "#       This field will have the value 'q' if there was no response at   \n"
+  "#       this hop.                                                        \n"
+  "#                                                                        \n"
+@@ -563,8 +575,12 @@
+ 		      fprintf(out, "%s",
+ 			  scamper_addr_tostr(hop->hop_addr,addr,sizeof(addr)));
+ 		    }
++		  // SJB: Also print out ECN and diffserv of inner packet
++		  if (SCAMPER_TRACE_HOP_IS_ICMP_Q(hop) && ((options & OPT_ECN) == 0))
++			{
++				fprintf(out, " {%d,%d}", (hop->hop_icmp_q_tos & 0xfc) >> 2, ( hop->hop_icmp_q_tos & 0x2));
++			}
+ 	       }
+-
+ 	      if((hop = hop->hop_next) != NULL && hop != dst)
+ 		{
+ 		  if((options & OPT_OLDFORMAT) == 0)
