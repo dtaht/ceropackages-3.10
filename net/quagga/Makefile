@@ -9,13 +9,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quagga
 
-PKG_VERSION:=0.99.17.9-4-git
+PKG_VERSION:=0.99.17.9-5-git
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://github.com/Quagga-RE/quagga-RE.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_VERSION:=9831726be894b14cc0615a6f5304da068db34af0
+PKG_SOURCE_VERSION:=ac6f831f2773f7545c79f6d0d09c2b159fa36885
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 #PKG_SOURCE_URL:=http://devresources.linux-foundation.org/dev/iproute2/download/
