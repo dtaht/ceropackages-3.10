@@ -93,7 +93,7 @@ endef
 
 define Package/quagga-ospf6d
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libospf +quagga-libzebra @IPV6
+  DEPENDS+=+quagga-libospf +quagga-libzebra +libgcrypt @IPV6
   TITLE:=OSPFv3 routing engine
 endef
 
@@ -111,7 +111,7 @@ endef
 
 define Package/quagga-babeld
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libzebra @IPV6
+  DEPENDS+=+quagga-libzebra +libgcrypt @IPV6
   TITLE:=Babeld routing engine
 endef
 
@@ -168,6 +168,7 @@ endif
 CONFIGURE_ARGS+= \
 	--localstatedir=/var/run/quagga \
 	--sysconfdir=/etc/quagga/ \
+	--with-libgcrypt \
 	--enable-shared \
 	--disable-static \
 	--enable-user=network \
