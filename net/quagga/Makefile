@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quagga
 
-PKG_VERSION:=0.99.17.9-5-git
+PKG_VERSION:=0.99.17.10-1-git
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
@@ -66,6 +66,7 @@ endef
 
 define Package/quagga-libzebra
   $(call Package/quagga/Default)
+  DEPENDS+=+libgcrypt
   TITLE:=zebra library
 endef
 
