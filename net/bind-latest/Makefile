@@ -24,13 +24,14 @@ include $(INCLUDE_DIR)/package.mk
 define Package/bind-latest/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+bind-latest-libs +libopenssl +xinetd
+  DEPENDS:=+bind-latest-libs +libopenssl +xinetd +libcap +libcrypto
   TITLE:=bind
   URL:=https://www.isc.org/software/bind
   SUBMENU:=IP Addresses and Names
 endef
 
 define Package/bind-latest-libs
+  $(call Package/bind-latest/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=bind shared libraries

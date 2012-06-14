@@ -50,6 +50,7 @@ define Package/quagga/Default
   SUBMENU:=Routing and Redirection
   TITLE:=The Quagga Software Routing Suite (RE version)
   URL:=http://www.quagga.net
+  DEPENDS:= +libcap +libgcrypt +libgpg-error +librt +quagga-libzebra
   MAINTAINER:=Vasilis Tsiligiannis <b_tsiligiannis@silverton.gr>
 endef
 

@@ -15,13 +15,13 @@ include $(INCLUDE_DIR)/package.mk
 define Package/openhip/Default
     SECTION:=net
     CATEGORY:=Network
-    DEPENDS:=+libopenssl
+    DEPENDS:=+libopenssl +libcrypto
     URL:=http://www.openhip.org/
 endef
 
 define Package/openhip-daemon
     $(call Package/openhip/Default)
-    DEPENDS:=+ip +kmod-tun +libpthread +libxml2
+    DEPENDS+=+ip +kmod-tun +libpthread +libxml2
     TITLE:=openhip hip daemon
 endef
 
@@ -31,7 +31,7 @@ endef
 
 define Package/openhip-firewall
     $(call Package/openhip/Default)
-    DEPENDS:=+libconfig +iptables +ip6tables +kmod-ipt-queue
+    DEPENDS+=+libconfig +iptables +ip6tables +kmod-ipt-queue
     TITLE:=openhip firewall
 endef
 
