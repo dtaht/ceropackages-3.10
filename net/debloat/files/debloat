@@ -686,13 +686,17 @@ function offloads(iface)
 	    return nil
 	 end
       end
-	 
+
       for i,v in ipairs(s) do
 	 local h = v:split(":")
 	 local j = h[1]:split(" ")
+	 if # j > 1 then
 	 if j[1] ~= "Offload" then
+	 if # h > 1 then
 	    t[h[1]:trim()] = h[2]:trim()
+	 end
 	    -- FIXME: should probably change 'off' and 'on' to false and true
+	 end
 	 end
       end
    end
