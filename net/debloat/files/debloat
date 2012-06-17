@@ -1248,11 +1248,11 @@ end
 -- Various models
 
 local function wireless_fq_codel()
-   wireless_setup("fq_codel")
+   wireless_setup("fq_codel limit 600")
 end
 
 local function wireless_codel()
-   wireless_setup("codel")
+   wireless_setup("codel limit 600")
 end
 
 local function wireless_sfq()
@@ -1536,7 +1536,7 @@ local function ethernet_qfq(queues)
 end
 
 local function ethernet_fq_codel(queues)
-	 qa("handle %x root fq_codel target 5ms",10)
+	 qa("handle %x root fq_codel limit 600 target 5ms",10)
 end
 
 local function ethernet_codel(queues)
