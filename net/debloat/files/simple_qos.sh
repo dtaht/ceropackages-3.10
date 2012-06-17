@@ -178,9 +178,9 @@ tc class add dev $IFACE parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${B
 # A depth of 16 is better at low rates, but no lower. I'd argue for a floor of 22
 # Packet aggregation suggests 42-64.
 
-tc qdisc add dev $IFACE parent 1:11 handle 110: fq_codel 
-tc qdisc add dev $IFACE parent 1:12 handle 120: fq_codel 
-tc qdisc add dev $IFACE parent 1:13 handle 130: fq_codel
+tc qdisc add dev $IFACE parent 1:11 handle 110: fq_codel limit 600
+tc qdisc add dev $IFACE parent 1:12 handle 120: fq_codel limit 600
+tc qdisc add dev $IFACE parent 1:13 handle 130: fq_codel limit 600
 
 tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 1 fw classid 1:11
 tc filter add dev $IFACE parent 1:0 protocol ip prio 2 handle 2 fw classid 1:12
@@ -226,9 +226,9 @@ tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kibit ceil ${BE
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 
-tc qdisc add dev $DEV parent 1:11 handle 110: fq_codel
-tc qdisc add dev $DEV parent 1:12 handle 120: fq_codel
-tc qdisc add dev $DEV parent 1:13 handle 130: fq_codel
+tc qdisc add dev $DEV parent 1:11 handle 110: fq_codel limit 600
+tc qdisc add dev $DEV parent 1:12 handle 120: fq_codel limit 600
+tc qdisc add dev $DEV parent 1:13 handle 130: fq_codel limit 600
 
 diffserv
 
