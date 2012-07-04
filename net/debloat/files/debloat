@@ -23,7 +23,8 @@ params = { "MDISC", "BIGDISC", "NORMDISC", "BINS", "MAX_HWQ_BYTES",
 	   "IP6TABLES", "PINGOPT", "FLOWS", "TSO", "BURST", "IPV6",
 	   "OVERHEAD", "LINKLAYER", "MPU", "PPPOE", "ADSL",
 	   "NOPRIOHOSTSRC","NOPRIOHOSTDST","NOPRIOPORTSRC", 
-	   "NOPRIOPORTDST", "EST_MIN", "EST_MAX", "HEADDROP", "ECNMASK" }
+	   "NOPRIOPORTDST", "EST_MIN", "EST_MAX", "HEADDROP", "ECNMASK",
+	   "qlen_vo", "qlen_vi", "qlen_be", "qlen_bk" }
 
 -- Useful defaults
 
@@ -47,8 +48,15 @@ env = { ["TC"] = "/sbin/tc",
 	["IPV6"] = true,
 	["LINKLAYER"] = "ethernet",
 	["DEBLOATLOG"] = "/dev/null",
+	["qlen_vo"] = 2,
+	["qlen_vi"] = 3,
+	["qlen_be"] = 3,
+	["qlen_bk"] = 32,
 	["MTU"] = 1500
      }
+
+wireless_debug = "/sys/kernel/debug/ieee80211/"
+qlens = { "qlen_vo", "qlen_vi", "qlen_bk", "qlen_be" }
 
 -- various shortcuts for commonly used functions
 
@@ -823,6 +831,7 @@ local function ethernet_setup(iface)
       ethtool("-K %s gso off",iface)
       ethtool("-K %s tso off",iface)
       ethtool("-K %s ufo off",iface)
+      ethtool("-K %s gro off",iface)
    end
    return queues
 end
@@ -1204,9 +1213,37 @@ end
 local function wireless_setup(queuetype)
    qa("handle 1 root mq")
    qap("1:1 handle %x %s",VO, queuetype)
-   qap("1:2 handle %x %s",VI, queuetype)
-   qap("1:3 handle %x %s",BE, queuetype)
+   qap("1:2 handle %x %s target 10ms",VI, queuetype)
+   qap("1:3 handle %x %s target 20ms",BE, queuetype)
    qap("1:4 handle %x %s",BK, queuetype)
+   wireless_filters()
+end
+
+
+local function wireless_qlen_change(base) 
+	for i=1, # qlens do
+		q = qlens[i]
+		d =  sf("%s/%s",base,q)
+		qlen = slurpf(d)
+		if qlen ~= nill and qlen ~= env[q] then
+			spewf(d,env[q])
+		end
+	end
+end
+
+local function wireless_qlen() 
+-- Sure we could inspect things here but whatever
+	wireless_qlen_change(sf("%s/%s",wireless_debug,"phy0/ath9k"))
+	wireless_qlen_change(sf("%s/%s",wireless_debug,"phy1/ath9k"))
+	wireless_qlen_change(sf("%s/%s",wireless_debug,"phy2/ath9k"))
+end
+
+local function wireless_setup_ll(queuetype)
+   qa("handle 1 root mq")
+   qap("1:1 handle %x %s limit 100 ecn target 10ms",VO, queuetype)
+   qap("1:2 handle %x %s limit 100 ecn target 27ms quantum 3028",VI, queuetype)
+   qap("1:3 handle %x %s limit 400 ecn target 14ms quantum 3028",BE, queuetype)
+   qap("1:4 handle %x %s limit 600 ecn target 50ms",BK, queuetype)
    wireless_filters()
 end
 
@@ -1249,6 +1286,10 @@ end
 
 local function wireless_fq_codel()
    wireless_setup("fq_codel limit 600")
+end
+
+local function wireless_fq_codel_ll()
+   wireless_setup_ll("fq_codel")
 end
 
 local function wireless_codel()
@@ -1536,6 +1577,10 @@ local function ethernet_qfq(queues)
 end
 
 local function ethernet_fq_codel(queues)
+	 qa("handle %x root fq_codel limit 600 target 5ms",10)
+end
+
+local function ethernet_fq_codel_ll(queues)
 	 qa("handle %x root fq_codel limit 600 target 5ms",10)
 end
 
@@ -1832,6 +1877,7 @@ WCALLBACKS = { ["qfq"] = wireless_qfq,
 	       ["sfqr"] = wireless_sfqr, 
 	       ["codel"] = wireless_codel,
 	       ["fq_codel"] = wireless_fq_codel,
+	       ["fq_codel_ll"] = wireless_fq_codel_ll,
 	       ["htb_sfq_red"] = unsupported_shaper,
 	       ["oopenwrt"] = unsupported_shaper, 
 	       ["owshaper"] = unsupported_shaper,
@@ -1847,6 +1893,7 @@ ECALLBACKS = { ["qfq"] = ethernet_qfq,
 	       ["sfq"] = ethernet_sfq,
 	       ["codel"] = ethernet_codel,
 	       ["fq_codel"] = ethernet_fq_codel,
+	       ["fq_codel_ll"] = ethernet_fq_codel_ll,
 	       ["efq"] = ethernet_efq,
 	       ["sfqred"] = ethernet_efqr,
 	       ["htb_qfq_sfqred"] = htb_qfq_sfqred,
@@ -1873,7 +1920,9 @@ ECALLBACKS = { ["qfq"] = ethernet_qfq,
 -- pingopt and argv processing too
 
 local function wireless(model)
-   if WCALLBACKS[model] ~= nil then 
+   print(model)
+   if WCALLBACKS[model] ~= nil then
+      wireless_qlen()
       return WCALLBACKS[model]() 
    else
       usage("AQM model not found")
