@@ -1242,7 +1242,7 @@ local function wireless_setup_ll(queuetype)
    qa("handle 1 root mq")
    qap("1:1 handle %x %s limit 100 ecn target 10ms",VO, queuetype)
    qap("1:2 handle %x %s limit 100 ecn target 27ms quantum 3028",VI, queuetype)
-   qap("1:3 handle %x %s limit 400 ecn target 14ms quantum 3028",BE, queuetype)
+   qap("1:3 handle %x %s limit 400 ecn target 27ms quantum 3028",BE, queuetype)
    qap("1:4 handle %x %s limit 600 ecn target 50ms",BK, queuetype)
    wireless_filters()
 end
