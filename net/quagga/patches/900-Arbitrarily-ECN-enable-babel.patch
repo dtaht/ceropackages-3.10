@@ -1,0 +1,32 @@
+From 075cc3dc1d7f35e20a308175e5ba571f90883ba9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Dave=20T=C3=A4ht?= <dave.taht@bufferbloat.net>
+Date: Sun, 8 Jul 2012 15:56:17 -0400
+Subject: [PATCH] Arbitrarily ECN enable babel
+
+This increases babel's survivability in the case of a massive
+rate change and fq_codel entering a high drop state.
+
+It is arguably the "wrong thing". The right thing, however,
+would be to do something intelligent upon receiving an ECT(0)
+marked packet. What that is is subject to debate.
+---
+ babeld/net.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/babeld/net.c b/babeld/net.c
+index 14e1ff1..660dc98 100644
+--- a/babeld/net.c
++++ b/babeld/net.c
+@@ -58,7 +58,8 @@ babel_socket(int port)
+     )
+         goto fail;
+ 
+-    setsockopt_ipv6_tclass (s, IPTOS_PREC_INTERNETCONTROL);
++    /* arbitrarily ECN enable babel for now */
++    setsockopt_ipv6_tclass (s, IPTOS_PREC_INTERNETCONTROL | 2);
+ 
+     if (set_nonblocking (s) < 0)
+         goto fail;
+-- 
+1.7.9.5
+
