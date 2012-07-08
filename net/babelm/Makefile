@@ -7,7 +7,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=babelm
+PKG_NAME:=babeld
 PKG_VERSION:=20120608-git-1
 PKG_RELEASE:=1
 
