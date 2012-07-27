@@ -8,19 +8,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=babeld
-PKG_VERSION:=20120608-git-1
+PKG_VERSION:=20120628-git-1
 PKG_RELEASE:=1
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
-#PKG_MD5SUM:=e1a801aa48fe26401c29d2152c1a1887
+#PKG_MD5SUM:=c3d2a632d5ad1944d4767960109c867f04e09d5d
 
-PKG_REV:=3914c193319fe06b584d8be648607a96eccdfb18
+PKG_REV:=c3d2a632d5ad1944d4767960109c867f04e09d5d
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://github.com/jech/babeld.git
 PKG_SOURCE_SUBDIR:=babeld-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=origin/smoothed-metric
+#PKG_SOURCE_VERSION:=origin/smoothed-metric
 PKG_SOURCE_PROTO:=git
 
 
