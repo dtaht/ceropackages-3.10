@@ -1214,8 +1214,8 @@ end
 local function wireless_setup(queuetype)
    qa("handle 1 root mq")
    qap("1:1 handle %x %s",VO, queuetype)
-   qap("1:2 handle %x %s target 10ms",VI, queuetype)
-   qap("1:3 handle %x %s target 20ms",BE, queuetype)
+   qap("1:2 handle %x %s ",VI, queuetype)
+   qap("1:3 handle %x %s ",BE, queuetype)
    qap("1:4 handle %x %s",BK, queuetype)
    wireless_filters()
 end
@@ -1241,12 +1241,12 @@ end
 
 local function wireless_setup_ll(queuetype)
    qa("handle 1 root mq")
-   qap("1:1 handle %x %s limit 100 noecn target 5ms",VO, queuetype)
-   qap("1:2 handle %x %s limit 1200 ecn target 13ms quantum %d",VI, queuetype, env.CODEL_LL_QUANTUM)
-   qap("1:3 handle %x %s limit 1200 ecn target 13ms quantum %d",BE, queuetype, env.CODEL_LL_QUANTUM)
---   qap("1:2 handle %x %s limit 200 ecn target 27ms quantum 3028",VI, queuetype)
---   qap("1:3 handle %x %s limit 400 ecn target 27ms quantum 3028",BE, queuetype)
-   qap("1:4 handle %x %s limit 1000 noecn target 50ms",BK, queuetype)
+   qap("1:1 handle %x %s limit 100 noecn ",VO, queuetype)
+   qap("1:2 handle %x %s limit 1200 ecn quantum %d",VI, queuetype, env.CODEL_LL_QUANTUM)
+   qap("1:3 handle %x %s limit 1200 ecn quantum %d",BE, queuetype, env.CODEL_LL_QUANTUM)
+--   qap("1:2 handle %x %s limit 200 ecn quantum 3028",VI, queuetype)
+--   qap("1:3 handle %x %s limit 400 ecn quantum 3028",BE, queuetype)
+   qap("1:4 handle %x %s limit 1000 noecn ",BK, queuetype)
    wireless_filters()
 end
 
@@ -1580,11 +1580,11 @@ local function ethernet_qfq(queues)
 end
 
 local function ethernet_fq_codel(queues)
-	 qa("handle %x root fq_codel target 5ms",10)
+	 qa("handle %x root fq_codel ",10)
 end
 
 local function ethernet_fq_codel_ll(queues)
-	 qa("handle %x root fq_codel limit 1200 target 5ms",10)
+	 qa("handle %x root fq_codel limit 1200 ",10)
 end
 
 local function ethernet_codel(queues)
