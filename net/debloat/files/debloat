@@ -1241,11 +1241,9 @@ end
 
 local function wireless_setup_ll(queuetype)
    qa("handle 1 root mq")
-   qap("1:1 handle %x %s limit 800 noecn quantum 500",VO, queuetype)
+   qap("1:1 handle %x %s limit 800 noecn target 10ms quantum 500",VO, queuetype)
    qap("1:2 handle %x %s limit 1200 ecn quantum %d",VI, queuetype, env.CODEL_LL_QUANTUM)
    qap("1:3 handle %x %s limit 1200 ecn quantum %d",BE, queuetype, env.CODEL_LL_QUANTUM)
---   qap("1:2 handle %x %s limit 200 ecn quantum 3028",VI, queuetype)
---   qap("1:3 handle %x %s limit 400 ecn quantum 3028",BE, queuetype)
    qap("1:4 handle %x %s limit 1200 noecn ",BK, queuetype)
    wireless_filters()
 end
