@@ -49,9 +49,9 @@ env = { ["TC"] = "/sbin/tc",
 	["LINKLAYER"] = "ethernet",
 	["DEBLOATLOG"] = "/dev/null",
 	["qlen_vo"] = 2,
-	["qlen_vi"] = 3,
-	["qlen_be"] = 3,
-	["qlen_bk"] = 3,
+	["qlen_vi"] = 4,
+	["qlen_be"] = 12,
+	["qlen_bk"] = 12,
 	["MTU"] = 1500,
 	["CODEL_LL_QUANTUM"] = 256
 	}
@@ -1242,9 +1242,9 @@ end
 local function wireless_setup_ll(queuetype)
    qa("handle 1 root mq")
    qap("1:1 handle %x %s limit 800 noecn target 10ms quantum 500",VO, queuetype)
-   qap("1:2 handle %x %s limit 1200 ecn quantum %d",VI, queuetype, env.CODEL_LL_QUANTUM)
-   qap("1:3 handle %x %s limit 1200 ecn quantum %d",BE, queuetype, env.CODEL_LL_QUANTUM)
-   qap("1:4 handle %x %s limit 1200 noecn ",BK, queuetype)
+   qap("1:2 handle %x %s limit 800 ecn quantum %d",VI, queuetype, env.CODEL_LL_QUANTUM)
+   qap("1:3 handle %x %s limit 1000 ecn quantum %d",BE, queuetype, env.CODEL_LL_QUANTUM)
+   qap("1:4 handle %x %s limit 1000 noecn ",BK, queuetype)
    wireless_filters()
 end
 
@@ -1286,7 +1286,7 @@ end
 -- Various models
 
 local function wireless_fq_codel()
-   wireless_setup("fq_codel limit 1200 quantum 256")
+   wireless_setup("fq_codel limit 1000 quantum 256")
 end
 
 local function wireless_fq_codel_ll()
@@ -1294,7 +1294,7 @@ local function wireless_fq_codel_ll()
 end
 
 local function wireless_codel()
-   wireless_setup("codel limit 1200")
+   wireless_setup("codel limit 1000")
 end
 
 local function wireless_sfq()
@@ -1578,11 +1578,11 @@ local function ethernet_qfq(queues)
 end
 
 local function ethernet_fq_codel(queues)
-	 qa("handle %x root fq_codel limit 1200 quantum 256 ",10)
+	 qa("handle %x root fq_codel limit 1000 quantum 256 ",10)
 end
 
 local function ethernet_fq_codel_ll(queues)
-	 qa("handle %x root fq_codel limit 1200 quantum 256 ",10)
+	 qa("handle %x root fq_codel limit 1000 quantum 256 ",10)
 end
 
 local function ethernet_codel(queues)
