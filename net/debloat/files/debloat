@@ -53,7 +53,7 @@ env = { ["TC"] = "/sbin/tc",
 	["qlen_be"] = 12,
 	["qlen_bk"] = 12,
 	["MTU"] = 1500,
-	["CODEL_LL_QUANTUM"] = 256
+	["CODEL_LL_QUANTUM"] = 1000
 	}
 
 wireless_debug = "/sys/kernel/debug/ieee80211/"
@@ -340,7 +340,8 @@ MULTICAST=BINS+1
 DEFAULTB=BINS+2
 
 PREREQS = { "sch_qfq", "sch_codel", "sch_fq_codel", "cls_u32", "cls_flow", 
-	    "sch_sfq", "sch_red", "sch_htb", "cls_fw" }
+	    "sch_sfq", "sch_red", "sch_htb", "cls_fw", "sch_efq_codel",
+	    "sch_ns2_codel", "sch_nfq_codel" }
 
 -- we can get more complex later
 
@@ -1285,8 +1286,24 @@ end
 
 -- Various models
 
+local function wireless_efq_codel()
+   wireless_setup("efq_codel limit 1000 quantum 1000")
+end
+
+local function wireless_efq_codel_ll()
+   wireless_setup_ll("efq_codel")
+end
+
+local function wireless_nfq_codel()
+   wireless_setup("nfq_codel limit 1000 quantum 1000")
+end
+
+local function wireless_nfq_codel_ll()
+   wireless_setup_ll("nfq_codel")
+end
+
 local function wireless_fq_codel()
-   wireless_setup("fq_codel limit 1000 quantum 256")
+   wireless_setup("fq_codel limit 1000 quantum 1000")
 end
 
 local function wireless_fq_codel_ll()
@@ -1295,6 +1312,10 @@ end
 
 local function wireless_codel()
    wireless_setup("codel limit 1000")
+end
+
+local function wireless_ns2_codel()
+   wireless_setup("ns2_codel limit 1000")
 end
 
 local function wireless_sfq()
@@ -1577,16 +1598,35 @@ local function ethernet_qfq(queues)
    model_qfq_subdisc(10)
 end
 
+local function ethernet_efq_codel(queues)
+	 qa("handle %x root efq_codel limit 1000 ",10)
+end
+
+local function ethernet_efq_codel_ll(queues)
+	 qa("handle %x root efq_codel limit 1000 quantum 1000 ",10)
+end
+
+local function ethernet_nfq_codel(queues)
+	 qa("handle %x root nfq_codel limit 1000 ",10)
+end
+
+local function ethernet_nfq_codel_ll(queues)
+	 qa("handle %x root nfq_codel limit 1000 quantum 1000 ",10)
+end
+
 local function ethernet_fq_codel(queues)
-	 qa("handle %x root fq_codel limit 1000 quantum 256 ",10)
+	 qa("handle %x root fq_codel limit 1000 ",10)
 end
 
 local function ethernet_fq_codel_ll(queues)
-	 qa("handle %x root fq_codel limit 1000 quantum 256 ",10)
+	 qa("handle %x root fq_codel limit 1000 quantum 1000 ",10)
 end
 
 local function ethernet_codel(queues)
 	 qa("handle %x root codel",10)
+end
+local function ethernet_ns2_codel(queues)
+	 qa("handle %x root ns2_codel",10)
 end
 local function ethernet_sfq(queues)
 	 qa("handle %x root sfq",10)
@@ -1879,6 +1919,12 @@ WCALLBACKS = { ["qfq"] = wireless_qfq,
 	       ["codel"] = wireless_codel,
 	       ["fq_codel"] = wireless_fq_codel,
 	       ["fq_codel_ll"] = wireless_fq_codel_ll,
+	       ["nfq_codel"] = wireless_nfq_codel,
+	       ["nfq_codel_ll"] = wireless_nfq_codel_ll,
+	       ["efq_codel"] = wireless_efq_codel,
+	       ["efq_codel_ll"] = wireless_efq_codel_ll,
+	       ["ns2_codel"] = wireless_ns2_codel,
+	       ["ns2_codel_ll"] = wireless_ns2_codel_ll,
 	       ["htb_sfq_red"] = unsupported_shaper,
 	       ["oopenwrt"] = unsupported_shaper, 
 	       ["owshaper"] = unsupported_shaper,
@@ -1893,8 +1939,13 @@ ECALLBACKS = { ["qfq"] = ethernet_qfq,
 	       ["ared"] = ethernet_ared,
 	       ["sfq"] = ethernet_sfq,
 	       ["codel"] = ethernet_codel,
+	       ["ns2_codel"] = ethernet_ns2_codel,
 	       ["fq_codel"] = ethernet_fq_codel,
 	       ["fq_codel_ll"] = ethernet_fq_codel_ll,
+	       ["nfq_codel"] = ethernet_nfq_codel,
+	       ["nfq_codel_ll"] = ethernet_nfq_codel_ll,
+	       ["efq_codel"] = ethernet_efq_codel,
+	       ["efq_codel_ll"] = ethernet_efq_codel_ll,
 	       ["efq"] = ethernet_efq,
 	       ["sfqred"] = ethernet_efqr,
 	       ["htb_qfq_sfqred"] = htb_qfq_sfqred,
