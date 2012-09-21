@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2012 Daniel Pocock <daniel@pocock.com.au>
+
+START=80
+STOP=20
+
+SERVICE_USE_PID=1
+
+start() {
+	group_exists return 123 || group_add return 123
+        user_exists return 123 || user_add return 123 123 return /var/lib/return
+        mkdir -p /var/lib/return
+        chown -R return:return /var/lib/return
+        service_start /usr/sbin/reTurnServer --Daemonize=true --LoggingType=syslog --PidFile=/var/run/reTurnServer.pid
+}
+
+stop() {
+	service_stop /usr/sbin/reTurnServer
+}
+

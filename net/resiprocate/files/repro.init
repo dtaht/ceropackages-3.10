@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2012 Daniel Pocock <daniel@pocock.com.au>
+
+START=80
+STOP=20
+
+SERVICE_USE_PID=1
+
+start() {
+	group_exists repro 123 || group_add repro 123
+        user_exists repro 123 || user_add repro 123 123 repro /etc/repro/home
+        mkdir -p /etc/repro/home
+        chown -R repro:repro /etc/repro/home
+        service_start /usr/sbin/repro --Daemonize=true --LoggingType=syslog --PidFile=/var/run/repro.pid
+}
+
+stop() {
+	service_stop /usr/sbin/repro
+}
+
