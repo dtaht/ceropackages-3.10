@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
 PKG_VERSION:=9.9.1-P3
-PKG_RELEASE:=19
+PKG_RELEASE:=20
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/bind-latest/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+bind-latest-libs +libopenssl +xinetd +libcap +libcrypto
+  DEPENDS:=+bind-latest-libs +libopenssl +xinetd +libcap
   TITLE:=bind
   URL:=https://www.isc.org/software/bind
   SUBMENU:=IP Addresses and Names
