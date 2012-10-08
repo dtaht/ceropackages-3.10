@@ -9,13 +9,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quagga
 
-PKG_VERSION:=0.99.17.9-4-git
+PKG_VERSION:=0.99.17.11-7-git
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://github.com/Quagga-RE/quagga-RE.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_VERSION:=9831726be894b14cc0615a6f5304da068db34af0
+PKG_SOURCE_VERSION:=a46d79fab0d04e0e717563e6151e66075e0f73e2
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 #PKG_SOURCE_URL:=http://devresources.linux-foundation.org/dev/iproute2/download/
@@ -23,8 +23,8 @@ PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=http://www.quagga.net/download/ \
-                http://www.de.quagga.net/download/ \
-                http://www.uk.quagga.net/download/
+#                http://www.de.quagga.net/download/ \
+#                http://www.uk.quagga.net/download/
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_IPV6 \
@@ -50,6 +50,7 @@ define Package/quagga/Default
   SUBMENU:=Routing and Redirection
   TITLE:=The Quagga Software Routing Suite (RE version)
   URL:=http://www.quagga.net
+  DEPENDS:= +libcap +librt +quagga-libzebra
   MAINTAINER:=Vasilis Tsiligiannis <b_tsiligiannis@silverton.gr>
 endef
 
@@ -61,11 +62,12 @@ endef
 define Package/quagga/description
   A routing software package that provides TCP/IP based routing services
   with routing protocols support such as RIPv1, RIPv2, RIPng, OSPFv2,
-  OSPFv3, BGP-4, and BGP-4+
+  OSPFv3, BGP-4, BGP-4+ and Babel.
 endef
 
 define Package/quagga-libzebra
   $(call Package/quagga/Default)
+  DEPENDS+=+libgcrypt +libgpg-error
   TITLE:=zebra library
 endef
 
@@ -76,48 +78,48 @@ endef
 
 define Package/quagga-bgpd
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libzebra
   TITLE:=BGPv4, BGPv4+, BGPv4- routing engine
 endef
 
 define Package/quagga-isisd
   $(call Package/quagga/Default)
+  DEPENDS+=+quagga
   TITLE:=IS-IS routing engine
 endef
 
 define Package/quagga-ospfd
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libospf +quagga-libzebra
+  DEPENDS+=+quagga-libospf +quagga
   TITLE:=OSPFv2 routing engine
 endef
 
 define Package/quagga-ospf6d
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libospf +quagga-libzebra @IPV6
+  DEPENDS+=+quagga-libospf +quagga @IPV6
   TITLE:=OSPFv3 routing engine
 endef
 
 define Package/quagga-ripd
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libzebra
+  DEPENDS+=+quagga
   TITLE:=RIP routing engine
 endef
 
 define Package/quagga-ripngd
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libzebra @IPV6
+  DEPENDS+=+quagga @IPV6
   TITLE:=RIPNG routing engine
 endef
 
 define Package/quagga-babeld
   $(call Package/quagga/Default)
-  DEPENDS+=+quagga-libzebra @IPV6
+  DEPENDS+=+quagga @IPV6
   TITLE:=Babeld routing engine
 endef
 
 define Package/quagga-vtysh
   $(call Package/quagga/Default)
-  DEPENDS+=quagga-libzebra +libreadline +libncurses
+  DEPENDS+=+libreadline +libncurses
   TITLE:=integrated shell for Quagga routing software
 endef
 
@@ -168,6 +170,7 @@ endif
 CONFIGURE_ARGS+= \
 	--localstatedir=/var/run/quagga \
 	--sysconfdir=/etc/quagga/ \
+	--with-libgcrypt \
 	--enable-shared \
 	--disable-static \
 	--enable-user=network \

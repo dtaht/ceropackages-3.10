@@ -83,6 +83,7 @@ define Package/ntp-utils
 $(call Package/ntpd/Default)
   TITLE+= utilities
   VARIANT:=nossl
+  DEPENDS+= +libopenssl +libpthread +libsres +dnsval
 endef
 
 define Package/ntp-utils/description
@@ -107,7 +108,7 @@ define Package/ntp-keygen-ssl
 $(call Package/ntpd/Default)
   TITLE+=keygen (with OpenSSL support)
   VARIANT:=ssl
-  DEPENDS+= +libopenssl
+  DEPENDS+= +libopenssl +libpthread +libsres
 endef
 
 define Package/ntp-keygen-ssl/description

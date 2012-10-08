@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.9.0
-PKG_RELEASE:=19
+PKG_VERSION:=9.9.1-P3
+PKG_RELEASE:=20
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
 	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION)/ \
 	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)/
-PKG_MD5SUM:=9281d0b04f711d28153ba1ab04a54026
+PKG_MD5SUM:=8f407c9a988d7b447a54b4cb54230dcb
 
 PKG_FIXUP:=libtool
 
@@ -24,13 +24,14 @@ include $(INCLUDE_DIR)/package.mk
 define Package/bind-latest/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+bind-latest-libs +libopenssl +xinetd
+  DEPENDS:=+bind-latest-libs +libopenssl +xinetd +libcap
   TITLE:=bind
   URL:=https://www.isc.org/software/bind
   SUBMENU:=IP Addresses and Names
 endef
 
 define Package/bind-latest-libs
+  $(call Package/bind-latest/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=bind shared libraries

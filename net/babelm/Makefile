@@ -3,40 +3,40 @@
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
-# Please note this is not an officially released version of babelz
+# Please note this is not an officially released version of babelm
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=babeld
-PKG_VERSION:=20111019
-PKG_RELEASE:=7
+PKG_VERSION:=20120628-git-2
+PKG_RELEASE:=1
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
-#PKG_MD5SUM:=e1a801aa48fe26401c29d2152c1a1887
+#PKG_MD5SUM:=c3d2a632d5ad1944d4767960109c867f04e09d5d
 
-PKG_REV:=8302ad91524e361d04ac6cb7ffb62b88bfaabc1b
+PKG_REV:=69348bb2163fc16dab6c4251b0b50bd703a1fd18
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=git://git.wifi.pps.jussieu.fr/babeld
+PKG_SOURCE_URL:=git://github.com/jech/babeld.git
 PKG_SOURCE_SUBDIR:=babeld-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=$(PKG_REV)
+#PKG_SOURCE_VERSION:=origin/smoothed-metric
 PKG_SOURCE_PROTO:=git
 
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/babelz
+define Package/babelm
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Routing and Redirection
-  TITLE:=A loop-free distance-vector routing protocol
+  TITLE:=Experimental convergence algo for babel, the distance-vector routing protocol
   URL:=http://www.pps.jussieu.fr/~jch/software/babel/
   MAINTAINER:=Dave Taht <d+babel@taht.net>
   DEPENDS:=+kmod-ipv6 +librt
 endef
 
-define Package/babelz/description
+define Package/babelm/description
  Babel is a loop-avoiding distance-vector routing protocol roughly based
  on DSDV and AODV, but with provisions for link cost estimation and
  redistribution of routes from other routing protocols.
@@ -44,9 +44,10 @@ define Package/babelz/description
  efficiently on wired networks. It will generate between 1.2 and 2.4 times
  the amount of routing traffic that RIPng would generate, while
  never counting to infinity.
+ This experimental package contains a newer smoothed convergence algo.
 endef
 
-define Package/babelz/conffiles
+define Package/babelm/conffiles
 /etc/babel.conf
 /etc/config/babeld
 endef
@@ -54,7 +55,7 @@ endef
 MAKE_FLAGS+= \
 	CFLAGS="$(TARGET_CFLAGS)" \
 
-define Package/babelz/install
+define Package/babelm/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/babeld $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc
@@ -65,4 +66,4 @@ define Package/babelz/install
 	$(INSTALL_BIN) ./files/babeld.init $(1)/etc/init.d/babeld
 endef
 
-$(eval $(call BuildPackage,babelz))
+$(eval $(call BuildPackage,babelm))
