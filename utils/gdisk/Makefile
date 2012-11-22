@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 OpenWrt.org
+# Copyright (C) 2011-2012 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gptfdisk
-PKG_VERSION:=0.8.1
+PKG_VERSION:=0.8.5
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/gptfdisk
-PKG_MD5SUM:=f556297cce00ef096de11d504d85b9a9
+PKG_MD5SUM:=fbff65ea54638a4cb37878f05c178c3a
 
 PKG_BUILD_DEPENDS:=libncurses libpopt libuuid
 
