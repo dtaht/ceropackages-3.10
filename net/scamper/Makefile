@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=scamper
-PKG_VERSION:=20111202b
+PKG_VERSION:=20111202c
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).orig.tar.gz
-PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/s/scamper
-PKG_MD5SUM:=af6f0519bae9106112c33325b7176af7
+PKG_SOURCE:=$(PKG_NAME)-cvs-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=http://www.wand.net.nz/scamper
+PKG_MD5SUM:=7cac731d7ecda6ec0e434ea8bbf4c7ac
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-cvs-$(PKG_VERSION)
 PKG_FIXUP:=autoreconf
@@ -37,7 +37,7 @@ define Package/scamper/Default/description
   interface's MTU and discovers the location of Path MTU bottlenecks. scamper
   performs a PMTUD search when an ICMP fragmentation required message is not
   returned to establish the PMTU to the next point in the network, followed by a
-  TTL limited search to infer where the failure appears to occur. 
+  TTL limited search to infer where the failure appears to occur.
 endef
 
 define Package/scamper
