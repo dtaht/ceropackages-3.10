@@ -1,31 +1,24 @@
 --- a/csrc/libexec/dir.mk
 +++ b/csrc/libexec/dir.mk
-@@ -18,14 +18,14 @@ CCNLIBDIR = ../lib
+@@ -18,15 +18,15 @@ CCNLIBDIR = ../lib
  INSTALLED_PROGRAMS = ccndc
  DEBRIS = ccndc-inject
  PROGRAMS = $(INSTALLED_PROGRAMS) udplink
--CSRC = ccndc.c udplink.c
-+CSRC = dn_skipname.c ccndc.c udplink.c
+-CSRC = ccndc-log.c ccndc-main.c ccndc-srv.c ccndc.c udplink.c
++CSRC = dn_skipname.c ccndc-log.c ccndc-main.c ccndc-srv.c ccndc.c udplink.c
+ HSRC = ccndc-log.h ccndc-srv.h ccndc.h
  
  default all: $(PROGRAMS)
  
  $(PROGRAMS): $(CCNLIBDIR)/libccn.a
  
--ccndc: ccndc.o
--	$(CC) $(CFLAGS) -o $@ ccndc.o $(LDLIBS) $(OPENSSL_LIBS) $(RESOLV_LIBS) -lcrypto
-+ccndc: dn_skipname.o ccndc.o
-+	$(CC) $(CFLAGS) -o $@ dn_skipname.o ccndc.o $(LDLIBS) $(OPENSSL_LIBS) $(RESOLV_LIBS) -lcrypto
+-ccndc: ccndc-log.o ccndc-srv.o ccndc.o ccndc-main.o
+-	$(CC) $(CFLAGS) -o $@ ccndc-log.o ccndc-srv.o ccndc.o ccndc-main.o $(LDLIBS) $(OPENSSL_LIBS) $(RESOLV_LIBS) -lcrypto
++ccndc: dn_skipname.o ccndc-log.o ccndc-srv.o ccndc.o ccndc-main.o
++	$(CC) $(CFLAGS) -o $@ dn_skipname.o ccndc-log.o ccndc-srv.o ccndc.o ccndc-main.o $(LDLIBS) $(OPENSSL_LIBS) $(RESOLV_LIBS) -lcrypto
  
  udplink: udplink.o
  	$(CC) $(CFLAGS) -o $@ udplink.o $(LDLIBS)  $(OPENSSL_LIBS) -lcrypto
-@@ -41,6 +41,7 @@ test:
- # Dependencies below here are checked by depend target
- # but must be updated manually.
- ###############################
-+dn_skipname.o: dn_skipname.c
- ccndc.o: ccndc.c ../include/ccn/bloom.h ../include/ccn/ccn.h \
-   ../include/ccn/coding.h ../include/ccn/charbuf.h \
-   ../include/ccn/indexbuf.h ../include/ccn/ccnd.h ../include/ccn/uri.h \
 --- /dev/null
 +++ b/csrc/libexec/dn_skipname.c
 @@ -0,0 +1,51 @@

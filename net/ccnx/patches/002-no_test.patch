@@ -1,27 +1,16 @@
-From 5dd5289cbc2a7c47f3d814c88a2e508cd1eb7704 Mon Sep 17 00:00:00 2001
-From: Dave Taht <dave.taht@bufferbloat.net>
-Date: Mon, 20 Feb 2012 21:32:19 +0100
-Subject: [PATCH] no tests
-
----
- csrc/lib/dir.mk |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
-
-diff --git a/csrc/lib/dir.mk b/csrc/lib/dir.mk
-index f35fd91..33de73b 100644
 --- a/csrc/lib/dir.mk
 +++ b/csrc/lib/dir.mk
-@@ -77,9 +77,7 @@ shlib: $(SHLIBNAME)
+@@ -76,11 +76,8 @@ shlib: $(SHLIBNAME)
+ 
  lib: libccn.a
  
- test: default keystore_check encodedecodetest ccnbtreetest
+-test: default encodedecodetest ccnbtreetest
 -	./encodedecodetest -o /dev/null
 -	./ccnbtreetest
--	rm -R _bt_*
+-	./ccnbtreetest - < q.dat
+-	$(RM) -R _bt_*
++test:
 +	@echo "Sorry, can't run tests when cross compiling"
  
  dtag_check: _always
  	@./gen_dtag_table 2>/dev/null | diff - ccn_dtag_table.c | grep '^[<]' >/dev/null && echo '*** Warning: ccn_dtag_table.c may be out of sync with tagnames.cvsdict' || :
--- 
-1.7.5.4
-

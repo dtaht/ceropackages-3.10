@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 OpenWrt.org
+# Copyright (C) 2011-2012 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ccnx
-PKG_VERSION:=0.5.1
+PKG_VERSION:=0.6.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.ccnx.org/releases
-PKG_MD5SUM:=e20e2c9be1acde770e0ae70a167d6c48
+PKG_MD5SUM:=f24ca7c00dd9bc7607609637195ff6f2
 
 PKG_INSTALL:=1
 
@@ -34,16 +34,15 @@ define Package/ccnx/description
 endef
 
 MAKE_FLAGS += \
-	CPREFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -I../include \
-		-D_REENTRANT" \
-	INSTALL_BASE="$(PKG_INSTALL_DIR)/usr" \
+	CPREFLAGS="$(TARGET_CPPFLAGS) -I../include -I.. -D_REENTRANT" \
+	INSTALL_BASE="/usr" \
 	MORE_LDLIBS="$(TARGET_LDFLAGS)"
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/ccn
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/ccn/*.h $(1)/usr/include/ccn/
+	$(INSTALL_DIR) $(1)/usr/include
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/ccn $(1)/usr/include/
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libccn.a $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libccn*.a $(1)/usr/lib/
 endef
 
 define Package/ccnx/install
