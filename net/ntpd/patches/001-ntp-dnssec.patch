@@ -1,7 +1,6 @@
-diff -u -r ntp-dev-4.2.7p250/config.h.in ntp-dev-4.2.7p250.dnssec/config.h.in
---- ntp-dev-4.2.7p250/config.h.in	2012-01-15 06:36:59.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/config.h.in	2012-01-16 12:27:05.000000000 -0500
-@@ -359,6 +359,9 @@
+--- a/config.h.in
++++ b/config.h.in
+@@ -365,6 +365,9 @@
  /* Use Rendezvous/DNS-SD registration */
  #undef HAVE_DNSREGISTRATION
  
@@ -11,7 +10,7 @@ diff -u -r ntp-dev-4.2.7p250/config.h.in ntp-dev-4.2.7p250.dnssec/config.h.in
  /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
  #undef HAVE_DOPRNT
  
-@@ -1503,6 +1506,28 @@
+@@ -1516,6 +1519,28 @@ typedef unsigned int	uintptr_t;
  /* Must we have a CTTY for fsetown? */
  #undef USE_FSETOWNCTTY
  
@@ -40,7 +39,7 @@ diff -u -r ntp-dev-4.2.7p250/config.h.in ntp-dev-4.2.7p250.dnssec/config.h.in
  /* Can we use SIGPOLL for tty IO? */
  #undef USE_TTY_SIGPOLL
  
-@@ -1555,9 +1580,6 @@
+@@ -1568,9 +1593,6 @@ typedef unsigned int	uintptr_t;
  /* enable thread safety */
  #undef _THREAD_SAFE
  
@@ -50,7 +49,7 @@ diff -u -r ntp-dev-4.2.7p250/config.h.in ntp-dev-4.2.7p250.dnssec/config.h.in
  /* Are we _special_? */
  #undef __APPLE_USE_RFC_3542
  
-@@ -1566,28 +1588,6 @@
+@@ -1579,28 +1601,6 @@ typedef unsigned int	uintptr_t;
  # undef __CHAR_UNSIGNED__
  #endif
  
@@ -79,10 +78,9 @@ diff -u -r ntp-dev-4.2.7p250/config.h.in ntp-dev-4.2.7p250.dnssec/config.h.in
  /* deviant */
  #undef adjtimex
  
-diff -u -r ntp-dev-4.2.7p250/configure.ac ntp-dev-4.2.7p250.dnssec/configure.ac
---- ntp-dev-4.2.7p250/configure.ac	2011-10-21 14:30:06.000000000 -0400
-+++ ntp-dev-4.2.7p250.dnssec/configure.ac	2012-01-16 12:27:05.000000000 -0500
-@@ -199,6 +199,28 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -208,6 +208,28 @@ case "$host" in
      ;;
  esac
  
@@ -111,10 +109,9 @@ diff -u -r ntp-dev-4.2.7p250/configure.ac ntp-dev-4.2.7p250.dnssec/configure.ac
  AC_CHECK_HEADERS([bstring.h])
  AC_CHECK_HEADER(
      [dns_sd.h],
-diff -u -r ntp-dev-4.2.7p250/include/ntp_intres.h ntp-dev-4.2.7p250.dnssec/include/ntp_intres.h
---- ntp-dev-4.2.7p250/include/ntp_intres.h	2011-02-21 04:08:19.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/include/ntp_intres.h	2012-01-16 12:27:05.000000000 -0500
-@@ -19,6 +19,14 @@
+--- a/include/ntp_intres.h
++++ b/include/ntp_intres.h
+@@ -19,6 +19,14 @@ typedef void	(*gai_sometime_callback)
  extern int	getaddrinfo_sometime(const char *, const char *,
  				     const struct addrinfo *, int,
  				     gai_sometime_callback, void *);
@@ -129,17 +126,15 @@ diff -u -r ntp-dev-4.2.7p250/include/ntp_intres.h ntp-dev-4.2.7p250.dnssec/inclu
  /*
   * In gai_sometime_callback routines, the resulting addrinfo list is
   * only available until the callback returns.  To hold on to the list
-diff -u -r ntp-dev-4.2.7p250/include/ntpd.h ntp-dev-4.2.7p250.dnssec/include/ntpd.h
---- ntp-dev-4.2.7p250/include/ntpd.h	2011-12-18 06:01:47.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/include/ntpd.h	2012-01-16 12:27:05.000000000 -0500
-@@ -569,4 +569,3 @@
+--- a/include/ntpd.h
++++ b/include/ntpd.h
+@@ -569,4 +569,3 @@ extern int accept_wildcard_if_for_winnt;
  extern struct refclock * const refclock_conf[];
  extern u_char	num_refclock_conf;
  #endif
 -
-diff -u -r ntp-dev-4.2.7p250/libntp/decodenetnum.c ntp-dev-4.2.7p250.dnssec/libntp/decodenetnum.c
---- ntp-dev-4.2.7p250/libntp/decodenetnum.c	2011-11-03 15:17:26.000000000 -0400
-+++ ntp-dev-4.2.7p250.dnssec/libntp/decodenetnum.c	2012-01-16 12:27:05.000000000 -0500
+--- a/libntp/decodenetnum.c
++++ b/libntp/decodenetnum.c
 @@ -11,6 +11,10 @@
  #include <netinet/in.h>
  #endif
@@ -151,7 +146,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/decodenetnum.c ntp-dev-4.2.7p250.dnssec/libn
  #include "ntp.h"
  #include "ntp_stdlib.h"
  #include "ntp_assert.h"
-@@ -34,6 +38,9 @@
+@@ -34,6 +38,9 @@ decodenetnum(
  	char *pp;
  	char *np;
  	char name[80];
@@ -161,7 +156,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/decodenetnum.c ntp-dev-4.2.7p250.dnssec/libn
  
  	NTP_REQUIRE(num != NULL);
  	NTP_REQUIRE(strlen(num) < sizeof(name));
-@@ -69,9 +76,21 @@
+@@ -69,9 +76,21 @@ decodenetnum(
  	}
  	ZERO(hints);
  	hints.ai_flags = Z_AI_NUMERICHOST;
@@ -183,9 +178,8 @@ diff -u -r ntp-dev-4.2.7p250/libntp/decodenetnum.c ntp-dev-4.2.7p250.dnssec/libn
  	NTP_INSIST(ai->ai_addrlen <= sizeof(*netnum));
  	ZERO(*netnum);
  	memcpy(netnum, ai->ai_addr, ai->ai_addrlen);
-diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp/ntp_intres.c
---- ntp-dev-4.2.7p250/libntp/ntp_intres.c	2011-04-21 02:04:48.000000000 -0400
-+++ ntp-dev-4.2.7p250.dnssec/libntp/ntp_intres.c	2012-01-16 12:27:05.000000000 -0500
+--- a/libntp/ntp_intres.c
++++ b/libntp/ntp_intres.c
 @@ -92,6 +92,10 @@
  # endif
  #endif
@@ -197,7 +191,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  #include "ntp.h"
  #include "ntp_debug.h"
  #include "ntp_malloc.h"
-@@ -186,6 +190,22 @@
+@@ -186,6 +190,22 @@ typedef struct dnsworker_ctx_tag {
  #endif
  } dnsworker_ctx;
  
@@ -220,7 +214,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  
  /* === variables === */
  dnschild_ctx **		dnschild_contexts;		/* parent */
-@@ -224,9 +244,133 @@
+@@ -224,9 +244,133 @@ static	void		getaddrinfo_sometime_comple
  static	void		getnameinfo_sometime_complete(blocking_work_req,
  						      void *, size_t,
  						      void *);
@@ -354,7 +348,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  /*
   * getaddrinfo_sometime - uses blocking child to call getaddrinfo then
   *			  invokes provided callback completion function.
-@@ -240,6 +384,7 @@
+@@ -240,6 +384,7 @@ getaddrinfo_sometime(
  	gai_sometime_callback	callback,
  	void *			context
  	)
@@ -362,7 +356,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  {
  	blocking_gai_req *	gai_req;
  	u_int			idx;
-@@ -319,6 +464,9 @@
+@@ -319,6 +464,9 @@ blocking_getaddrinfo(
  	size_t			resp_octets;
  	char *			cp;
  	time_t			time_now;
@@ -372,7 +366,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  
  	gai_req = (void *)((char *)req + sizeof(*req));
  	node = (char *)gai_req + sizeof(*gai_req);
-@@ -349,8 +497,22 @@
+@@ -349,8 +497,22 @@ blocking_getaddrinfo(
  		fflush(stdout);
  #endif	
  	ai_res = NULL;
@@ -395,7 +389,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  	gai_resp->retry = gai_req->retry;
  #ifdef EAI_SYSTEM
  	if (EAI_SYSTEM == gai_resp->retcode)
-@@ -618,7 +780,6 @@
+@@ -618,7 +780,6 @@ void gai_test_callback(int rescode, int
  }
  #endif	/* TEST_BLOCKING_WORKER */
  
@@ -403,7 +397,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  int
  getnameinfo_sometime(
  	sockaddr_u *		psau,
-@@ -671,7 +832,6 @@
+@@ -671,7 +832,6 @@ getnameinfo_sometime(
  	return 0;
  }
  
@@ -411,9 +405,8 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_intres.c ntp-dev-4.2.7p250.dnssec/libntp
  int
  blocking_getnameinfo(
  	blocking_child *	c,
-diff -u -r ntp-dev-4.2.7p250/libntp/ntp_rfc2553.c ntp-dev-4.2.7p250.dnssec/libntp/ntp_rfc2553.c
---- ntp-dev-4.2.7p250/libntp/ntp_rfc2553.c	2011-05-08 04:11:52.000000000 -0400
-+++ ntp-dev-4.2.7p250.dnssec/libntp/ntp_rfc2553.c	2012-01-16 12:27:05.000000000 -0500
+--- a/libntp/ntp_rfc2553.c
++++ b/libntp/ntp_rfc2553.c
 @@ -76,6 +76,9 @@
  #ifdef HAVE_NETINET_IN_H
  #include <netinet/in.h>
@@ -424,7 +417,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_rfc2553.c ntp-dev-4.2.7p250.dnssec/libnt
  #include "ntp_rfc2553.h"
  
  #include "ntpd.h"
-@@ -268,7 +271,15 @@
+@@ -268,7 +271,15 @@ DNSlookup_name(
  	struct hostent **Addresses
  )
  {
@@ -440,7 +433,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_rfc2553.c ntp-dev-4.2.7p250.dnssec/libnt
  	return (h_errno);
  }
  #endif
-@@ -539,7 +550,6 @@
+@@ -539,7 +550,6 @@ do_nodename(
  	/*
  	 * Look for a name
  	 */
@@ -448,9 +441,8 @@ diff -u -r ntp-dev-4.2.7p250/libntp/ntp_rfc2553.c ntp-dev-4.2.7p250.dnssec/libnt
  	errval = DNSlookup_name(nodename, AF_INET, &hp);
  
  	if (hp == NULL) {
-diff -u -r ntp-dev-4.2.7p250/libntp/numtohost.c ntp-dev-4.2.7p250.dnssec/libntp/numtohost.c
---- ntp-dev-4.2.7p250/libntp/numtohost.c	2011-04-05 03:35:33.000000000 -0400
-+++ ntp-dev-4.2.7p250.dnssec/libntp/numtohost.c	2012-01-16 12:27:05.000000000 -0500
+--- a/libntp/numtohost.c
++++ b/libntp/numtohost.c
 @@ -8,6 +8,10 @@
  #include <netinet/in.h>		/* ntohl */
  #endif
@@ -462,7 +454,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/numtohost.c ntp-dev-4.2.7p250.dnssec/libntp/
  #include "ntp_fp.h"
  #include "ntp_stdlib.h"
  #include "lib_strbuf.h"
-@@ -23,6 +27,9 @@
+@@ -23,6 +27,9 @@ numtohost(
  {
  	char *bp;
  	struct hostent *hp;
@@ -472,7 +464,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/numtohost.c ntp-dev-4.2.7p250.dnssec/libntp/
  
  	/*
  	 * This is really gross, but saves lots of hanging looking for
-@@ -30,10 +37,17 @@
+@@ -30,10 +37,17 @@ numtohost(
  	 * addresses on the loopback network except for the loopback
  	 * host itself.
  	 */
@@ -490,9 +482,8 @@ diff -u -r ntp-dev-4.2.7p250/libntp/numtohost.c ntp-dev-4.2.7p250.dnssec/libntp/
  	    return numtoa(netnum);
  	
  	LIB_GETBUF(bp);
-diff -u -r ntp-dev-4.2.7p250/libntp/socktohost.c ntp-dev-4.2.7p250.dnssec/libntp/socktohost.c
---- ntp-dev-4.2.7p250/libntp/socktohost.c	2011-03-06 05:04:46.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/libntp/socktohost.c	2012-01-16 12:27:05.000000000 -0500
+--- a/libntp/socktohost.c
++++ b/libntp/socktohost.c
 @@ -14,6 +14,10 @@
  
  #include <stdio.h>
@@ -504,7 +495,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/socktohost.c ntp-dev-4.2.7p250.dnssec/libntp
  #include "ntp_fp.h"
  #include "lib_strbuf.h"
  #include "ntp_stdlib.h"
-@@ -36,13 +40,22 @@
+@@ -36,13 +40,22 @@ socktohost(
  	sockaddr_u		addr;
  	size_t			octets;
  	int			a_info;
@@ -527,7 +518,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/socktohost.c ntp-dev-4.2.7p250.dnssec/libntp
  
  	TRACE(1, ("%s reversed to %s\n", stoa(sock), pbuf));
  
-@@ -57,7 +70,11 @@
+@@ -57,7 +70,11 @@ socktohost(
  	hints.ai_flags = 0;
  	alist = NULL;
  
@@ -539,7 +530,7 @@ diff -u -r ntp-dev-4.2.7p250/libntp/socktohost.c ntp-dev-4.2.7p250.dnssec/libntp
  	if (a_info == EAI_NONAME
  #ifdef EAI_NODATA
  	    || a_info == EAI_NODATA
-@@ -67,18 +84,41 @@
+@@ -67,18 +84,41 @@ socktohost(
  #ifdef AI_ADDRCONFIG
  		hints.ai_flags |= AI_ADDRCONFIG;
  #endif
@@ -583,9 +574,8 @@ diff -u -r ntp-dev-4.2.7p250/libntp/socktohost.c ntp-dev-4.2.7p250.dnssec/libntp
  	NTP_INSIST(alist != NULL);
  
  	for (ai = alist; ai != NULL; ai = ai->ai_next) {
-diff -u -r ntp-dev-4.2.7p250/ntpd/cmd_args.c ntp-dev-4.2.7p250.dnssec/ntpd/cmd_args.c
---- ntp-dev-4.2.7p250/ntpd/cmd_args.c	2011-10-10 01:48:29.000000000 -0400
-+++ ntp-dev-4.2.7p250.dnssec/ntpd/cmd_args.c	2012-01-16 12:27:05.000000000 -0500
+--- a/ntpd/cmd_args.c
++++ b/ntpd/cmd_args.c
 @@ -5,6 +5,10 @@
  # include <config.h>
  #endif
@@ -597,7 +587,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/cmd_args.c ntp-dev-4.2.7p250.dnssec/ntpd/cmd_a
  #include "ntpd.h"
  #include "ntp_stdlib.h"
  #include "ntp_config.h"
-@@ -75,6 +79,16 @@
+@@ -75,6 +79,16 @@ getCmdOpts(
  
  	if (HAVE_OPT( PANICGATE ))
  		allow_panic = TRUE;
@@ -614,10 +604,9 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/cmd_args.c ntp-dev-4.2.7p250.dnssec/ntpd/cmd_a
  
  #ifdef HAVE_DROPROOT
  	if (HAVE_OPT( JAILDIR )) {
-diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_config.c ntp-dev-4.2.7p250.dnssec/ntpd/ntp_config.c
---- ntp-dev-4.2.7p250/ntpd/ntp_config.c	2011-12-18 06:01:48.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/ntpd/ntp_config.c	2012-01-16 12:27:05.000000000 -0500
-@@ -33,6 +33,10 @@
+--- a/ntpd/ntp_config.c
++++ b/ntpd/ntp_config.c
+@@ -36,6 +36,10 @@
  #include <isc/net.h>
  #include <isc/result.h>
  
@@ -628,17 +617,17 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_config.c ntp-dev-4.2.7p250.dnssec/ntpd/ntp
  #include "ntp.h"
  #include "ntpd.h"
  #include "ntp_io.h"
-@@ -1664,6 +1668,9 @@
+@@ -1669,6 +1673,9 @@ get_next_address(
  	sockaddr_u *final_addr;
  	struct addrinfo *ptr;
  	int gai_err;
 +#ifdef HAVE_DNSVAL
 +    val_status_t val_status;
 +#endif
- 	
+ 
  	final_addr = emalloc(sizeof(*final_addr));
  
-@@ -1672,15 +1679,34 @@
+@@ -1677,15 +1684,34 @@ get_next_address(
  			 addr_prefix, curr_addr_num++);
  		printf("Selecting ip address %s for hostname %s\n",
  		       addr_string, addr->address);
@@ -673,7 +662,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_config.c ntp-dev-4.2.7p250.dnssec/ntpd/ntp
  	memcpy(final_addr, ptr->ai_addr, ptr->ai_addrlen);
  	fprintf(stderr, "Successful in setting ip address of simulated server to: %s\n",
  		stoa(final_addr));
-@@ -2221,6 +2247,9 @@
+@@ -2260,6 +2286,9 @@ config_access(
  #else
  	    "mssntp restrict bit ignored, this ntpd was configured without --enable-ntp-signd.";
  #endif
@@ -683,7 +672,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_config.c ntp-dev-4.2.7p250.dnssec/ntpd/ntp
  
  	/* Configure the mru options */
  	my_opt = HEAD_PFIFO(ptree->mru_opts);
-@@ -2459,16 +2488,36 @@
+@@ -2502,16 +2531,36 @@ config_access(
  				hints.ai_protocol = IPPROTO_UDP;
  				hints.ai_socktype = SOCK_DGRAM;
  				hints.ai_family = my_node->addr->type;
@@ -721,9 +710,8 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_config.c ntp-dev-4.2.7p250.dnssec/ntpd/ntp
  				NTP_INSIST(ai_list != NULL);
  				pai = ai_list;
  				NTP_INSIST(pai->ai_addr != NULL);
-diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_loopfilter.c ntp-dev-4.2.7p250.dnssec/ntpd/ntp_loopfilter.c
---- ntp-dev-4.2.7p250/ntpd/ntp_loopfilter.c	2011-12-18 06:01:47.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/ntpd/ntp_loopfilter.c	2012-01-16 12:27:05.000000000 -0500
+--- a/ntpd/ntp_loopfilter.c
++++ b/ntpd/ntp_loopfilter.c
 @@ -8,6 +8,10 @@
  # include <config.h>
  #endif
@@ -735,7 +723,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_loopfilter.c ntp-dev-4.2.7p250.dnssec/ntpd
  #include "ntpd.h"
  #include "ntp_io.h"
  #include "ntp_unixtime.h"
-@@ -136,6 +140,7 @@
+@@ -136,6 +140,7 @@ static	void	start_kern_loop(void);
  static	void	stop_kern_loop(void);
  #endif /* KERNEL_PLL */
  
@@ -743,7 +731,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_loopfilter.c ntp-dev-4.2.7p250.dnssec/ntpd
  /*
   * Clock state machine control flags
   */
-@@ -178,6 +183,7 @@
+@@ -178,6 +183,7 @@ static sigjmp_buf env;		/* environment v
  #endif /* SIGSYS */
  #endif /* KERNEL_PLL */
  
@@ -751,7 +739,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_loopfilter.c ntp-dev-4.2.7p250.dnssec/ntpd
  /*
   * init_loopfilter - initialize loop filter data
   */
-@@ -445,6 +451,19 @@
+@@ -445,6 +451,19 @@ local_clock(
  		 * startup until the initial transient has subsided.
  		 */
  		default:
@@ -771,10 +759,9 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntp_loopfilter.c ntp-dev-4.2.7p250.dnssec/ntpd
  			allow_panic = FALSE;
  			if (freq_cnt == 0) {
  
-diff -u -r ntp-dev-4.2.7p250/ntpd/ntpd.c ntp-dev-4.2.7p250.dnssec/ntpd/ntpd.c
---- ntp-dev-4.2.7p250/ntpd/ntpd.c	2012-01-15 06:06:40.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/ntpd/ntpd.c	2012-01-16 12:27:05.000000000 -0500
-@@ -977,6 +977,9 @@
+--- a/ntpd/ntpd.c
++++ b/ntpd/ntpd.c
+@@ -988,6 +988,9 @@ getgroup:
  #  ifndef HAVE_SIGNALED_IO
  			rdfdes = activefds;
  #   if !defined(VMS) && !defined(SYS_VXWORKS)
@@ -784,7 +771,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntpd.c ntp-dev-4.2.7p250.dnssec/ntpd/ntpd.c
  			nfound = select(maxactivefd + 1, &rdfdes, NULL,
  					NULL, NULL);
  #   else	/* VMS, VxWorks */
-@@ -986,11 +989,18 @@
+@@ -997,11 +1000,18 @@ getgroup:
  
  				t1.tv_sec = 1;
  				t1.tv_usec = 0;
@@ -803,7 +790,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntpd.c ntp-dev-4.2.7p250.dnssec/ntpd/ntpd.c
  			if (nfound > 0) {
  				l_fp ts;
  
-@@ -1008,7 +1018,6 @@
+@@ -1019,7 +1029,6 @@ getgroup:
  			}
  #   endif /* DEBUG */
  #  else /* HAVE_SIGNALED_IO */
@@ -811,9 +798,8 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/ntpd.c ntp-dev-4.2.7p250.dnssec/ntpd/ntpd.c
  			wait_for_signal();
  #  endif /* HAVE_SIGNALED_IO */
  			if (alarm_flag) {	/* alarmed? */
-diff -u -r ntp-dev-4.2.7p250/ntpd/refclock_nmea.c ntp-dev-4.2.7p250.dnssec/ntpd/refclock_nmea.c
---- ntp-dev-4.2.7p250/ntpd/refclock_nmea.c	2012-01-06 06:07:50.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/ntpd/refclock_nmea.c	2012-01-16 12:27:05.000000000 -0500
+--- a/ntpd/refclock_nmea.c
++++ b/ntpd/refclock_nmea.c
 @@ -30,6 +30,10 @@
  #include <stdio.h>
  #include <ctype.h>
@@ -825,7 +811,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/refclock_nmea.c ntp-dev-4.2.7p250.dnssec/ntpd/
  #include "ntpd.h"
  #include "ntp_io.h"
  #include "ntp_unixtime.h"
-@@ -1663,6 +1667,9 @@
+@@ -1717,6 +1721,9 @@ nmead_open(
  	struct addrinfo	 ai_hint;	/* resolution hint	*/
  	struct addrinfo	*ai_list;	/* resolution result	*/
  	struct addrinfo *ai;		/* result scan ptr	*/
@@ -835,7 +821,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/refclock_nmea.c ntp-dev-4.2.7p250.dnssec/ntpd/
  
  	fd = -1;
  	
-@@ -1689,8 +1696,21 @@
+@@ -1743,8 +1750,21 @@ nmead_open(
  	ZERO(ai_hint);
  	ai_hint.ai_protocol = IPPROTO_TCP;
  	ai_hint.ai_socktype = SOCK_STREAM;
@@ -857,10 +843,8 @@ diff -u -r ntp-dev-4.2.7p250/ntpd/refclock_nmea.c ntp-dev-4.2.7p250.dnssec/ntpd/
  	
  	for (ai = ai_list; ai && (fd == -1); ai = ai->ai_next) {
  		sh = socket(ai->ai_family, ai->ai_socktype,
-Only in ntp-dev-4.2.7p250.dnssec/ntpd: refclock_nmea.c.orig
-diff -u -r ntp-dev-4.2.7p250/ntpdate/ntpdate.c ntp-dev-4.2.7p250.dnssec/ntpdate/ntpdate.c
---- ntp-dev-4.2.7p250/ntpdate/ntpdate.c	2012-01-06 06:07:57.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/ntpdate/ntpdate.c	2012-01-16 12:27:05.000000000 -0500
+--- a/ntpdate/ntpdate.c
++++ b/ntpdate/ntpdate.c
 @@ -48,6 +48,10 @@
  
  #include <arpa/inet.h>
@@ -872,7 +856,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdate/ntpdate.c ntp-dev-4.2.7p250.dnssec/ntpdate/
  #ifdef SYS_VXWORKS
  # include "ioLib.h"
  # include "sockLib.h"
-@@ -1351,6 +1355,9 @@
+@@ -1351,6 +1355,9 @@ addserver(
  	/* Service name */
  	char service[5];
  	sockaddr_u addr;
@@ -882,7 +866,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdate/ntpdate.c ntp-dev-4.2.7p250.dnssec/ntpdate/
  
  	strlcpy(service, "ntp", sizeof(service));
  
-@@ -1364,8 +1371,13 @@
+@@ -1364,8 +1371,13 @@ addserver(
  		printf("Looking for host %s and service %s\n", serv, service);
  #endif
  
@@ -896,7 +880,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdate/ntpdate.c ntp-dev-4.2.7p250.dnssec/ntpdate/
  		/* Conduct more refined error analysis */
  		if (error == EAI_FAIL || error == EAI_AGAIN){
  			/* Name server is unusable. Exit after failing on the
-@@ -1679,6 +1691,9 @@
+@@ -1679,6 +1691,9 @@ init_io(void)
  	int rc;
  	int optval = 1;
  	int check_ntp_port_in_use = !debug && !simple_query && !unpriv_port;
@@ -906,7 +890,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdate/ntpdate.c ntp-dev-4.2.7p250.dnssec/ntpdate/
  
  	/*
  	 * Init buffer free list and stat counters
-@@ -1699,7 +1714,15 @@
+@@ -1699,7 +1714,15 @@ init_io(void)
  	hints.ai_flags = AI_PASSIVE;
  	hints.ai_socktype = SOCK_DGRAM;
  
@@ -922,9 +906,8 @@ diff -u -r ntp-dev-4.2.7p250/ntpdate/ntpdate.c ntp-dev-4.2.7p250.dnssec/ntpdate/
  		msyslog(LOG_ERR, "getaddrinfo() failed: %m");
  		exit(1);
  		/*NOTREACHED*/
-diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.c
---- ntp-dev-4.2.7p250/ntpdc/ntpdc.c	2012-01-15 06:06:40.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.c	2012-01-16 12:27:05.000000000 -0500
+--- a/ntpdc/ntpdc.c
++++ b/ntpdc/ntpdc.c
 @@ -19,6 +19,10 @@
  #include <isc/net.h>
  #include <isc/result.h>
@@ -936,7 +919,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  #include "ntpdc.h"
  #include "ntp_select.h"
  #include "ntp_stdlib.h"
-@@ -396,6 +400,9 @@
+@@ -397,6 +401,9 @@ openhost(
  	register const char *cp;
  	char name[LENHOSTNAME];
  	char service[5];
@@ -946,7 +929,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  
  	/*
  	 * We need to get by the [] if they were entered 
-@@ -429,7 +436,11 @@
+@@ -430,7 +437,11 @@ openhost(
  	hints.ai_socktype = SOCK_DGRAM;
  	hints.ai_flags = Z_AI_NUMERICHOST;
  
@@ -958,7 +941,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  	if (a_info == EAI_NONAME
  #ifdef EAI_NODATA
  	    || a_info == EAI_NODATA
-@@ -439,12 +450,26 @@
+@@ -440,12 +451,26 @@ openhost(
  #ifdef AI_ADDRCONFIG
  		hints.ai_flags |= AI_ADDRCONFIG;
  #endif
@@ -985,7 +968,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  	}
  	if (a_info != 0) {
  		fprintf(stderr, "%s\n", gai_strerror(a_info));
-@@ -453,6 +478,15 @@
+@@ -454,6 +479,15 @@ openhost(
  		return 0;
  	}
  
@@ -1001,7 +984,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  	/* 
  	 * getaddrinfo() has returned without error so ai should not 
  	 * be NULL.
-@@ -1423,6 +1457,9 @@
+@@ -1424,6 +1458,9 @@ getnetnum(
  	)
  {
  	struct addrinfo hints, *ai = NULL;
@@ -1011,7 +994,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  
  	ZERO(hints);
  	hints.ai_flags = AI_CANONNAME;
-@@ -1436,10 +1473,20 @@
+@@ -1437,10 +1474,20 @@ getnetnum(
  	 */
  	if (decodenetnum(hname, num)) {
  		if (fullhost != NULL)
@@ -1032,7 +1015,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  		NTP_INSIST(sizeof(*num) >= ai->ai_addrlen);
  		memcpy(num, ai->ai_addr, ai->ai_addrlen);
  		if (fullhost != NULL) {
-@@ -1447,12 +1494,31 @@
+@@ -1448,12 +1495,31 @@ getnetnum(
  				strlcpy(fullhost, ai->ai_canonname,
  					LENHOSTNAME);
  			else
@@ -1064,10 +1047,8 @@ diff -u -r ntp-dev-4.2.7p250/ntpdc/ntpdc.c ntp-dev-4.2.7p250.dnssec/ntpdc/ntpdc.
  	fprintf(stderr, "***Can't find host %s\n", hname);
  
  	return 0;
-Only in ntp-dev-4.2.7p250.dnssec/ntpdc: ntpdc.c.orig
-diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
---- ntp-dev-4.2.7p250/ntpq/ntpq.c	2012-01-15 06:06:40.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c	2012-01-16 12:36:10.000000000 -0500
+--- a/ntpq/ntpq.c
++++ b/ntpq/ntpq.c
 @@ -20,6 +20,10 @@
  #include <isc/net.h>
  #include <isc/result.h>
@@ -1079,7 +1060,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
  #include "ntpq.h"
  #include "ntp_stdlib.h"
  #include "ntp_unixtime.h"
-@@ -521,6 +525,9 @@
+@@ -554,6 +558,9 @@ openhost(
  	size_t octets;
  	register const char *cp;
  	char name[LENHOSTNAME];
@@ -1089,7 +1070,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
  
  	/*
  	 * We need to get by the [] if they were entered
-@@ -554,7 +561,11 @@
+@@ -587,7 +594,11 @@ openhost(
  	hints.ai_flags = Z_AI_NUMERICHOST;
  	ai = NULL;
  
@@ -1101,7 +1082,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
  	if (a_info == EAI_NONAME
  #ifdef EAI_NODATA
  	    || a_info == EAI_NODATA
-@@ -564,19 +575,42 @@
+@@ -597,19 +608,42 @@ openhost(
  #ifdef AI_ADDRCONFIG
  		hints.ai_flags |= AI_ADDRCONFIG;
  #endif
@@ -1144,7 +1125,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
  
  	INSIST(ai != NULL);
  	ZERO(addr);
-@@ -1706,6 +1740,9 @@
+@@ -1752,6 +1786,9 @@ getnetnum(
  	)
  {
  	struct addrinfo hints, *ai = NULL;
@@ -1154,7 +1135,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
  
  	ZERO(hints);
  	hints.ai_flags = AI_CANONNAME;
-@@ -1719,10 +1756,20 @@
+@@ -1765,10 +1802,20 @@ getnetnum(
  	 */
  	if (decodenetnum(hname, num)) {
  		if (fullhost != NULL)
@@ -1175,7 +1156,7 @@ diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
  		INSIST(sizeof(*num) >= ai->ai_addrlen);
  		memcpy(num, ai->ai_addr, ai->ai_addrlen);
  		if (fullhost != NULL) {
-@@ -1730,13 +1777,24 @@
+@@ -1776,13 +1823,24 @@ getnetnum(
  				strlcpy(fullhost, ai->ai_canonname,
  					LENHOSTNAME);
  			else
@@ -1200,11 +1181,9 @@ diff -u -r ntp-dev-4.2.7p250/ntpq/ntpq.c ntp-dev-4.2.7p250.dnssec/ntpq/ntpq.c
  	fprintf(stderr, "***Can't find host %s\n", hname);
  
  	return 0;
-Only in ntp-dev-4.2.7p250.dnssec/ntpq: ntpq.c.orig
-diff -u -r ntp-dev-4.2.7p250/sntp/config.h.in ntp-dev-4.2.7p250.dnssec/sntp/config.h.in
---- ntp-dev-4.2.7p250/sntp/config.h.in	2012-01-15 06:36:48.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/sntp/config.h.in	2012-01-16 12:27:05.000000000 -0500
-@@ -74,6 +74,9 @@
+--- a/sntp/config.h.in
++++ b/sntp/config.h.in
+@@ -77,6 +77,9 @@
  /* Define to 1 if you have the <dlfcn.h> header file. */
  #undef HAVE_DLFCN_H
  
@@ -1214,7 +1193,7 @@ diff -u -r ntp-dev-4.2.7p250/sntp/config.h.in ntp-dev-4.2.7p250.dnssec/sntp/conf
  /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
  #undef HAVE_DOPRNT
  
-@@ -786,6 +789,28 @@
+@@ -811,6 +814,28 @@ typedef unsigned int	uintptr_t;
  /* What type to use for setsockopt */
  #undef TYPEOF_IP_MULTICAST_LOOP
  
@@ -1243,7 +1222,7 @@ diff -u -r ntp-dev-4.2.7p250/sntp/config.h.in ntp-dev-4.2.7p250.dnssec/sntp/conf
  /* Can we use SIGPOLL for tty IO? */
  #undef USE_TTY_SIGPOLL
  
-@@ -838,9 +863,6 @@
+@@ -863,9 +888,6 @@ typedef unsigned int	uintptr_t;
  /* enable thread safety */
  #undef _THREAD_SAFE
  
@@ -1253,7 +1232,7 @@ diff -u -r ntp-dev-4.2.7p250/sntp/config.h.in ntp-dev-4.2.7p250.dnssec/sntp/conf
  /* Are we _special_? */
  #undef __APPLE_USE_RFC_3542
  
-@@ -849,28 +871,6 @@
+@@ -874,28 +896,6 @@ typedef unsigned int	uintptr_t;
  # undef __CHAR_UNSIGNED__
  #endif
  
@@ -1282,10 +1261,9 @@ diff -u -r ntp-dev-4.2.7p250/sntp/config.h.in ntp-dev-4.2.7p250.dnssec/sntp/conf
  /* Define to empty if `const' does not conform to ANSI C. */
  #undef const
  
-diff -u -r ntp-dev-4.2.7p250/sntp/configure.ac ntp-dev-4.2.7p250.dnssec/sntp/configure.ac
---- ntp-dev-4.2.7p250/sntp/configure.ac	2011-08-09 04:02:45.000000000 -0400
-+++ ntp-dev-4.2.7p250.dnssec/sntp/configure.ac	2012-01-16 12:27:05.000000000 -0500
-@@ -102,6 +102,28 @@
+--- a/sntp/configure.ac
++++ b/sntp/configure.ac
+@@ -108,6 +108,28 @@ dnl NTP_LIBNTP checks for inet_XtoY
  dnl AC_SEARCH_LIBS([inet_pton], [nsl])
  AC_SEARCH_LIBS([openlog], [gen syslog])
  
@@ -1313,10 +1291,9 @@ diff -u -r ntp-dev-4.2.7p250/sntp/configure.ac ntp-dev-4.2.7p250.dnssec/sntp/con
 +
  # Checks for header files.
  AC_CHECK_HEADERS([netdb.h string.h strings.h syslog.h])
- 
-diff -u -r ntp-dev-4.2.7p250/sntp/main.c ntp-dev-4.2.7p250.dnssec/sntp/main.c
---- ntp-dev-4.2.7p250/sntp/main.c	2012-01-08 18:03:10.000000000 -0500
-+++ ntp-dev-4.2.7p250.dnssec/sntp/main.c	2012-01-16 12:27:05.000000000 -0500
+ NTP_SYSEXITS_H
+--- a/sntp/main.c
++++ b/sntp/main.c
 @@ -7,6 +7,9 @@
  #ifdef WORK_THREAD
  # include <event2/thread.h>
@@ -1327,7 +1304,7 @@ diff -u -r ntp-dev-4.2.7p250/sntp/main.c ntp-dev-4.2.7p250.dnssec/sntp/main.c
  
  #include "main.h"
  #include "ntp_libopts.h"
-@@ -267,6 +270,29 @@
+@@ -272,6 +275,29 @@ sntp_main (
  	for (i = 0; i < argc; ++i)
  		handle_lookup(argv[i], CTX_UCST);
  
@@ -1354,10 +1331,10 @@ diff -u -r ntp-dev-4.2.7p250/sntp/main.c ntp-dev-4.2.7p250.dnssec/sntp/main.c
 +    } while (n_pending_dns > 0);
 +#endif
 +#endif
+ 	gettimeofday_cached(base, &start_tv);
  	event_base_dispatch(base);
  	event_base_free(base);
- 
-@@ -417,8 +443,22 @@
+@@ -421,8 +447,22 @@ handle_lookup(
  	}
  
  	++n_pending_dns;

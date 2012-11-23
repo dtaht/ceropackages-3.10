@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2011 OpenWrt.org
+# Copyright (C) 2006-2012 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,17 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ntp-dev
-PKG_VERSION:=4.2.7p256
+PKG_VERSION:=4.2.7p326
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-dev/
-PKG_MD5SUM:=4134f7ae7c758d0688f3d77a4a63f0d4
+PKG_MD5SUM:=31a9f646ff594c19763fd9a19fbaa9c5
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=libelf
-PKG_FIXUP:=libtool
+PKG_FIXUP:=autoreconf
 PKG_LIBTOOL_PATHS:=. sntp
 
 PKG_BUILD_PARALLEL:=8
@@ -32,7 +32,7 @@ define Package/ntpd/Default
   TITLE:=ISC ntp
   MAINTAINER:=Peter Wagner <tripolar@gmx.at>
   URL:=http://www.ntp.org/
-  DEPENDS:=+libcap +libval
+  DEPENDS:=+libcap +libpthread
 endef
 
 define Package/ntpd/Default/description
@@ -45,7 +45,6 @@ define Package/ntpd
 $(call Package/ntpd/Default)
   TITLE+= server
   VARIANT:=nossl
-  DEPENDS+= +libpthread +libsres
 endef
 
 define Package/ntpd/description
@@ -58,7 +57,7 @@ define Package/ntpd-ssl
 $(call Package/ntpd/Default)
   TITLE+= server (with OpenSSL support)
   VARIANT:=ssl
-  DEPENDS+= +libopenssl +libpthread +libsres +dnsval
+  DEPENDS+= +libopenssl +libsres +libval
 endef
 
 define Package/ntpd-ssl/description
@@ -79,17 +78,42 @@ $(call Package/ntpd/Default/description)
  This package contains ntpdate.
 endef
 
+define Package/ntpdate-ssl
+$(call Package/ntpd/Default)
+  TITLE+=date (with OpenSSL support)
+  VARIANT:=ssl
+  DEPENDS+= +libopenssl +libsres +libval
+endef
+
+define Package/ntpdate-ssl/description
+$(call Package/ntpd/Default/description)
+ .
+ This package contains ntpdate with OpenSSL support.
+endef
+
 define Package/ntp-utils
 $(call Package/ntpd/Default)
   TITLE+= utilities
   VARIANT:=nossl
-  DEPENDS+= +libopenssl +libpthread +libsres +dnsval
 endef
 
 define Package/ntp-utils/description
 $(call Package/ntpd/Default/description)
  .
  This package contains ntpdc, ntpq and ntptime.
+endef
+
+define Package/ntp-utils-ssl
+$(call Package/ntpd/Default)
+  TITLE+= utilities (with OpenSSL support)
+  VARIANT:=ssl
+  DEPENDS+= +libopenssl +libsres +libval
+endef
+
+define Package/ntp-utils-ssl/description
+$(call Package/ntpd/Default/description)
+ .
+ This package contains ntpdc, ntpq and ntptime with OpenSSL support.
 endef
 
 define Package/ntp-keygen
@@ -108,7 +132,7 @@ define Package/ntp-keygen-ssl
 $(call Package/ntpd/Default)
   TITLE+=keygen (with OpenSSL support)
   VARIANT:=ssl
-  DEPENDS+= +libopenssl +libpthread +libsres
+  DEPENDS+= +libopenssl +libsres +libval
 endef
 
 define Package/ntp-keygen-ssl/description
@@ -133,8 +157,12 @@ CONFIGURE_VARS += \
 	ac_cv_header_dns_sd_h=no \
 	ol_cv_pthread_select_yield=yes \
 	ac_cv_pthread_select_yield=yes \
-	ac_cv_lib_val_threads_val_getaddrinfo=yes \
 	ac_cv_func_adjtimex=yes
+
+ifeq ($(BUILD_VARIANT),ssl)
+  CONFIGURE_VARS += \
+	ac_cv_lib_val_threads_val_getaddrinfo=yes
+endif
 
 CONFIGURE_ARGS += \
 	--disable-all-clocks \
@@ -145,20 +173,23 @@ CONFIGURE_ARGS += \
 	--enable-LOCAL-CLOCK \
 	--enable-SHM \
 	--enable-linuxcaps \
-	--enable-autokey \
 	--with-yielding_select=yes \
-	--with-dnsval \
 	--enable-ignore-dns-errors
 
 # I have no idea why we'd need threads
 #	--disable-thread-support
 
+ifeq ($(BUILD_VARIANT),nossl)
+  CONFIGURE_ARGS += \
+	--without-crypto
+endif
 
 ifeq ($(BUILD_VARIANT),ssl)
   CONFIGURE_ARGS += \
 	--with-crypto \
 	--with-openssl-incdir="$(STAGING_DIR)/usr/include" \
-	--with-openssl-libdir="$(STAGING_DIR)/usr/lib"
+	--with-openssl-libdir="$(STAGING_DIR)/usr/lib" \
+	--with-dnsval
 endif
 
 define Package/ntpd/install
@@ -206,11 +237,15 @@ define Package/ntp-keygen/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/util/ntp-keygen $(1)/usr/sbin/
 endef
 
+Package/ntpdate-ssl/install = $(Package/ntpdate/install)
+Package/ntp-utils-ssl/install = $(Package/ntp-utils/install)
 Package/ntp-keygen-ssl/install = $(Package/ntp-keygen/install)
 
 $(eval $(call BuildPackage,ntpd))
 $(eval $(call BuildPackage,ntpd-ssl))
 $(eval $(call BuildPackage,ntpdate))
+$(eval $(call BuildPackage,ntpdate-ssl))
 $(eval $(call BuildPackage,ntp-utils))
+$(eval $(call BuildPackage,ntp-utils-ssl))
 $(eval $(call BuildPackage,ntp-keygen))
 $(eval $(call BuildPackage,ntp-keygen-ssl))

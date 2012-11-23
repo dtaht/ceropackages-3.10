@@ -1,5 +1,3 @@
-diff --git a/ntpd/cmd_args.c b/ntpd/cmd_args.c
-index a1e5e39..3a40a67 100644
 --- a/ntpd/cmd_args.c
 +++ b/ntpd/cmd_args.c
 @@ -82,7 +82,7 @@ getCmdOpts(
@@ -11,8 +9,6 @@ index a1e5e39..3a40a67 100644
  		    msyslog(LOG_ERR, "Failed to create DNSSEC validator context.");
  		    exit(1);
          }
-diff --git a/ntpd/ntp_loopfilter.c b/ntpd/ntp_loopfilter.c
-index 00b243f..c466946 100644
 --- a/ntpd/ntp_loopfilter.c
 +++ b/ntpd/ntp_loopfilter.c
 @@ -453,10 +453,10 @@ local_clock(

@@ -1,5 +1,3 @@
-diff --git a/sntp/libevent/m4/openldap-thread-check.m4 b/sntp/libevent/m4/openldap-thread-check.m4
-index 2b31919..c94b865 100644
 --- a/sntp/libevent/m4/openldap-thread-check.m4
 +++ b/sntp/libevent/m4/openldap-thread-check.m4
 @@ -76,7 +76,7 @@ fi
