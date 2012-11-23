@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 OpenWrt.org
+# Copyright (C) 2011-2012 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsval
-PKG_VERSION:=1.12
+PKG_VERSION:=1.14
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.dnssec-tools.org/download
-PKG_MD5SUM:=61ea8957c8ec5117713b3fbd339d81db
+PKG_MD5SUM:=3fa8b6f0341247248482b79f25b11867
 
 PKG_BUILD_DEPENDS:=libopenssl
 PKG_INSTALL:=1
@@ -31,15 +31,15 @@ define Package/dnsval
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
   TITLE+= utilities
-  DEPENDS:=+libsres 
+  DEPENDS:=+libsres
 endef
 
 define Package/libsres
   $(call Package/dnsval/Default)
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libopenssl +libpthread +libval
   TITLE+= resolver library
+  DEPENDS:=+libopenssl +libpthread +libval
 endef
 
 define Package/libval-shim
@@ -79,13 +79,12 @@ define Build/InstallDev
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/lib/lib{sres,val{_shim,-threads}}.{a,la,so*} \
 		$(1)/usr/lib/
-
 endef
 
 define Package/dnsval/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/usr/bin/{get*,libval_check_conf,validate} \
+		$(PKG_INSTALL_DIR)/usr/bin/{dt-*,libval_check_conf} \
 		$(1)/usr/bin/
 endef
 

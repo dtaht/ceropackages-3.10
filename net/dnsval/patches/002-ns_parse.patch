@@ -1,16 +1,14 @@
-diff --git a/libsres/ns_parse.c b/libsres/ns_parse.c
-index a89358e..ef37ad2 100644
 --- a/libsres/ns_parse.c
 +++ b/libsres/ns_parse.c
-@@ -16,6 +16,7 @@
+@@ -15,6 +15,7 @@
+  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   */
- #include "validator/validator-config.h"
  #include "validator-internal.h"
 +#include "validator/validator-compat.h"
  
  #include "res_support.h"
  #include "res_comp.h"
-@@ -49,7 +50,10 @@ static void     setsection(ns_msg * msg, ns_sect sect);
+@@ -48,7 +49,10 @@ static void     setsection(ns_msg * msg,
  /*
   * These need to be in the same order as the nres.h:ns_flag enum. 
   */
