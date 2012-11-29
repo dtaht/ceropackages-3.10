@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 #PKG_NAME:=netperf
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 #PKG_MD5SUM:=fe23629f061a161b9d52d39b16620318
 
 #If we need to go back to tracking svn versions in the future
 #This is what we would do
 PKG_NAME:=netperf-latest
-PKG_REV:=602
+PKG_REV:=615
 PKG_VERSION:=2.6.0r$(PKG_REV)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
