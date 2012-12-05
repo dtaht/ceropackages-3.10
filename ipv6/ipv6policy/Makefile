@@ -18,7 +18,7 @@ define Package/ipv6policy
   CATEGORY:=IPv6
   DEPENDS:=+ip +kmod-ipv6 +openssl-util
   TITLE:=IPv6 configuration and policy routing for ipv6 tunnels and interfaces
-  MAINTAINER:=<d@teklibre.org>
+  MAINTAINER:=Dave Täht <d@teklibre.org>
   PKGARCH:=all
 endef
 
