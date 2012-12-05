@@ -8,16 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dropbear
-PKG_VERSION:=2011.54
-PKG_RELEASE:=6
+PKG_VERSION:=2012.55
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:= \
 	http://matt.ucc.asn.au/dropbear/releases/ \
 	http://www.mirrors.wiretapped.net/security/cryptography/apps/ssh/dropbear/
-PKG_MD5SUM:=c627ffe09570fad7aa94d8eac2b9320c
-
+PKG_MD5SUM:=8c784baec3054cdb1bb4bfa792c87812
 PKG_BUILD_PARALLEL:=1
+LICENSE:=MIT
+PKG_LICENSE_FILES:=LICENSE libtomcrypt/LICENSE libtommath/LICENSE
 
 include $(INCLUDE_DIR)/package.mk
 
