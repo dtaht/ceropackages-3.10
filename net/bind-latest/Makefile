@@ -101,7 +101,8 @@ CONFIGURE_ARGS += \
 	--enable-epoll=yes \
 	--with-rlimtype="long int" \
 	--with-gssapi=no \
-	--with-gost=no 
+	--with-gost=no \
+	--with-ecdsa=no
 
 CONFIGURE_VARS += \
 	BUILD_CC="$(TARGET_CC)" \
