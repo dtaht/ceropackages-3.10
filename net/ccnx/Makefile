@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ccnx
-PKG_VERSION:=0.6.2
+PKG_VERSION:=0.7.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.ccnx.org/releases
-PKG_MD5SUM:=f24ca7c00dd9bc7607609637195ff6f2
+PKG_MD5SUM:=839c3c1dd023309aae7f43fb4e3a5e9c
 
 PKG_INSTALL:=1
 
