@@ -1,0 +1,56 @@
+diff --git a/io.c b/io.c
+index fb58d41..d8d22ca 100644
+--- a/io.c
++++ b/io.c
+@@ -32,6 +32,8 @@ THE SOFTWARE.
+ int useTemporarySourceAddress = 1;
+ #endif
+ 
++static int useTCPFastOpen = 0;
++
+ void
+ preinitIo()
+ {
+@@ -51,6 +53,8 @@ preinitIo()
+         exit(-1);
+     }
+ #endif
++    CONFIG_VARIABLE(useTCPFastOpen, CONFIG_BOOLEAN,
++                    "If true, server supports TCP Fast Open - for linux kernel 3.6 onwards.");
+     return;
+ }
+ 
+@@ -688,6 +692,7 @@ create_listener(char *address, int port,
+     int fd, rc;
+     int one = 1;
+     int done;
++    int tfo_qlen = 50;
+     struct sockaddr_in addr;
+ #ifdef HAVE_IPv6
+     int inet6 = 1;
+@@ -776,6 +781,9 @@ create_listener(char *address, int port,
+         assert(done);
+         return NULL;
+     }
++
++    if(useTCPFastOpen)
++        setsockopt(fd, SOL_TCP, TCP_FASTOPEN, &tfo_qlen, sizeof(tfo_qlen));
+         
+     rc = listen(fd, 1024);
+     if(rc < 0) {
+diff --git a/io.h b/io.h
+index 79f5e95..8fcb0bb 100644
+--- a/io.h
++++ b/io.h
+@@ -38,6 +38,11 @@ THE SOFTWARE.
+ /* Internal -- header is really buf_location */
+ #define IO_BUF_LOCATION 0x2000
+ 
++/* C library is not supporting definition of this macro yet */
++#ifndef TCP_FASTOPEN
++#define TCP_FASTOPEN 23
++#endif
++
+ typedef struct _StreamRequest {
+     short operation;
+     short fd;
