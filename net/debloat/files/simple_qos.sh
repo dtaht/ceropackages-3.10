@@ -20,11 +20,12 @@
 
 [ -e /etc/functions.sh ] && . /etc/functions.sh || . ./functions.sh
 
-# You need to jiggle these parameters
+# You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
 UPLINK=2000
 DOWNLINK=20000
 DEV=ifb0
+QDISC=efq_codel # efq_codel is higher over head than nfq_codel but does better on quantums. I hope.
 IFACE=ge00
 DEPTH=42
 TC=/usr/sbin/tc
@@ -167,20 +168,9 @@ tc class add dev $IFACE parent 1:1 classid 1:11 htb rate 128kbit ceil ${PRIO_RAT
 tc class add dev $IFACE parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 $ADSLL
 tc class add dev $IFACE parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 $ADSLL
 
-# The calculations (still) needed here are why I wanted to do this in lua first
-# all the variables - limit, depth, min, max, redflowlimit are dependent on the
-# bandwidth, but scale differently. I don't think RED can be made to work on
-# long RTTs, period...
-
-# I'd prefer to use a pre-nat filter but that causes permutation...
-# Anyway... need FP (sqrt) from lua to finish this part...
-
-# A depth of 16 is better at low rates, but no lower. I'd argue for a floor of 22
-# Packet aggregation suggests 42-64.
-
-tc qdisc add dev $IFACE parent 1:11 handle 110: fq_codel limit 600
-tc qdisc add dev $IFACE parent 1:12 handle 120: fq_codel limit 600
-tc qdisc add dev $IFACE parent 1:13 handle 130: fq_codel limit 600
+tc qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 noecn
+tc qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 noecn
+tc qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 noecn
 
 tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 1 fw classid 1:11
 tc filter add dev $IFACE parent 1:0 protocol ip prio 2 handle 2 fw classid 1:12
@@ -226,9 +216,9 @@ tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kibit ceil ${BE
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 
-tc qdisc add dev $DEV parent 1:11 handle 110: fq_codel limit 600
-tc qdisc add dev $DEV parent 1:12 handle 120: fq_codel limit 600
-tc qdisc add dev $DEV parent 1:13 handle 130: fq_codel limit 600
+tc qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 ecn
+tc qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 ecn
+tc qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 ecn
 
 diffserv
 
