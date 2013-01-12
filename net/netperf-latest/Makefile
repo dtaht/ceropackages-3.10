@@ -14,7 +14,7 @@ PKG_RELEASE:=4
 #If we need to go back to tracking svn versions in the future
 #This is what we would do
 PKG_NAME:=netperf-latest
-PKG_REV:=620
+PKG_REV:=623
 PKG_VERSION:=2.6.0r$(PKG_REV)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
