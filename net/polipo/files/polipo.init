@@ -62,7 +62,8 @@ polipo_config() {
 	boolean_options='cacheIsShared daemonise disableConfiguration disableIndexing
 		disableLocalInterface disableProxy disableServersList disableVia
 		dontCacheCookies dontCacheRedirects logSyslog mindlesslyCacheVary
-		preciseExpiry proxyOffline scrubLogs laxHttpParser'
+		preciseExpiry proxyOffline scrubLogs laxHttpParser
+		useTCPFastOpen'
 
 	string_list_options='allowedClients censoredHeaders'
 
