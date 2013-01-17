@@ -18,14 +18,12 @@
 # to setup various other parameters such as BQL and ethtool.
 # (And that the debloat script has setup the other interfaces)
 
-[ -e /etc/functions.sh ] && . /etc/functions.sh || . ./functions.sh
-
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
 UPLINK=2000
 DOWNLINK=20000
 DEV=ifb0
-QDISC=efq_codel # efq_codel is higher over head than nfq_codel but does better on quantums. I hope.
+QDISC=nfq_codel # nfq_codel is higher over head than fq_codel but does better on quantums. I hope.
 IFACE=ge00
 DEPTH=42
 TC=/usr/sbin/tc
@@ -59,6 +57,16 @@ fi
 ipt() {
 iptables $*
 ip6tables $*
+}
+
+do_modules() {
+
+insmod sch_$QDISC
+insmod sch_ingress
+insmod act_mirred
+insmod cls_fw
+insmod sch_htb
+
 }
 
 # This could be a complete diffserv implementation
@@ -128,7 +136,8 @@ ipt -t mangle -A QOS_MARK -m tos --tos Minimize-Delay -j MARK --set-mark 0x1
 ipt -t mangle -A POSTROUTING -o $DEV -m mark --mark 0x00 -g QOS_MARK 
 ipt -t mangle -A POSTROUTING -o $IFACE -m mark --mark 0x00 -g QOS_MARK 
 
-ipt -t mangle -A PREROUTING -i s+ -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j MARK --set-mark 0x01
+# The Syn optimization was nice but fq_codel does it for us
+# ipt -t mangle -A PREROUTING -i s+ -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j MARK --set-mark 0x01
 # Not sure if this will work. Encapsulation is a problem period
 ipt -t mangle -A PREROUTING -i vtun+ -p tcp -j MARK --set-mark 0x2 # tcp tunnels need ordering
 
@@ -190,11 +199,6 @@ tc filter add dev $IFACE parent 1:0 protocol arp prio 7 handle 1 fw classid 1:11
 
 ingress() {
 
-insmod sch_ingress
-insmod act_mirred
-insmod cls_fw
-insmod sch_htb
-
 CEIL=$DOWNLINK
 PRIO_RATE=`expr $CEIL / 3` # Ceiling for prioirty
 BE_RATE=`expr $CEIL / 6`   # Min for best effort
@@ -208,11 +212,11 @@ tc qdisc add dev $IFACE handle ffff: ingress
  
 tc qdisc del dev $DEV root 
 tc qdisc add dev $DEV root handle 1: htb ${RTQ} default 12
-tc class add dev $DEV parent 1: classid 1:1 htb rate ${CEIL}kibit ceil ${CEIL}kibit $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${CEIL}kibit ceil ${CEIL}kibit prio 0 $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:11 htb rate 32kibit ceil ${PRIO_RATE}kibit prio 1 $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:12 htb rate ${BE_RATE}kibit ceil ${BE_CEIL}kibit prio 2 $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kibit ceil ${BE_CEIL}kibit prio 3 $ADSLL
+tc class add dev $DEV parent 1: classid 1:1 htb rate ${CEIL}kbit ceil ${CEIL}kibit $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${CEIL}kbit ceil ${CEIL}kibit prio 0 $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:11 htb rate 32kbit ceil ${PRIO_RATE}kibit prio 1 $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kibit prio 2 $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kibit prio 3 $ADSLL
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 
@@ -231,6 +235,7 @@ $TC filter add dev $IFACE parent ffff: protocol all prio 10 u32 \
 
 }
 
+do_modules
 ipt_setup
 egress 
 ingress
