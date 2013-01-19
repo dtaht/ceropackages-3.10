@@ -12,7 +12,7 @@ PKG_NAME:=uftp4
 PKG_VERSION:=4.0a4
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar
+PKG_SOURCE:=uftp-$(PKG_VERSION).tar
 PKG_SOURCE_URL:=http://snapon.lab.bufferbloat.net/~cero2/uftp4/
 PKG_MD5SUM:=e122c41c2e1db8b7819bbda5bcc4c280
 
