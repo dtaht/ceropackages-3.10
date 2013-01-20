@@ -40,7 +40,7 @@ define Package/uftp
   $(call Package/uftp/Default)
   TITLE+= server with TLS support
   VARIANT:=tls
-  DEPENDS:=+libopenssl
+  DEPENDS:=+libopenssl +libpthread
 endef
 
 define Package/uftp/description
@@ -63,7 +63,7 @@ define Package/uftpd
   $(call Package/uftp/Default)
   TITLE+= client daemon with TLS support
   VARIANT:=tls
-  DEPENDS:=+libopenssl
+  DEPENDS:=+libopenssl +libpthread
 endef
 
 define Package/uftpd/description
@@ -86,7 +86,7 @@ define Package/uftpproxyd
   $(call Package/uftp/Default)
   TITLE+= proxy daemon with TLS support
   VARIANT:=tls
-  DEPENDS:=+libopenssl
+  DEPENDS:=+libopenssl +libpthread
 endef
 
 define Package/uftpproxyd/description
@@ -109,7 +109,7 @@ define Package/uftp-keymgt
   $(call Package/uftp/Default)
   TITLE+= key management utility
   VARIANT:=tls
-  DEPENDS:=+libopenssl
+  DEPENDS:=+libopenssl +libpthread
 endef
 
 define Package/uftp-keymgt/description
