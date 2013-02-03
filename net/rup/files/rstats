@@ -1,0 +1,11 @@
+#!/bin/sh
+# Gather connected speeds and minstrel error rates from remote wifi
+
+for i in /sys/kernel/debug/ieee80211/phy*/netdev:*/stations/*/rc_stats
+do
+	RATE=`grep PMCS "$i"`
+	STATION=`echo $i | cut -f9 -d/`
+	[ -z "$STATION" ] && exit
+	B=`grep ${STATION} /tmp/dhcp.leases 2> /dev/null | awk '{print $3}'`
+	echo "$B $RATE"
+done
