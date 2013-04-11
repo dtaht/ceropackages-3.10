@@ -3,13 +3,13 @@
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
-# Please note this is not an officially released version of babelm
+# Please note this is not an officially released version of babeld
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=babeld
 PKG_VERSION:=20130411-git-2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
@@ -26,7 +26,7 @@ PKG_SOURCE_PROTO:=git
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/babelm
+define Package/babeld
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Routing and Redirection
@@ -36,7 +36,7 @@ define Package/babelm
   DEPENDS:=+kmod-ipv6 +librt
 endef
 
-define Package/babelm/description
+define Package/babeld/description
  Babel is a loop-avoiding distance-vector routing protocol roughly based
  on DSDV and AODV, but with provisions for link cost estimation and
  redistribution of routes from other routing protocols.
@@ -47,7 +47,7 @@ define Package/babelm/description
  This experimental package contains a newer smoothed convergence algo.
 endef
 
-define Package/babelm/conffiles
+define Package/babeld/conffiles
 /etc/babel.conf
 /etc/config/babeld
 endef
@@ -55,7 +55,7 @@ endef
 MAKE_FLAGS+= \
 	CFLAGS="$(TARGET_CFLAGS)" \
 
-define Package/babelm/install
+define Package/babeld/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/babeld $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc
@@ -66,4 +66,4 @@ define Package/babelm/install
 	$(INSTALL_BIN) ./files/babeld.init $(1)/etc/init.d/babeld
 endef
 
-$(eval $(call BuildPackage,babelm))
+$(eval $(call BuildPackage,babeld))
