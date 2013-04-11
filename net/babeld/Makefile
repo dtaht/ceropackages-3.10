@@ -20,7 +20,7 @@ PKG_REV:=4229bea0c2ece00985894ddcf056e302dfb05943
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://github.com/jech/babeld.git
 PKG_SOURCE_SUBDIR:=babeld-$(PKG_VERSION)
-#PKG_SOURCE_VERSION:=origin/smoothed-metric
+PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_PROTO:=git
 
 
