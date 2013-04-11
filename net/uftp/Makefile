@@ -13,7 +13,7 @@ PKG_VERSION:=4.0a4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=uftp-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://snapon.lab.bufferbloat.net/~cero2/uftp/
+PKG_SOURCE_URL:=http://snapon.lab.bufferbloat.net/~cero2/uftp4/
 PKG_MD5SUM:=e122c41c2e1db8b7819bbda5bcc4c280
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
