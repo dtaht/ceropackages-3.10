@@ -34,10 +34,10 @@ define Build/Configure
 endef
 
 define Package/rup/install
-	$(INSTALL_BIN) ./files/rup $(1)/usr/sbin/rup
-	$(INSTALL_BIN) ./files/rstats $(1)/usr/sbin/rstats
-	$(INSTALL_BIN) ./files/rup.xinetd $(1)/etc/xinetd.d/rup
-	$(INSTALL_BIN) ./files/rstats.xinetd $(1)/etc/xinetd.d/rstats
+	$(INSTALL_BIN) -D ./files/rup $(1)/usr/sbin/rup
+	$(INSTALL_BIN) -D ./files/rstats $(1)/usr/sbin/rstats
+	$(INSTALL_BIN) -D ./files/rup.xinetd $(1)/etc/xinetd.d/rup
+	$(INSTALL_BIN) -D ./files/rstats.xinetd $(1)/etc/xinetd.d/rstats
 endef
 
 $(eval $(call BuildPackage,rup))
