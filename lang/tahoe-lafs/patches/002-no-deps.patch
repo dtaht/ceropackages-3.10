@@ -1,0 +1,22 @@
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -1,8 +1,6 @@
+ [easy_install]
+ zip_ok = False
+-find_links = misc/dependencies tahoe-deps ../tahoe-deps
+-	https://tahoe-lafs.org/source/tahoe-lafs/deps/tahoe-dep-sdists/
+-	https://tahoe-lafs.org/source/tahoe-lafs/deps/tahoe-lafs-dep-eggs/
++find_links = misc/dependencies
+ 
+ [egg_info]
+ tag_build = 
+--- a/setup.py
++++ b/setup.py
+@@ -147,7 +147,6 @@ setup_requires.append('darcsver >= 1.7.2
+ # This only matters when compatible versions of Twisted and zope.interface
+ # are not already installed. Retire this hack when
+ # https://bugs.launchpad.net/nevow/+bug/812537 has been fixed.
+-setup_requires += [req for req in install_requires if req.startswith('Twisted') or req.startswith('zope.interface')]
+ 
+ # trialcoverage is required if you want the "trial" unit test runner to have a
+ # "--reporter=bwverbose-coverage" option which produces code-coverage results.

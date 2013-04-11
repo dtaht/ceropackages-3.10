@@ -1,0 +1,27 @@
+--- a/setup.py
++++ b/setup.py
+@@ -465,8 +465,7 @@ setup(name=APPNAME,
+                 'allmydata.util',
+                 'allmydata.web',
+                 'allmydata.web.static',
+-                'allmydata.windows',
+-                'buildtest'],
++                'allmydata.windows'],
+       classifiers=trove_classifiers,
+       test_suite="allmydata.test",
+       install_requires=install_requires,
+--- a/src/allmydata_tahoe.egg-info/SOURCES.txt
++++ b/src/allmydata_tahoe.egg-info/SOURCES.txt
+@@ -376,7 +376,4 @@ src/allmydata_tahoe.egg-info/entry_point
+ src/allmydata_tahoe.egg-info/not-zip-safe
+ src/allmydata_tahoe.egg-info/requires.txt
+ src/allmydata_tahoe.egg-info/top_level.txt
+-src/buildtest/__init__.py
+-src/buildtest/test_build_with_fake_dist.py
+ static/tahoe.py
+-twisted/plugins/allmydata_trial.py
+--- a/src/allmydata_tahoe.egg-info/top_level.txt
++++ b/src/allmydata_tahoe.egg-info/top_level.txt
+@@ -1,2 +1 @@
+ allmydata
+-buildtest
