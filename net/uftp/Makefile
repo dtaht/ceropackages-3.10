@@ -9,12 +9,13 @@ include $(TOPDIR)/rules.mk
 
 # orig http://173.71.68.52:22000/uftp/uftp-4.0a4.tar
 PKG_NAME:=uftp
-PKG_VERSION:=4.0a4
+PKG_VERSION:=4.0a5
 PKG_RELEASE:=1
 
-PKG_SOURCE:=uftp-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://snapon.lab.bufferbloat.net/~cero2/uftp4/
-PKG_MD5SUM:=e122c41c2e1db8b7819bbda5bcc4c280
+PKG_SOURCE:=uftp-$(PKG_VERSION).tar
+PKG_SOURCE_URL:=http://173.71.68.52:22000/uftp/
+#http://snapon.lab.bufferbloat.net/~cero2/uftp4/
+PKG_MD5SUM:=e83c9e2e359c5dbaa55cef5c8470d529
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
