@@ -8,14 +8,22 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tahoe-lafs
-PKG_VERSION:=1.9.2
+PKG_VERSION:=20130415-git-1
 PKG_RELEASE:=1
 
-PKG_SOURCE:=allmydata-tahoe-$(PKG_VERSION).zip
-PKG_SOURCE_URL:=https://tahoe-lafs.org/source/tahoe-lafs/releases
-PKG_MD5SUM:=a8a9864c6fdd5d2e972f09667df6a96a
+#PKG_SOURCE:=allmydata-tahoe-$(PKG_VERSION).zip
+#PKG_SOURCE_URL:=https://tahoe-lafs.org/source/tahoe-lafs/releases
+#PKG_MD5SUM:=a8a9864c6fdd5d2e972f09667df6a96a
+#PKG_BUILD_DIR:=$(BUILD_DIR)/allmydata-tahoe-$(PKG_VERSION)
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/allmydata-tahoe-$(PKG_VERSION)
+PKG_REV:=e898a1093fdc2f19097227ed32a1834ca49bf758
+
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=git://github.com/ClashTheBunny/tahoe-lafs.git
+PKG_SOURCE_SUBDIR:=tahoe-lafs-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=$(PKG_REV)
+PKG_SOURCE_PROTO:=git
+
 
 include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)

@@ -1,6 +1,7 @@
---- a/setup.py
-+++ b/setup.py
-@@ -462,7 +462,6 @@ setup(name=APPNAME,
+diff -ru a/setup.py b/setup.py
+--- a/setup.py	2013-04-15 09:38:36.702548442 -0700
++++ b/setup.py	2013-04-15 09:42:22.896089964 -0700
+@@ -462,7 +462,6 @@
                  'allmydata.mutable',
                  'allmydata.scripts',
                  'allmydata.storage',
@@ -8,71 +9,3 @@
                  'allmydata.util',
                  'allmydata.web',
                  'allmydata.web.static',
---- a/src/allmydata_tahoe.egg-info/SOURCES.txt
-+++ b/src/allmydata_tahoe.egg-info/SOURCES.txt
-@@ -289,58 +289,6 @@ src/allmydata/storage/lease.py
- src/allmydata/storage/mutable.py
- src/allmydata/storage/server.py
- src/allmydata/storage/shares.py
--src/allmydata/test/__init__.py
--src/allmydata/test/bench_dirnode.py
--src/allmydata/test/check_grid.py
--src/allmydata/test/check_load.py
--src/allmydata/test/check_memory.py
--src/allmydata/test/check_speed.py
--src/allmydata/test/common.py
--src/allmydata/test/common_util.py
--src/allmydata/test/common_web.py
--src/allmydata/test/no_network.py
--src/allmydata/test/test_backupdb.py
--src/allmydata/test/test_base62.py
--src/allmydata/test/test_checker.py
--src/allmydata/test/test_cli.py
--src/allmydata/test/test_client.py
--src/allmydata/test/test_codec.py
--src/allmydata/test/test_crawler.py
--src/allmydata/test/test_deepcheck.py
--src/allmydata/test/test_dirnode.py
--src/allmydata/test/test_download.py
--src/allmydata/test/test_drop_upload.py
--src/allmydata/test/test_encode.py
--src/allmydata/test/test_encodingutil.py
--src/allmydata/test/test_filenode.py
--src/allmydata/test/test_ftp.py
--src/allmydata/test/test_hashtree.py
--src/allmydata/test/test_helper.py
--src/allmydata/test/test_hung_server.py
--src/allmydata/test/test_immutable.py
--src/allmydata/test/test_import.py
--src/allmydata/test/test_introducer.py
--src/allmydata/test/test_iputil.py
--src/allmydata/test/test_keygen.py
--src/allmydata/test/test_mutable.py
--src/allmydata/test/test_netstring.py
--src/allmydata/test/test_no_network.py
--src/allmydata/test/test_node.py
--src/allmydata/test/test_observer.py
--src/allmydata/test/test_provisioning.py
--src/allmydata/test/test_repairer.py
--src/allmydata/test/test_runner.py
--src/allmydata/test/test_sftp.py
--src/allmydata/test/test_stats.py
--src/allmydata/test/test_storage.py
--src/allmydata/test/test_system.py
--src/allmydata/test/test_upload.py
--src/allmydata/test/test_uri.py
--src/allmydata/test/test_util.py
--src/allmydata/test/test_version.py
--src/allmydata/test/test_web.py
--src/allmydata/test/trial_coverage.py
--src/allmydata/test/trialtest.py
- src/allmydata/util/__init__.py
- src/allmydata/util/abbreviate.py
- src/allmydata/util/assertutil.py
-@@ -431,4 +379,4 @@ src/allmydata_tahoe.egg-info/top_level.t
- src/buildtest/__init__.py
- src/buildtest/test_build_with_fake_dist.py
- static/tahoe.py
--twisted/plugins/allmydata_trial.py
-\ No newline at end of file
-+twisted/plugins/allmydata_trial.py

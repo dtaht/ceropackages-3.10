@@ -1,18 +1,21 @@
---- a/setup.cfg
-+++ b/setup.cfg
-@@ -1,8 +1,6 @@
- [easy_install]
- zip_ok = False
--find_links = misc/dependencies tahoe-deps ../tahoe-deps
--	https://tahoe-lafs.org/source/tahoe-lafs/deps/tahoe-dep-sdists/
--	https://tahoe-lafs.org/source/tahoe-lafs/deps/tahoe-lafs-dep-eggs/
-+find_links = misc/dependencies
+diff -ur a/setup.cfg b/setup.cfg
+--- a/setup.cfg	2013-04-15 09:38:17.270416016 -0700
++++ b/setup.cfg	2013-04-15 09:38:27.514485827 -0700
+@@ -22,9 +22,7 @@
+ # a darcs tree, the 'sumo' tarball variant will include all of these
+ # dependencies in the tahoe-deps/ directory.
  
- [egg_info]
- tag_build = 
---- a/setup.py
-+++ b/setup.py
-@@ -147,7 +147,6 @@ setup_requires.append('darcsver >= 1.7.2
+-find_links=misc/dependencies tahoe-deps ../tahoe-deps
+- https://tahoe-lafs.org/source/tahoe-lafs/deps/tahoe-dep-sdists/
+- https://tahoe-lafs.org/source/tahoe-lafs/deps/tahoe-lafs-dep-eggs/
++find_links=misc/dependencies
+ 
+ # Other sites that we might want to list:
+ # http://sourceforge.net/project/showfiles.php?group_id=78018&package_id=79063
+diff -ur a/setup.py b/setup.py
+--- a/setup.py	2013-04-15 10:05:58.273743635 -0700
++++ b/setup.py	2013-04-15 10:05:34.813583613 -0700
+@@ -147,7 +147,6 @@
  # This only matters when compatible versions of Twisted and zope.interface
  # are not already installed. Retire this hack when
  # https://bugs.launchpad.net/nevow/+bug/812537 has been fixed.
