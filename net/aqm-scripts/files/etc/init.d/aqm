@@ -19,5 +19,5 @@ reload
 
 stop()
 {
-echo "not implemented yet"
+/usr/lib/aqm/run.sh stop
 }

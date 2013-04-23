@@ -16,6 +16,7 @@ local wa = require "luci.tools.webadmin"
 local fs = require "nixio.fs"
 local net = require "luci.model.network".init()
 local ifaces = net:get_interfaces()
+local path = "/usr/lib/aqm"
 
 m = Map("aqm", translate("Active Queue Management"),
 	translate("With <abbr title=\"Active Queue Management\">AQM</abbr> you " ..
@@ -47,6 +48,15 @@ c:value("codel")
 c:value("ns2_codel")
 c.default = "nfq_codel"
 c.rmempty = false
+
+sc = s:option(ListValue, "script", translate("Queue setup script"))
+for file in fs.dir(path) do
+  if string.find(file, ".qos$") then
+    sc:value(file)
+  end
+end
+sc.default = "simple.qos"
+sc.rmempty = false
 
 a = s:option(Flag, "adsl", translate("ADSL connection"))
 a.rmempty = false

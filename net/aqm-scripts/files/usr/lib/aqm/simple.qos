@@ -1,0 +1,226 @@
+#!/bin/sh -x
+# Cero3 Shaper
+# A 3 bin tc_codel and ipv6 enabled shaping script for
+# ethernet gateways
+
+# Copyright (C) 2012 Michael D Taht
+# GPLv2
+
+# Compared to the complexity that debloat had become
+# this cleanly shows a means of going from diffserv marking
+# to prioritization using the current tools (ip(6)tables
+# and tc. I note that the complexity of debloat exists for
+# a reason, and it is expected that script is run first
+# to setup various other parameters such as BQL and ethtool.
+# (And that the debloat script has setup the other interfaces)
+
+# You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
+
+[ -z "$UPLINK" ] && UPLINK=2000
+[ -z "$DOWNLINK" ] && DOWNLINK=20000
+[ -z "$DEV" ] && DEV=ifb0
+[ -z "$QDISC" ] && QDISC=fq_codel
+[ -z "$IFACE" ] && IFACE=ge00
+[ -z "$ADSL" ] && ADSL=0
+
+. /usr/lib/aqm/functions.sh
+TC=/usr/sbin/tc
+CEIL=$UPLINK
+MTU=1500
+ADSLL=""
+
+if [ "$ADSL" == "1" ] 
+then
+	OVERHEAD=40
+	LINKLAYER=adsl
+	ADSLL="linklayer ${LINKLAYER} overhead ${OVERHEAD}"
+fi
+
+
+do_modules() {
+
+insmod sch_$QDISC
+insmod sch_ingress
+insmod act_mirred
+insmod cls_fw
+insmod sch_htb
+
+}
+
+# This could be a complete diffserv implementation
+# But it isn't as the ipv6 match doesn't work right
+
+diffserv() {
+
+tc filter add dev $DEV protocol ip parent 1:0 prio 2 u32 match ip tos 0x00 0x3f classid 1:12 # CS0
+tc filter add dev $DEV protocol ip parent 1:0 prio 4 u32 match ip tos 0x10 0x3f classid 1:11 # Low Delay
+tc filter add dev $DEV protocol ip parent 1:0 prio 6 u32 match ip tos 0x20 0x3f classid 1:13 # CS1 Bulk
+tc filter add dev $DEV protocol ip parent 1:0 prio 8 u32 match ip tos 0x2e 0x3f classid 1:11 # EF
+
+tc filter add dev $DEV protocol ipv6 parent 1:0 prio 1 u32 match ip6 flowlabel 0x00 0x3f classid 1:12 # CS0
+tc filter add dev $DEV protocol ipv6 parent 1:0 prio 3 u32 match ip6 flowlabel 0x10 0x3f classid 1:11 # Low Delay
+tc filter add dev $DEV protocol ipv6 parent 1:0 prio 5 u32 match ip6 flowlabel 0x20 0x3f classid 1:13 # CS1 Bulk
+tc filter add dev $DEV protocol ipv6 parent 1:0 prio 7 u32 match ip6 flowlabel 0x2e 0x3f classid 1:11 # EF
+
+# Arp traffic
+tc filter add dev $DEV parent 1:0 protocol arp prio 255 handle 1 fw classid 1:11
+
+}
+
+get_flows() {
+	FLOWS=8
+	[ $1 -gt 999 ] && FLOWS=16
+	[ $1 -gt 2999 ] && FLOWS=32
+	[ $1 -gt 7999 ] && FLOWS=48
+	[ $1 -gt 9999 ] && FLOWS=64
+	[ $1 -gt 19999 ] && FLOWS=128
+	[ $1 -gt 39999 ] && FLOWS=256
+	[ $1 -gt 69999 ] && FLOWS=512
+	[ $1 -gt 99999 ] && FLOWS=1024
+	echo $FLOWS
+}	
+
+
+aqm_stop() {
+	tc qdisc del dev $IFACE ingress
+	tc qdisc del dev $IFACE root
+	tc qdisc del dev $DEV root
+}
+
+ipt_setup() {
+
+ipt -t mangle -N QOS_MARK_${IFACE}
+
+ipt -t mangle -A QOS_MARK_${IFACE} -j MARK --set-mark 0x2
+# You can go further with classification but...
+ipt -t mangle -A QOS_MARK_${IFACE} -m dscp --dscp-class CS1 -j MARK --set-mark 0x3
+ipt -t mangle -A QOS_MARK_${IFACE} -m dscp --dscp-class CS6 -j MARK --set-mark 0x1
+ipt -t mangle -A QOS_MARK_${IFACE} -m dscp --dscp-class EF -j MARK --set-mark 0x1
+ipt -t mangle -A QOS_MARK_${IFACE} -m dscp --dscp-class AF42 -j MARK --set-mark 0x1
+ipt -t mangle -A QOS_MARK_${IFACE} -m tos  --tos Minimize-Delay -j MARK --set-mark 0x1
+
+# and it might be a good idea to do it for udp tunnels too
+
+# Turn it on. Preserve classification if already performed
+
+ipt -t mangle -A POSTROUTING -o $DEV -m mark --mark 0x00 -g QOS_MARK_${IFACE} 
+ipt -t mangle -A POSTROUTING -o $IFACE -m mark --mark 0x00 -g QOS_MARK_${IFACE} 
+
+# The Syn optimization was nice but fq_codel does it for us
+# ipt -t mangle -A PREROUTING -i s+ -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j MARK --set-mark 0x01
+# Not sure if this will work. Encapsulation is a problem period
+
+ipt -t mangle -A PREROUTING -i vtun+ -p tcp -j MARK --set-mark 0x2 # tcp tunnels need ordering
+
+# Emanating from router, do a little more optimization
+# but don't bother with it too much. 
+
+ipt -t mangle -A OUTPUT -p udp -m multiport --ports 123,53 -j DSCP --set-dscp-class AF42
+
+#Not clear if the second line is needed
+#ipt -t mangle -A OUTPUT -o $IFACE -g QOS_MARK_${IFACE}
+
+}
+
+
+# TC rules
+
+egress() {
+
+CEIL=${UPLINK}
+PRIO_RATE=`expr $CEIL / 3` # Ceiling for prioirty
+BE_RATE=`expr $CEIL / 6`   # Min for best effort
+BK_RATE=`expr $CEIL / 6`   # Min for background
+BE_CEIL=`expr $CEIL - 64`  # A little slop at the top
+
+R2Q=""
+
+if [ "$CEIL" -lt 1000 ]
+then
+	R2Q="rtq 1"
+fi
+
+tc qdisc del dev $IFACE root 2> /dev/null
+tc qdisc add dev $IFACE root handle 1: htb ${RTQ} default 12
+tc class add dev $IFACE parent 1: classid 1:1 htb rate ${CEIL}kbit ceil ${CEIL}kbit $ADSLL
+tc class add dev $IFACE parent 1:1 classid 1:10 htb rate ${CEIL}kbit ceil ${CEIL}kbit prio 0 $ADSLL
+tc class add dev $IFACE parent 1:1 classid 1:11 htb rate 128kbit ceil ${PRIO_RATE}kbit prio 1 $ADSLL
+tc class add dev $IFACE parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 $ADSLL
+tc class add dev $IFACE parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 $ADSLL
+
+tc qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 noecn flows `get_flows ${PRIO_RATE}`
+tc qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 noecn flows `get_flows ${BE_RATE}`
+tc qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 noecn flows `get_flows ${BK_RATE}`
+
+tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 1 fw classid 1:11
+tc filter add dev $IFACE parent 1:0 protocol ip prio 2 handle 2 fw classid 1:12
+tc filter add dev $IFACE parent 1:0 protocol ip prio 3 handle 3 fw classid 1:13
+
+# ipv6 support. Note that the handle indicates the fw mark bucket that is looked for
+
+tc filter add dev $IFACE parent 1:0 protocol ipv6 prio 4 handle 1 fw classid 1:11
+tc filter add dev $IFACE parent 1:0 protocol ipv6 prio 5 handle 2 fw classid 1:12
+tc filter add dev $IFACE parent 1:0 protocol ipv6 prio 6 handle 3 fw classid 1:13
+
+# Arp traffic
+
+tc filter add dev $IFACE parent 1:0 protocol arp prio 7 handle 1 fw classid 1:11
+
+}
+
+ingress() {
+
+CEIL=$DOWNLINK
+PRIO_RATE=`expr $CEIL / 3` # Ceiling for prioirty
+BE_RATE=`expr $CEIL / 6`   # Min for best effort
+BK_RATE=`expr $CEIL / 6`   # Min for background
+BE_CEIL=`expr $CEIL - 64`  # A little slop at the top
+
+R2Q=""
+
+tc qdisc del dev $IFACE handle ffff: ingress 2> /dev/null
+tc qdisc add dev $IFACE handle ffff: ingress
+ 
+tc qdisc del dev $DEV root  2> /dev/null
+tc qdisc add dev $DEV root handle 1: htb ${R2Q} default 12
+tc class add dev $DEV parent 1: classid 1:1 htb rate ${CEIL}kbit ceil ${CEIL}kbit $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${CEIL}kbit ceil ${CEIL}kbit prio 0 $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:11 htb rate 32kbit ceil ${PRIO_RATE}kbit prio 1 $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 $ADSLL
+tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 $ADSLL
+
+# I'd prefer to use a pre-nat filter but that causes permutation...
+
+tc qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 ecn flows `get_flows ${PRIO_RATE}`
+tc qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 ecn flows `get_flows ${BE_RATE}`
+tc qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 ecn flows `get_flows ${BK_RATE}`
+
+diffserv
+
+ifconfig ifb0 up
+
+# redirect all IP packets arriving in $IFACE to ifb0 
+
+$TC filter add dev $IFACE parent ffff: protocol all prio 10 u32 \
+  match u32 0 0 flowid 1:1 action mirred egress redirect dev $DEV
+
+}
+
+do_modules
+ipt_setup
+egress 
+ingress
+
+# References:
+# This alternate shaper attempts to go for 1/u performance in a clever way
+# http://git.coverfire.com/?p=linux-qos-scripts.git;a=blob;f=src-3tos.sh;hb=HEAD
+
+# Comments
+# This does the right thing with ipv6 traffic.
+# It also tries to leverage diffserv to some sane extent. In particular,
+# the 'priority' queue is limited to 33% of the total, so EF, and IMM traffic
+# cannot starve other types. The rfc suggested 30%. 30% is probably
+# a lot in today's world.
+
+# Flaws
+# Many!
