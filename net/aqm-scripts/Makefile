@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aqm-scripts
-PKG_VERSION:=1.2.1
-PKG_RELEASE:=6
+PKG_VERSION:=1
+PKG_RELEASE:=1
 
 PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/aqm-scripts
-  SECTION:=utils
+  SECTION:=net
   CATEGORY:=Base system
   DEPENDS:=+tc +kmod-sched +kmod-ifb +iptables +iptables-mod-filter +iptables-mod-ipopt +iptables-mod-conntrack-extra
   TITLE:=AQM Scripts
@@ -24,9 +24,7 @@ define Package/aqm-scripts
 endef
 
 define Package/aqm-scripts/description
- A set of scripts that abstract AQM configuration into a simple 
- configuration file supporting stanzas that specify any number of AQM
- entries.
+ A set of scripts that does simple AQM configuration.
 endef
 
 define Package/aqm-scripts/conffiles

@@ -1,16 +1,23 @@
 #!/bin/sh /etc/rc.common
-# Copyright (C) 2006 OpenWrt.org
 
 START=50
 
-boot() {
-	/usr/lib/aqm/generate.sh firewall | sh
+reload()
+{
+/usr/lib/aqm/run.sh
 }
 
-start() {
-	aqm-start
+restart()
+{
+reload
 }
 
-stop() {
-	aqm-stop
+start()
+{
+reload
+}
+
+stop()
+{
+echo "not implemented yet"
 }

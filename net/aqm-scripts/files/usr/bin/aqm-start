@@ -1,4 +1,0 @@
-#!/bin/sh
-aqm-stop 
-/usr/lib/aqm/generate.sh all | sh
-
