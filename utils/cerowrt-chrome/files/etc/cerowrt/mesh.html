@@ -1,57 +1,59 @@
-<!DOCTYPE HTML> 
- 
-<head> 
-  <title>Mesh Networking</title> 
-  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
+<!DOCTYPE HTML>
+
+<head>
+  <title>Mesh Networking</title>
+  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head> 
+</head>
 <body>
-<div>
-<h1>Mesh Networking</h1>
+  <div>
+    <h1>Mesh Networking</h1>
 
-<p>CeroWrt comes with mesh networking enabled, using
-the <a href="http://www.pps.jussieu.fr/~jch/software/babel/">Babel</a>
-protocol (BabelZ) to spread routes over both <a
-href="http://en.wikipedia.org/wiki/IPv6"><abbr
-title="Internet Protocol version 6">IPv6</abbr></a> and <a
-href="http://en.wikipedia.org/wiki/IPv4"><abbr
-title="Internet Protocol version 4">IPv4</abbr></a>.  It
-uses <a href="http://www.pps.jussieu.fr/~jch/software/ahcp/"><abbr
-title="Ad-Hoc Configuration Protocol">AHCP</abbr></a>
-to assign IPv4 and IPv6 addresses across the mesh. </p>
+    <p>CeroWrt comes with mesh networking enabled, using
+      the <a href="http://www.pps.jussieu.fr/~jch/software/babel/">Babel</a>
+      protocol (BabelZ) to spread routes over
+      both <a href="http://en.wikipedia.org/wiki/IPv6"><abbr title="Internet
+      Protocol version 6">IPv6</abbr></a>
+      and <a href="http://en.wikipedia.org/wiki/IPv4"><abbr title="Internet
+      Protocol version 4">IPv4</abbr></a>. It
+      uses <a href="http://www.pps.jussieu.fr/~jch/software/ahcp/"><abbr title="Ad-Hoc
+      Configuration Protocol">AHCP</abbr></a> to assign IPv4 and IPv6 addresses
+      across the mesh. </p>
 
-<p>Mesh networking is quite unlike bridging or fixed access points. In
-particular, when used 'right' you are able to move transparently from
-one wireless (or wired!) node to another, relay traffic for others out
-of range of the main access point, and not lose your own
-connections. Mesh networks are self-repairing - at a sufficient
-density of nodes, there are always paths to get to get to your
-destination - and (unlike bridging), BabelZ's "diversity" mesh routing is sensitive to the
-frequencies you are using, so that different network paths are picked based on the frequencies in use - a packet from a nearby 5.2GHz node will try to go through a node on another channel, while preferring ethernet wherever possible. Something like the <a href="http://en.wikipedia.org/wiki/Four_color_theorem">four colour theorem</a> applies to dense wireless networks.</p>
+    <p>Mesh networking is quite unlike bridging or fixed access points. In
+      particular, when used 'right' you are able to move transparently from one
+      wireless (or wired!) node to another, relay traffic for others out of
+      range of the main access point, and not lose your own connections. Mesh
+      networks are self-repairing - at a sufficient density of nodes, there are
+      always paths to get to get to your destination - and (unlike bridging),
+      BabelZ's "diversity" mesh routing is sensitive to the frequencies you are
+      using, so that different network paths are picked based on the frequencies
+      in use - a packet from a nearby 5.2GHz node will try to go through a node
+      on another channel, while preferring ethernet wherever possible. Something
+      like the <a href="http://en.wikipedia.org/wiki/Four_color_theorem">four
+      colour theorem</a> applies to dense wireless networks.</p>
 
-<p>Since there may be multiple hops before the wired connection each
-with its own buffering, mesh networks are particularly sensitive to
-bufferbloat and therefore a challenge as well as potentially very
-useful in their own right.</p>
+    <p>Since there may be multiple hops before the wired connection each with
+      its own buffering, mesh networks are particularly sensitive to bufferbloat
+      and therefore a challenge as well as potentially very useful in their own
+      right.</p>
 
-<p>Please consult
-<a href="http://www.bufferbloat.net/projects/cerowrt/wiki/Mesh">the mesh
-routing web page</a> for more details on how to set up a Babel based
-mesh network using this router.</p>
+    <p>Please consult
+      <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/Mesh">the mesh
+        routing web page</a> for more details on how to set up a Babel based
+        mesh network using this router.</p>
 
- 
-</div>
-<div class="menu">
-<nav>
-<ul role="navigation">
-<li><a href="index.html">Home</a>   
-<li><a href="/bgi-bin/redir.sh">Administer</a>    
-<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
-<li><a href="about.html">About CeroWrt</a>
-<li><a href="credits.html">Credits</a>
-<li><a href="support.html">Help</a>
-</ul>
-</nav>
-</div>
+  </div>
+  <div class="menu">
+    <nav>
+      <ul role="navigation">
+        <li><a href="index.html">Home</a>
+        <li><a href="/bgi-bin/redir.sh">Administer</a>
+        <li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+        <li><a href="credits.html">Credits</a>
+        <li><a href="support.html">Help</a>
+      </ul>
+    </nav>
+  </div>
 </body>
 </html>

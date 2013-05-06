@@ -1,56 +1,48 @@
-<!DOCTYPE HTML> 
- 
-<head> 
-  <title>CeroWrt Features</title> 
-  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
+<!DOCTYPE HTML>
+<head>
+  <title>CeroWrt Features</title>
+  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head> 
+</head>
 <body>
-<div>
-<h1>Interesting features of this release</h1>
-<ul>
-<li>Extensive <a href="debloat.html">debloating</a></li>
-<li><a href="dns.html">ISC Bind 9 with DNSSEC</a>, running in a chroot jail</li>
-<li>Numerous <a href="debug.html">debugging and diagnostic tools</a></li>
-<li><a href="tcp.html#ECN"><abbr title="Explicit Congestion Notification">
-ECN</abbr></a> is enabled</li>
-<li>Multiple <a href="tcp.html">TCP algorithms</a> (<a
-href="http://en.wikipedia.org/wiki/CUBIC_TCP">Cubic</a>, <a
-href="http://en.wikipedia.org/wiki/BIC_TCP">Bic</a>, <a
-href="http://en.wikipedia.org/wiki/TCP_Westwood_plus">Westwood+</a>, <a
-href="http://en.wikipedia.org/wiki/TCP_Vegas">Vegas</a>)</li>
-<li>Multiple <a href="tcp.html#qos">traffic shapers</a> (now including <a
-href="http://en.wikipedia.org/wiki/Deficit_round_robin"><abbr
-title="Deficit Round Robin">DRR</abbr></a> and <a
-href="http://en.wikipedia.org/wiki/Blue_(queue_management_algorithm)#Stochastic_Fair_Blue">
-<abbr title="Stochastic Fair Blue">SFB</abbr></a>)</li>
-<li>Simulations are possible of packet loss and delay by using <a href="tcp.html#netem">NETEM</a></li>
-<li><a href="ipv6.html">Native, 6to4, and 6in4 <abbr
-title="Internet Protocol version 6">IPv6</abbr> support</a></li>
-<li><a href="mesh.html">Mesh routing</a></li>
-<li><a href="http://luci.subsignal.org/">LuCI web interface</a></li>
-<li><a href="proxy.html">The polipo web proxy</a></li>
-<li><a href="webserver.html">Local lighttpd web server</a></li>
-<li><a href="rsync.html">Rsync</a></li>
-<li>Bridging different radios and ethernet has become very problematic, particularly 
-in the face of multicast traffic and radically different wireless bandwidth. 
-CeroWrt routes between its interfaces (which have different /27 subnets by defaults), 
-rather than bridging traffic between them.</li>
-</ul>
-<p>Many additional packages are not installed by default, but are available in the CeroWrt package repository.</p>
-</div>
-<div class="menu">
-<nav>
-<ul role="navigation">
-<li><a href="index.html">Home</a>   
-<li><a href="/bgi-bin/redir.sh">Administer</a>    
-<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
-<li><a href="about.html">About CeroWrt</a>
-<li><a href="credits.html">Credits</a>
-<li><a href="support.html">Help</a>
-</ul>
-</nav>
-</div>
-</body> 
-</html> 
-
+  <div>
+    <h1>Interesting features of this release</h1>
+    <ul>
+      <li>Extensive <a href="debloat.html">debloating</a> using CoDel, fq_codel,
+      and sfq_codel</li>
+      <li><a href="dns.html">DNS services</a> using dnsmasq </li>
+      <li><a href="dns.html#mdns">mDNS services</a> to provide DNS names for
+        local devices so you don't have to know their IP address</li>
+      <li>Numerous <a href="debug.html">debugging and diagnostic tools</a></li>
+      <li><a href="tcp.html#ECN"><abbr title="Explicit Congestion Notification">
+            ECN</abbr></a> is enabled</li>
+      <li><a href="ipv6.html">Native, 6to4, and 6in4 <abbr title="Internet
+      Protocol version 6">IPv6</abbr> support</a></li>
+      <li><a href="mesh.html">Mesh routing</a></li>
+      <li><a href="http://luci.subsignal.org/">LuCI web interface</a></li>
+      <li><a href="proxy.html">The polipo web proxy</a></li>
+      <li><a href="webserver.html">Local lighttpd web server</a></li>
+      <li><a href="rsync.html">Rsync</a></li>
+      <li>CeroWrt routes between its interfaces (which have different /27
+        subnets by default), rather than bridging traffic between them. Bridging
+        different radios and Ethernet has become very problematic, particularly
+        in the face of multicast traffic and radically different wired/wireless
+        bandwidth.
+      </li>
+    </ul>
+    <p>Many additional packages are not installed by default, but are available
+    in the CeroWrt package repository.</p>
+  </div>
+  <div class="menu">
+    <nav>
+      <ul role="navigation">
+        <li><a href="index.html">Home</a>
+        <li><a href="/bgi-bin/redir.sh">Administer</a>
+        <li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+        <li><a href="credits.html">Credits</a>
+        <li><a href="support.html">Help</a>
+      </ul>
+    </nav>
+  </div>
+</body>
+</html>

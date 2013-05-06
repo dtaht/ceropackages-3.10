@@ -1,68 +1,78 @@
-<!DOCTYPE HTML> 
- 
-<head> 
-  <title>Debugging and diagnostic tools</title> 
-  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
+<!DOCTYPE HTML>
+
+<head>
+  <title>Debugging and diagnostic tools</title>
+  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head> 
+</head>
 <body>
-<div>
-<h1>Debugging and Diagnostic Tools</h1>
+  <div>
+    <h1>Debugging and Diagnostic Tools</h1>
 
-<!-- Are there any other tools to add here? -->
-<p>Most home routers shipped to date have limited network testing and
-debugging tools. CeroWrt comes with a rich set of tools. Some critical
-tools are installed by default, and many more tools are available in
-the package repository.</p>
+    <!-- Are there any other tools to add here? -->
+    <p>Most home routers shipped to date have limited network testing and
+      debugging tools. CeroWrt comes with a rich set of tools. Some critical
+      tools are installed by default, and many more tools are available in the
+      package repository.</p>
 
-<h2>Default Packages</h2>
-<p>These commands are included by default:
-<ul> 
-<li>tcpdump
-<li>traceroute
-<li>ping
-<li>ping6
-<li>lft
-<li>iostat
-<li>netcat
-<li>rsync
-<li>curl
-<li>fping
-</ul>
-<h2>Optional packages</h2>
-<p>Optional packages include, but are not limited to:
-<ul>
-<li>iperf
-<li>shaperprobe
-<li>d-itg
-<li>atftp
-<li>bwping
-<li>strace
-<li>netperf
-<li>httping
-<li>bing
-<li>uftp
-</ul>
+    <table cellpadding="10">
+      <tr>
+        <td>
+          <h2>Built-in Packages</h2>
+          <p>These commands are included by default:</p>
+            <ul>
+              <li>tcpdump</li>
+              <li>traceroute</li>
+              <li>ping</li>
+              <li>ping6</li>
+              <li>lft</li>
+              <li>iostat</li>
+              <li>netcat</li>
+              <li>rsync</li>
+              <li>curl</li>
+              <li>fping</li>
+            </ul>
+        </td>
+        <td>
+          <h2>Optional packages</h2>
+          <p>Optional packages include, but are not limited to:</p>
+          <ul>
+            <li>iperf</li>
+            <li>shaperprobe</li>
+            <li>d-itg</li>
+            <li>atftp</li>
+            <li>bwping</li>
+            <li>strace</li>
+            <li>netperf</li>
+            <li>httping</li>
+            <li>bing</li>
+            <li>uftp</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
 
-<p>The package listing in the router's administrative interface will
-contain a complete listing once updated.</p>
+    <h2>Other Packages</h2>
 
-<p> Most CeroWrt releases also contain oprofile support, which is
-very useful for detecting problems integral to the kernel and
-networking stack. Note that enabling oprofile can introduce "heisenbugs" in that it is very CPU and memory intensive.</p>
- 
-</div>
-<div class="menu">
-<nav>
-<ul role="navigation">
-<li><a href="index.html">Home</a>
-<li><a href="/bgi-bin/redir.sh">Administer</a>    
-<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
-<li><a href="about.html">About CeroWrt</a>
-<li><a href="credits.html">Credits</a>
-<li><a href="support.html">Help</a>
-</ul>
-</nav> 
-</div>
+    <p>The package listing in the router's administrative interface will
+      contain a complete listing once updated.</p>
+
+    <p> CeroWrt releases also contain oprofile support, which is useful for
+      detecting problems integral to the kernel and networking stack. Note that
+      enabling oprofile can introduce "heisenbugs" in that it is very CPU and
+      memory intensive.</p>
+
+  </div>
+  <div class="menu">
+    <nav>
+      <ul role="navigation">
+        <li><a href="index.html">Home</a>
+        <li><a href="/bgi-bin/redir.sh">Administer</a>
+        <li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+        <li><a href="credits.html">Credits</a>
+        <li><a href="support.html">Help</a>
+      </ul>
+    </nav>
+  </div>
 </body>
 </html>

@@ -1,132 +1,133 @@
-<!DOCTYPE HTML> 
- 
-<head> 
-  <title>Debloating</title> 
-  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
+<!DOCTYPE HTML>
+
+<head>
+  <title>Debloating</title>
+  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head> 
+</head>
 <body>
-<div>
-<h1>Debloating</h1>
-<h2>Bufferbloat</h2>
+  <div>
+    <h1>Debloating</h1>
+    <h2>Bufferbloat</h2>
 
-<p><a href="http://www.bufferbloat.net/attachments/27/IC-15-03-Backspace.pdf">Bufferbloat
-is a widespread problem</a> present throughout the Internet,
-"end-to-end." Debloating is a "work in progress" industry wide and
-will take years.  Ultimately, all buffering/queuing in operating
-systems needs to be carefully managed and
-be <a href="http://gettys.wordpress.com/2011/07/06/rant-warning-there-is-no-single-right-answer-for-buffering-ever/">automatically
-adaptive</a> to the data transfer rates. All network routers (and
-operating systems!) should be running with <a
-href="http://en.wikipedia.org/wiki/Active_queue_management"><abbr
-title="Active Queue Management">AQM</abbr></a> (e.g. algorithms such
-as RED) including home routers: unfortunately, existing algorithms such as <a
-href="http://en.wikipedia.org/wiki/Random_early_detection"><abbr
-title="Random Early Detection">RED</abbr></a>
-are <a href="http://gettys.wordpress.com/2010/12/17/red-in-a-different-light/">unlikely to work correctly</a> in today's home network environment.</p><p>
-CeroWrt is the test platform for improved AQM
-algorithms. To achieve ultimate latencies under load across the high
-bandwidth variation of 802.11 and broadband, new AQM algorithms need
-testing in addition to more complex changes in internal buffering;
-these will take time and therefore debloating will be a work in
-progress for an extended period.
-</p>
+    <p><a href="http://www.bufferbloat.net/attachments/27/IC-15-03-Backspace.pdf">Bufferbloat
+        is a widespread problem</a> present throughout the Internet,
+        "end-to-end." Debloating is a "work in progress" industry wide and will
+        take years. Ultimately, all buffering/queuing in operating systems needs
+        to be carefully managed and
+        be <a href="http://gettys.wordpress.com/2011/07/06/rant-warning-there-is-no-single-right-answer-for-buffering-ever/">
+        automatically adaptive</a> to the data transfer rates. All network
+        routers (and operating systems!) should be running
+        with <a href="http://en.wikipedia.org/wiki/Active_queue_management"><abbr title="Active
+        Queue Management">AQM</abbr></a> including home routers. Unfortunately,
+        existing algorithms such
+        as <a href="http://en.wikipedia.org/wiki/Random_early_detection"><abbr title="Random
+        Early Detection">RED</abbr></a> are difficult to tune,
+        and <a href="http://gettys.wordpress.com/2010/12/17/red-in-a-different-light/">unlikely
+        to work correctly</a>. Worse, those algorithms can make performance much
+        worse if not tuned properly. Consequently, many network operators never
+        used these techniques at all.</p>
 
-<p>
-In the upstream direction, the bottleneck link may be adjacent to your
-home devices (e.g. your laptop on wireless), and in your operating
-system, outside of our control; you may see problems therefore copying
-from your home device upstream to the Internet and/or your home file
-server.  Unfortunately, <a
-href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol"><abbr
-title="Transmission Control Protocol">TCP</abbr></a> acks can be stalled behind packets queued
-in a particular direction, so bufferbloat in one direction <b>can</b>
-result in bad performance (poor latency) in the other direction.  If
-you run Linux, you can help with debloating by working with those
-working on
-the <a href="http://lwn.net/Articles/429943/">debloat-testing</a> work
-going on on <a href="http://bufferbloat.net">bufferbloat.net</a>.  On
-other operating systems, you should contact your operating system
-vendor and complain. Be gentle (but insistent), however: before 2011,
-bufferbloat was not understood to be a general problem, and it will
-take time to overcome.
-</p>
+    <p>
+      CeroWrt is the test platform for improved AQM algorithms. To achieve
+      ultimate latencies under load across the high bandwidth variation of
+      802.11 and broadband, new AQM algorithms need testing in addition to more
+      complex changes in internal buffering; these will take time and therefore
+      debloating will be a work in progress for an extended period.</p>
 
-<p>
-Note that bufferbloat only occurs in the device just before the
-bottleneck in a path. A common strategy when fixes for bufferbloat are
-not available for the devices either side of a bottleneck, therefore,
-is to try to arrange to move the bottleneck from a device which is
-badly bloated to one which is not: e.g. you might arrange to ensure
-that your wireless bandwidth is <b>always</b> bigger than your
-broadband bandwidth (and using bandwidth shaping and <a
-href="http://en.wikipedia.org/wiki/Quality_of_service"><abbr
-title="Quality of Service">QoS</abbr></a> to avoid the
-consequences of bufferbloat in that hop as best you can).
-</p>
+    <p>
+      In the upstream direction, the bottleneck link may be adjacent to your
+      home devices (e.g. your laptop on wireless), and in your operating system,
+      outside of our control; you may see problems therefore copying from your
+      home device upstream to the Internet and/or your home file server.
+      Unfortunately, <a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol"><abbr title="Transmission
+      Control Protocol">TCP</abbr></a> acks can be stalled behind packets queued
+      in a particular direction, so bufferbloat in one direction <b>can</b>
+      result in bad performance (poor latency) in the other direction. If you
+      run Linux, you can help with debloating by working with those working on
+      the <a href="http://lwn.net/Articles/429943/">debloat-testing</a> work
+      going on on <a href="http://bufferbloat.net">bufferbloat.net</a>. On other
+      operating systems, you should contact your operating system vendor and
+      complain. Be gentle (but insistent), however: before 2011, bufferbloat was
+      not understood to be a general problem, and it will take time to
+      overcome.</p>
 
-<h2>Home Routers</h2>
-<p>
-Current operating systems has been tuned over the last decade for
-maximum bandwidth over very long, high bandwidth LFN ("Large Fat
-Network") paths without consideration of bufferbloat (gigabit speed +
-over 100ms or longer paths). </p> 
-<p>The quest for "land speed" record bragging rights has destroyed latency, the speed we really need.
-The <a
-href="http://en.wikipedia.org/wiki/Bandwidth-delay_product">
-bandwidth-delay product <abbr title="Bandwidth-Delay Product">(BDP)</abbr></a> of these LFN paths is very high indeed, and buffers have
-been adjusted upwards accordingly. When these same operating systems are
-used in home routers (e.g. Linux and Apple's system), LFN tuning 
-becomes a serious headache as the circumstances differ tremendously.
-</p>
+    <p>
+      Note that bufferbloat only occurs in the device just before the bottleneck
+      in a path. A common strategy when fixes for bufferbloat are not available
+      for the devices either side of a bottleneck, therefore, is to try to
+      arrange to move the bottleneck from a device which is badly bloated to one
+      which is not: e.g. you might arrange to ensure that your wireless
+      bandwidth is <b>always</b> bigger than your broadband bandwidth (and using
+      bandwidth shaping
+      and <a href="http://en.wikipedia.org/wiki/Quality_of_service"><abbr title="Quality
+      of Service">QoS</abbr></a> to avoid the consequences of bufferbloat in
+      that hop as best you can).</p>
 
-<p>
-Home routers never operate in LFN's, rather, they operate in two
-network environments, sometimes simultaneously:
-<ol>
-<li>Relatively low bandwidth (100Mbps or much less), sometimes long paths (10-100ms), (your broadband connection) and
-<li>Medium bandwidth (never much more than 100Mbps wireless, and never
-more than 1Gbps wired), but very, very short paths (in your house, to
-other devices such as file storage, less than 1ms away).
-</ol>
-<p>
-We can therefore cut the buffering in the router greatly, since there
-are never high bandwidth, high delay paths through these devices. If
-we've done this correctly, you'll never see lower bandwidth, but will
-see much better latency. Please let us know if you see any performance
-problems.
-</p>
+    <h2>Home Routers</h2>
+    <p>
+      Current operating systems has been tuned over the last decade for maximum
+      bandwidth over very long, high bandwidth LFN ("Large Fat Network") paths
+      without consideration of bufferbloat (gigabit speed + over 100ms or longer
+      paths). </p>
 
-<p>Debloating techniques currently in place include but are not limited to:</p>
-<ul>
-<li>Vastly reduced TXQUEUELEN across all ethernet and wireless interfaces.</li>
-<li>Reduced buffering in the ethernet switch</li>
-<li>Reduced driver buffering across all ethernet and wireless interfaces</li>
-<li>QoS enabled by default</li>
-</ul>
+    <p>The quest for "land speed" record bragging rights has destroyed latency,
+      the speed we really need.
+      The <a href="http://en.wikipedia.org/wiki/Bandwidth-delay_product">
+      bandwidth-delay product <abbr title="Bandwidth-Delay
+      Product">(BDP)</abbr></a> of these LFN paths is very high indeed, and
+      buffers have been adjusted upwards accordingly. When these same operating
+      systems are used in home routers (e.g. Linux and Apple's system), LFN
+      tuning becomes a serious headache as the circumstances differ
+      tremendously.</p>
 
-<p>
-QoS classification is interesting to improve low latency applications
-(e.g. <a href="http://en.wikipedia.org/wiki/Voice_over_IP"><abbr
-title="Voice over IP">VoIP</abbr></a> & gaming) and to help with the reverse path consequences of
-bufferbloat (e.g. delay of acks, DNS and other key protocols which are
-killing performance and even inducing failures).  QoS is a useful but
-insufficient tool: bufferbloat cannot be completely solved without AQM,
-a common misunderstanding.
-</p>
- 
-</div>
-<div class="menu">
-<nav>
-<ul role="navigation">
-<li><a href="index.html">Home</a>   
-<li><a href="/bgi-bin/redir.sh">Administer</a>    
-<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
-<li><a href="about.html">About CeroWrt</a>
-<li><a href="credits.html">Credits</a>
-<li><a href="support.html">Help</a>
-</ul>
-</nav>
-</div>
+    <p>
+      Home routers never operate in LFN's, rather, they operate in two network
+      environments, sometimes simultaneously:</p>
+
+    <ol>
+      <li>Relatively low bandwidth (100Mbps or much less), sometimes long paths
+        (10-100ms), (your broadband connection) and</li>
+      <li>Medium bandwidth (never much more than 100Mbps wireless, and never
+        more than 1Gbps wired), but very, very short paths (in your house, to
+        other devices such as file storage, less than 1ms away).</li>
+    </ol>
+
+    <p>
+      We can therefore cut the buffering in the router greatly, since there are
+      never high bandwidth, high delay paths through these devices. If we've
+      done this correctly, you'll never see lower bandwidth, but will see much
+      better latency. Please let us know if you see any performance
+      problems.</p>
+
+    <h2>Debloating in CeroWrt</h2>
+    <p>
+      In mid-2012, Kathy Nichols and Van Jacobson devised the CoDel
+      ("controlled delay") algorithm for minimizing the delay of packets in
+      queues waiting to be sent. Their initial work has been validated
+      theoretically as well as by implementations in CeroWrt. The algorithm, and
+      its fq_codel as implemented by Eric Dumazet has also been incorporated
+      into recent Linux kernels, where it is can be used as the default queue
+      discipline.</p>
+
+    <p>
+      fq_codel has nearly eliminated bufferbloat for all wired interfaces.
+      Wireless interfaces have a more complicated queueing structure, with
+      packet aggregation that can confuse the CoDel algorithms. Although CeroWrt
+      dramatically improves latency for wireless interfaces, more research is
+      necessary for further improvements on wireless links.</p>
+
+  </div>
+  <div class="menu">
+    <nav>
+      <ul role="navigation">
+        <li><a href="index.html">Home</a>
+        <li><a href="/bgi-bin/redir.sh">Administer</a>
+        <li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+        <li><a href="credits.html">Credits</a>
+        <li><a href="support.html">Help</a>
+      </ul>
+    </nav>
+  </div>
 </body>
 </html>

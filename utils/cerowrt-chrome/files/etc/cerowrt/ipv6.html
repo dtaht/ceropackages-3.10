@@ -1,57 +1,59 @@
 <!DOCTYPE HTML> 
- 
+
 <head> 
   <title>IPv6</title> 
   <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head> 
 <body>
-<div>
-<h1>About IPv6</h1>
+  <div>
+    <h1>About IPv6</h1>
 
-<p>All <a href="http://en.wikipedia.org/wiki/IPv4"><abbr
-title="Internet Protocol version 4">IPv4</abbr></a> address space was allocated to regional authorities by
-March, 2011, and exhaustion of these allocations looms. When
-exhaustion occurs, there will be no room left for further expansion of
-the Internet, and/or increasingly problematic uses of <a
-href="http://en.wikipedia.org/wiki/Network_address_translation"><abbr
-title="Network Address Translation">NAT</abbr></a>, with
-application failures increasing with time.  <a href="http://en.wikipedia.org/wiki/IPv6"><abbr
-title="Internet Protocol version 6">IPv6</abbr></a> has existed for a
-long time, but has not been widely deployed in home routers, and since
-usage has been low, networks may have latent problems that need to be
-fixed to enable a seamless transition to IPv6.  Recent trials of IPv6,
-including <a href="http://www.worldipv6day.org/">World IPv6 Day</a>,
-have shown that IPv6 transition is feasible and desirable.</p>
+    <p>All <a href="http://en.wikipedia.org/wiki/IPv4">
+        <abbr title="Internet Protocol version 4">IPv4</abbr></a> address space
+      was allocated to regional authorities by March, 2011, and exhaustion of
+      these allocations looms. When exhaustion occurs, there will be no room
+      left for further expansion of the Internet, and/or increasingly
+      problematic uses
+      of <a href="http://en.wikipedia.org/wiki/Network_address_translation">
+        <abbr title="Network Address Translation">NAT</abbr></a>, with
+      application failures increasing with
+      time. <a href="http://en.wikipedia.org/wiki/IPv6"><abbr title="Internet
+      Protocol version 6">IPv6</abbr></a> has existed for a long time, but has
+      not been widely deployed in home routers, and since usage has been low,
+      networks may have latent problems that need to be fixed to enable a
+      seamless transition to IPv6. Recent experience with IPv6, especially
+      since <a href="http://www.worldipv6launch.org//">World IPv6 Launch</a> in
+      June 2012, have shown that IPv6 transition is feasible, desirable, and
+      growing.</p>
 
-<p>CeroWrt has IPv6 (specifically <a
-href="http://en.wikipedia.org/wiki/6to4">6to4</a>) networking
-enabled by default. If the router has a public IPv4 address, 6to4 will
-be enabled on startup, and all your local networks supplied with a
-usable IPv6 address range. 6to4 is working well on some networks in
-America, notably
-<a href="http://www.comcast6.net/6to4-config.php">Comcast</a>, on which
-geographically dispersed production 6to4 relays have been installed,
-and much of Europe, but may be (possibly very) problematic in parts of the world
-unserved by local 6to4 relays.</p>
+    <p>CeroWrt has IPv6 networking enabled by default. If the router receives
+      and IPv6 prefix by DHCP prefix delegation on startup, all your local
+      networks will be automatically supplied with a usable IPv6 address
+      range.</p>
 
-<p>IPv6 can be easily
-disabled or modified via the router's networking screen, on the 'v6'
-option, but please try to report bugs and expend the effort needed to
-actually use it. The future of the Internet is at stake!</p>
- 
-</div>
-<div class="menu">
-<nav>
-<ul role="navigation">
-<li><a href="index.html">Home</a>   
-<li><a href="/bgi-bin/redir.sh">Administer</a>    
-<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
-<li><a href="about.html">About CeroWrt</a>
-<li><a href="credits.html">Credits</a>
-<li><a href="support.html">Help</a>
-</ul>
-</nav>
-</div>
+    <p>Even if your provider does not support IPv6 natively, it is
+      straightforward to configure CeroWrt to give global IPv6 addresses using
+      6to4 or 6in4 networking. The wiki gives instructions for configuring a
+      <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/IPv6_Tunnel">
+        free 6in4 tunnel through Hurricane Electric.</a></p>
+
+    <p>IPv6 can be easily disabled or modified via the router's networking
+      screen, on the 'v6' option, but please try to report bugs and expend the
+      effort needed to actually use it. The future of the Internet is at
+      stake!</p>
+
+  </div>
+  <div class="menu">
+    <nav>
+      <ul role="navigation">
+        <li><a href="index.html">Home</a>   
+        <li><a href="/bgi-bin/redir.sh">Administer</a>    
+        <li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+        <li><a href="credits.html">Credits</a>
+        <li><a href="support.html">Help</a>
+      </ul>
+    </nav>
+  </div>
 </body>
 </html>

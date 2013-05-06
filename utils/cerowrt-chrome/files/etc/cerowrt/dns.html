@@ -1,65 +1,71 @@
-<!DOCTYPE HTML> 
- 
-<head> 
-  <title>DNS</title> 
-  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
+<!DOCTYPE HTML>
+
+<head>
+  <title>DNS</title>
+  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head> 
+</head>
 <body>
-<div>
-<h1>DNS Server</h1>
-<p>The goal is secure, autoconfigured name services: a home user
-should be able to plug in a new named device, and everything "just
-work", including publishing an IPv6 address into the global DNS
-without any configuration required.
-<h2>Automatic configuration & security</h2>
-<p>Towards the stated goal, the router
-includes <a href="http://ftp.isc.org/isc/bind9/cur/9.8/doc/arm/Bv9ARM.html">Bind 9</a>
-running in a <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/Bind9_chroot_jail_and_xinetd">chrooted jail</a>
-for additional security. This enables the router to support advanced name services, including zone transfers, split views, and DNSSEC. For more
-details, <a href="http://www.bufferbloat.net/projects/cerowrt/wiki/BQL_series_release_notes">see the release notes</a> 
-as not all of this intended functionality is complete.
+  <div>
+    <h1>DNS Server</h1>
+    <p>The goal is secure, autoconfigured name services: a home user should be
+      able to plug in a new named device, and everything "just work", including
+      publishing an IPv6 address into the global DNS without any configuration
+      required.</p>
 
-<h2>DNSSEC support</h2>
-<a href="http://en.wikipedia.org/wiki/Dnssec">DNSSEC 
-(Domain Name System Security Extensions)</a> is a method for adding
-authentication and data security to the existing Domain Name System (DNS)
-while retaining backward compatibility with systems that do not support
-DNSSEC.
-<p>
-A DNSSEC-enabled name server which provides authoritative data for a
-given domain responds to requests with the requested data and also a
-signature record which cryptographically authenticates the response.
-<p>
-A DNSSEC-enabled name server that provides local resolution of DNS
-requests validates the signatures received from authoritative servers
-to ensure that the data received was not tampered with.  If the data
-in the response cannot be proven to be valid and secure, the name server
-will reject it and return a "server failed" message to the client.
+    <p>
+      Towards the stated goal, the router
+      includes <a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">dnsmasq.</a>
+      Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server.
+      It is designed to provide DNS and, optionally, DHCP, to a small network.
+      It can serve the names of local machines which are not in the global
+      DNS.</p>
 
-<h2>Local DNS Addressing</h2>
-The CeroWrt router is always available to its LAN interfaces as 'gw.home.lan'. 
-This makes it easy to connect with the router without requiring you to know 
-the IP address ranges used by the router.
+    <h2>DNSSEC support is coming</h2>
+    <p>dnsmasq does not currently support
+      <a href="http://en.wikipedia.org/wiki/Dnssec">DNSSEC (Domain Name System
+        Security Extensions)</a>, a method for adding authentication and data
+        security to the existing Domain Name System (DNS) while retaining
+        backward compatibility with systems that do not support DNSSEC. This is
+        actively in development by the dnsmasq team, and it will be incorporated
+        into CeroWrt as soon as it is available.</p>
 
-<h2>mDNS Addressing</h2>
-By default, CeroWrt has a <a href="http://en.wikipedia.org/wiki/MDNS">multicast DNS</a> 
-(aka "Zeroconfig" or "Bonjour" naming) reflector 
-(the <a href="http://en.wikipedia.org/wiki/Avahi_(software)">Avahi package</a>) 
-enabled for all the LAN interfaces. 
-This allows you to locate devices without knowing their IP addresses.
-</div>
-<div class="menu">
-<nav>
-<ul role="navigation">
-<li><a href="index.html">Home</a>   
-<li><a href="/bgi-bin/redir.sh">Administer</a>    
-<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
-<li><a href="about.html">About CeroWrt</a>
-<li><a href="credits.html">Credits</a>
-<li><a href="support.html">Help</a>
-</ul>
-</nav>
-</div>
+    <p>
+      A DNSSEC-enabled name server which provides authoritative data for a given
+      domain responds to requests with the requested data and also a signature
+      record which cryptographically authenticates the response.</p>
+
+    <p>
+      A DNSSEC-enabled name server that provides local resolution of DNS
+      requests validates the signatures received from authoritative servers to
+      ensure that the data received was not tampered with. If the data in the
+      response cannot be proven to be valid and secure, the name server will
+      reject it and return a "server failed" message to the client.</p>
+
+    <h2>Local DNS Addressing</h2>
+    <p>The CeroWrt router is always available to its LAN interfaces as
+      'gw.home.lan'. This makes it easy to connect with the router without
+      requiring you to know the IP address ranges used by the router.</p>
+
+    <h2>mDNS Addressing</h2> <a name="mdns"></a>
+    <p>By default, CeroWrt has
+      a <a href="http://en.wikipedia.org/wiki/MDNS">multicast DNS</a> (aka
+      "Zeroconfig" or "Bonjour" naming) reflector
+      (the <a href="http://en.wikipedia.org/wiki/Avahi_(software)">Avahi
+      package</a>) enabled for all the LAN interfaces. This allows you to locate
+      devices without knowing their IP addresses.</p>
+
+  </div>
+  <div class="menu">
+    <nav>
+      <ul role="navigation">
+        <li><a href="index.html">Home</a>
+        <li><a href="/bgi-bin/redir.sh">Administer</a>
+        <li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+        <li><a href="credits.html">Credits</a>
+        <li><a href="support.html">Help</a>
+      </ul>
+    </nav>
+  </div>
 </body>
 </html>

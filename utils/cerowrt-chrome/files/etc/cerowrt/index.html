@@ -1,66 +1,121 @@
-<!DOCTYPE HTML> 
-<head> 
-  <title>CeroWrt</title> 
-  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" /> 
+<!DOCTYPE HTML>
+<head>
+  <title>CeroWrt</title>
+  <link rel="stylesheet" type="text/css" href="static/cerowrtstyle.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head> 
+</head>
 <body>
-<div>
-<h1>Welcome to CeroWrt</h1> 
-<p>Your <a href=/bgi-bin/redir.sh>router's configuration screen</a> enables you to change this router.</p>
+  <div>
+    <h1>Welcome to CeroWrt</h1>
+    <p><a href="http://www.bufferbloat.net/projects/cerowrt">CeroWrt</a> is a
+      project to resolve endemic problems in home networking today, and to push
+      the state of the art of edge networks and routers forward.</p>
 
-<p><a href="about.html">CeroWrt</a>
-is an <a href="http://www.openwrt.org">OpenWrt</a> router platform for
-use by individuals, researchers, and students interested in advancing
-the state of the art on the Internet.  Specifically, it is aimed at
-investigating the problems of latency under load, bufferbloat, <a href="tcp.html#wireless">wireless-n</a>, <a href="tcp.html#qos"><abbr
-title="Quality of Service">QoS</abbr></a>, and the effects of various <a
-href="tcp.html#tcp"><abbr
-title="Transmission Control Protocol">TCP</abbr> algorithms</a> on shared
-networks.
+    <h2>CeroWrt's Goals</h2>
 
-The <a href="features.html">features</a> of this release include:
-<ul>
-<li>extensive network diagnostic, performance
-measurement, and simulation <a href="debug.html">tools</a></li>
-<li>comprehensive <a href="ipv6.html"><abbr
-title="Internet Protocol version 6">IPv6</abbr> support</a></li>
-<li>integral <a href="webserver.html">web</a> server</li>
-<li> <a href="rsync.html">rsync</a> server
-<li>advanced <a href="dns.html">Bind DNS server</a> with DNSSEC 
-validation and signing</li>
-<li>support for <a href="mesh.html">mesh networking</a></li>
-<li>a <a href="proxy.html">web proxy server</a></li>
-<li>and most importantly,
-extensive <a href="debloat.html">debloating</a></li>
-</ul>
-<h2>Current Status</h2>
-<p>This is a version of the CeroWrt 3.8 release. Please see 
-the following sources for up to date information about the software:
-<ul>
-<li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki">CeroWrt
-Wiki</a> for current information  </li>
-<li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki#CeroWrt-Releases">CeroWrt Releases</a> for installation guide and tips  </li>
-<li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki/BQL_series_release_notes">Release Notes</a> </li>
-<li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki/FAQ">FAQ</a> </li>
-</ul>
-</p>
+    <p><a href="http://www.bufferbloat.net">CeroWrt</a> is a build of
+      the <a href="http://www.openwrt.org">OpenWrt</a> routing platform intended
+      for use by individuals, network engineers, researchers, teachers, and
+      students interested in advancing the state of the art on the Internet, and
+      in particular, those investigating the problems of latency under load,
+      bufferbloat, <a href="http://en.wikipedia.org/wiki/IEEE_802.11n-2009">wireless-n</a>,
+      and the interrelationships between
+      various <a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol"><abbr title="Transmission
+      Control
+      Protocol">TCP</abbr></a>, <a href="http://en.wikipedia.org/wiki/Active_Queue_Management"><abbr title="Active
+      Queue Management">AQM</abbr></a>, and
+      <a href="http://en.wikipedia.org/wiki/Quality_of_service">
+        <abbr title="Quality of Service">QoS</abbr></a> algorithms.</p>
 
-<p>For more information on CeroWrt in general, please see
-the <a href="http://www.bufferbloat.net/projects/cerowrt">CeroWrt</a>
-project wiki.  </p>
-</div>
-<div class="menu">
-<nav>
-<ul role="navigation">
-<li><a href="index.html">Home</a>
-<li><a href="/bgi-bin/redir.sh">Administer</a>    
-<li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
-<li><a href="about.html">About CeroWrt</a>
-<li><a href="credits.html">Credits</a>
-<li><a href="support.html">Help</a>
-</ul>
-</nav> 
-</div>
-</body> 
-</html> 
+    <p>There are other <a href="features.html">features</a> all intended to help
+      make insight into networking problems easier. In particular, this release
+      dramatically <a href="debloat.html">reduces bufferbloat</a> for the wired
+      interfaces. The effect of latency under load for wireless interfaces has
+      been reduced, but not yet eliminated entirely; that requires more research
+      in AQM and buffer management for which CeroWrt is intended.</p>
+
+    <p>CeroWrt breaks with home router conventions in several ways. The first
+      you are already seeing - it comes with a high
+      performance <a href="webserver.html">integral web server</a> with which
+      you can establish local web services and provide web content and services
+      24x7.</p>
+
+    <p>First class name services become a necessity rather than a "nice to have"
+      with IPv6 deployment. Manual configuration of name services with IPv4 and
+      IPv6 literal addresses is no longer feasible by most people, if indeed it
+      ever was. Toward the goal of "plug and play" home environment able to
+      publish IPv6 addresses into the global Internet name space without manual
+      configuration, CeroWrt includes the latest dnsmasq name server. Security
+      in the home environment is also a goal, dnsmasq is seeking funding for
+      getting DNSSEC into it.</p>
+
+    <p>A core goal for CeroWrt is to provide a well understood platform, where
+      contributors can perform tests with confidence that their results can be
+      duplicated by others.</p>
+
+    <p>CeroWrt is the base on which other specialised builds may be built in the
+      future. The default build is too big (~9MB) to be compatible with more
+      commonly available routers.</p>
+
+    <p>While we have tried very hard to produce a usable web interface for the
+      normal use of CeroWrt as your primary Internet router (and do desire you
+      use it as such and give us feedback!), some things can require
+      non-<a href="http://en.wikipedia.org/wiki/Graphical_user_interface"><abbr title="Graphical
+      User Interface">GUI</abbr></a> editing
+      via <a href="http://en.wikipedia.org/wiki/Secure_Shell"><abbr title="Secure
+      Shell">SSH</abbr></a>.</p>
+
+    <h2>Current Status</h2>
+    <p>This is a version of the CeroWrt 3.8 release. Please see
+      the following sources for up to date information about the software:</p>
+    <ul>
+      <li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki">CeroWrt
+          Wiki</a> for current information  </li>
+      <li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki#CeroWrt-Releases">CeroWrt
+      Releases</a> for installation guide and tips </li>
+      <li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki/BQL_series_release_notes">Release
+      Notes</a> </li>
+      <li><a href="http://www.bufferbloat.net/projects/cerowrt/wiki/FAQ">FAQ</a> </li>
+    </ul>
+
+    <p>
+      CeroWrt is currently aimed at a single hardware platform for which fully
+      open drivers are available: the Netgear WNDR3700v2 and WNDR3800 routers.
+      These are current 802.11abgn routers using the Atheros AR7161 rev 2 with
+      gigabit Ethernet ports. They have a capable processor and 16Mbytes of
+      flash and 64MBytes of RAM (the WNDR3800 has 128MBytes) to provide
+      sufficient space for functionality needed in a home router today. The
+      WNDR3700v3 and v4 models that have recently appeared on the market does
+      not work with CeroWrt; purchase the WNDR3800 if you want to be
+      future-proof.</p>
+
+    <p>CeroWrt is based on the <a href="http://openwrt.org">OpenWrt router</a>
+      platform. Since CeroWrt is a research and development platform, there will
+      be no long term support for this release. Using it will likely require a
+      complete reflashing and reconfiguration of your router. We apologise for
+      the inconvenience but the state of the art and the problems we are trying
+      to solve are rapidly moving targets that we must track closely. We
+      regularly feed back the results of this work into the stable OpenWrt
+      distributions, so this work will become mainstream more rapidly.</p>
+
+    <p>Please <a href="http://www.bufferbloat.net/account/register">register on
+        and use our wikis</a>, join
+        the <a href="https://lists.bufferbloat.net">mailing lists</a>, and share
+        your results.</p>
+
+    <p>Thanks for giving CeroWrt a try! The network you save may be your
+    own.</p>
+  </div>
+  <div class="menu">
+    <nav>
+      <ul role="navigation">
+        <li><a href="index.html">Home</a>
+        <li><a href="/bgi-bin/redir.sh">Administer</a>
+        <li><a href="http://www.bufferbloat.net/">About Bufferbloat</a>
+        <li><a href="credits.html">Credits</a>
+        <li><a href="support.html">Help</a>
+      </ul>
+    </nav>
+  </div>
+</body>
+</html>
