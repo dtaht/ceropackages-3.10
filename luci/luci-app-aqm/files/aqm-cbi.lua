@@ -49,14 +49,20 @@ c:value("ns2_codel")
 c.default = "nfq_codel"
 c.rmempty = false
 
+local qos_desc = ""
 sc = s:option(ListValue, "script", translate("Queue setup script"))
 for file in fs.dir(path) do
   if string.find(file, ".qos$") then
     sc:value(file)
   end
+  if string.find(file, ".qos.help$") then
+    fh = io.open(path .. "/" .. file, "r")
+    qos_desc = qos_desc .. "<p><b>" .. file:gsub(".help$", "") .. ":</b><br />" .. fh:read("*a") .. "</p>"
+  end
 end
 sc.default = "simple.qos"
 sc.rmempty = false
+sc.description = qos_desc
 
 a = s:option(Flag, "adsl", translate("ADSL connection"))
 a.rmempty = false
