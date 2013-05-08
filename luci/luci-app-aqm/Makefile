@@ -36,8 +36,8 @@ endef
 
 define Package/luci-app-aqm/install
 	$(INSTALL_DIR) $(1)$(LUCI_DIR)/controller $(1)$(LUCI_DIR)/model/cbi
-	$(INSTALL_BIN) ./files/aqm-controller.lua $(1)$(LUCI_DIR)/controller/aqm.lua
-	$(INSTALL_BIN) ./files/aqm-cbi.lua $(1)$(LUCI_DIR)/model/cbi/aqm.lua
+	$(INSTALL_DATA) ./files/aqm-controller.lua $(1)$(LUCI_DIR)/controller/aqm.lua
+	$(INSTALL_DATA) ./files/aqm-cbi.lua $(1)$(LUCI_DIR)/model/cbi/aqm.lua
 endef
 
 define Package/luci-app-aqm/postinst
