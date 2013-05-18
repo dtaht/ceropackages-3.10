@@ -11,6 +11,6 @@ service netperf
 	flags		= IPv6
 	log_on_success  += HOST USERID
 	log_on_failure  += HOST USERID
-	instances	= 4
+	instances	= 16
 }
 
