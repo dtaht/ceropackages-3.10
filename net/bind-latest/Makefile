@@ -8,16 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.9.2-P1
-PKG_RELEASE:=21
+PKG_VERSION:=9.9.2-P2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
 	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION)/ \
 	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)/
-PKG_MD5SUM:=44b9d1feb11de09811160775f94c2554
+PKG_MD5SUM:=2be7763c99b7e7b42ac3a18a267ce1aa
 
-PKG_FIXUP:=libtool
+PKG_FIXUP:=autoreconf
+PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -102,7 +103,8 @@ CONFIGURE_ARGS += \
 	--with-rlimtype="long int" \
 	--with-gssapi=no \
 	--with-gost=no \
-	--with-ecdsa=no
+	--with-ecdsa=no \
+	--with-readline=no
 
 CONFIGURE_VARS += \
 	BUILD_CC="$(TARGET_CC)" \
@@ -114,10 +116,7 @@ define Build/Compile
 		CFLAGS="-O2" \
 		LIBS="" \
 		gen
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		DESTDIR="$(PKG_INSTALL_DIR)" \
-		all install
-
+	$(call Build/Compile/Default)
 endef
 
 define Package/bind-latest-libs/install
