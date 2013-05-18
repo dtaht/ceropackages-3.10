@@ -53,7 +53,7 @@ env = { ["TC"] = "/sbin/tc",
 	["qlen_be"] = 12,
 	["qlen_bk"] = 12,
 	["MTU"] = 1500,
-	["CODEL_LL_QUANTUM"] = 1000
+	["CODEL_LL_QUANTUM"] = 300
 	}
 
 wireless_debug = "/sys/kernel/debug/ieee80211/"
@@ -1603,7 +1603,7 @@ local function ethernet_efq_codel(queues)
 end
 
 local function ethernet_efq_codel_ll(queues)
-	 qa("handle %x root efq_codel limit 1000 quantum 1000 ",10)
+	 qa("handle %x root efq_codel limit 1000 quantum 300 ",10)
 end
 
 local function ethernet_nfq_codel(queues)
@@ -1611,7 +1611,7 @@ local function ethernet_nfq_codel(queues)
 end
 
 local function ethernet_nfq_codel_ll(queues)
-	 qa("handle %x root nfq_codel limit 1000 quantum 1000 ",10)
+	 qa("handle %x root nfq_codel limit 1000 quantum 300 ",10)
 end
 
 local function ethernet_fq_codel(queues)

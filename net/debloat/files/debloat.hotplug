@@ -6,5 +6,5 @@ DEBLOAT_LOG=/dev/null
 DEBLOAT_LOG2=/dev/null
 
 [ "$ACTION" = "ifup" ] && {
-	IFACE=$DEVICE QMODEL=nfq_codel_ll /usr/sbin/debloat >> $DEBLOAT_LOG 2>> $DEBLOAT_LOG2
+	IFACE=$DEVICE QMODEL=fq_codel_ll /usr/sbin/debloat >> $DEBLOAT_LOG 2>> $DEBLOAT_LOG2
 }
