@@ -40,13 +40,15 @@ e = s:option(Flag, "enabled", translate("Enable"))
 e.rmempty = false
 
 c = s:option(ListValue, "qdisc", translate("Queueing discipline"))
-c:value("nfq_codel", "nfq_codel ("..translate("default")..")")
+c:value("fq_codel", "fq_codel ("..translate("default")..")")
 c:value("efq_codel")
-c:value("fq_codel")
+c:value("nfq_codel")
 c:value("sfq")
 c:value("codel")
 c:value("ns2_codel")
-c.default = "nfq_codel"
+c:value("pie")
+c:value("sfq")
+c.default = "fq_codel"
 c.rmempty = false
 
 local qos_desc = ""
