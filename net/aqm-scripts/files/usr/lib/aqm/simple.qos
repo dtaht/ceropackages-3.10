@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 # Cero3 Shaper
 # A 3 bin tc_codel and ipv6 enabled shaping script for
 # ethernet gateways
@@ -16,76 +16,7 @@
 
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
-[ -z "$UPLINK" ] && UPLINK=2000
-[ -z "$DOWNLINK" ] && DOWNLINK=20000
-[ -z "$DEV" ] && DEV=ifb0
-[ -z "$QDISC" ] && QDISC=fq_codel
-[ -z "$IFACE" ] && IFACE=ge00
-[ -z "$ADSL" ] && ADSL=0
-
 . /usr/lib/aqm/functions.sh
-TC=/usr/sbin/tc
-CEIL=$UPLINK
-MTU=1500
-ADSLL=""
-
-if [ "$ADSL" == "1" ] 
-then
-	OVERHEAD=40
-	LINKLAYER=adsl
-	ADSLL="linklayer ${LINKLAYER} overhead ${OVERHEAD}"
-fi
-
-
-do_modules() {
-
-insmod sch_$QDISC
-insmod sch_ingress
-insmod act_mirred
-insmod cls_fw
-insmod sch_htb
-
-}
-
-# This could be a complete diffserv implementation
-# But it isn't as the ipv6 match doesn't work right
-
-diffserv() {
-
-tc filter add dev $DEV protocol ip parent 1:0 prio 2 u32 match ip tos 0x00 0x3f classid 1:12 # CS0
-tc filter add dev $DEV protocol ip parent 1:0 prio 4 u32 match ip tos 0x10 0x3f classid 1:11 # Low Delay
-tc filter add dev $DEV protocol ip parent 1:0 prio 6 u32 match ip tos 0x20 0x3f classid 1:13 # CS1 Bulk
-tc filter add dev $DEV protocol ip parent 1:0 prio 8 u32 match ip tos 0x2e 0x3f classid 1:11 # EF
-
-tc filter add dev $DEV protocol ipv6 parent 1:0 prio 1 u32 match ip6 flowlabel 0x00 0x3f classid 1:12 # CS0
-tc filter add dev $DEV protocol ipv6 parent 1:0 prio 3 u32 match ip6 flowlabel 0x10 0x3f classid 1:11 # Low Delay
-tc filter add dev $DEV protocol ipv6 parent 1:0 prio 5 u32 match ip6 flowlabel 0x20 0x3f classid 1:13 # CS1 Bulk
-tc filter add dev $DEV protocol ipv6 parent 1:0 prio 7 u32 match ip6 flowlabel 0x2e 0x3f classid 1:11 # EF
-
-# Arp traffic
-tc filter add dev $DEV parent 1:0 protocol arp prio 255 handle 1 fw classid 1:11
-
-}
-
-get_flows() {
-	FLOWS=8
-	[ $1 -gt 999 ] && FLOWS=16
-	[ $1 -gt 2999 ] && FLOWS=32
-	[ $1 -gt 7999 ] && FLOWS=48
-	[ $1 -gt 9999 ] && FLOWS=64
-	[ $1 -gt 19999 ] && FLOWS=128
-	[ $1 -gt 39999 ] && FLOWS=256
-	[ $1 -gt 69999 ] && FLOWS=512
-	[ $1 -gt 99999 ] && FLOWS=1024
-	echo $FLOWS
-}	
-
-
-aqm_stop() {
-	tc qdisc del dev $IFACE ingress
-	tc qdisc del dev $IFACE root
-	tc qdisc del dev $DEV root
-}
 
 ipt_setup() {
 
@@ -133,25 +64,25 @@ BE_RATE=`expr $CEIL / 6`   # Min for best effort
 BK_RATE=`expr $CEIL / 6`   # Min for background
 BE_CEIL=`expr $CEIL - 64`  # A little slop at the top
 
-R2Q=""
-
-if [ "$CEIL" -lt 1000 ]
-then
-	R2Q="rtq 1"
-fi
-
 tc qdisc del dev $IFACE root 2> /dev/null
-tc qdisc add dev $IFACE root handle 1: htb ${RTQ} default 12
+tc qdisc add dev $IFACE root handle 1: htb `get_rtq $UPLINK` default 12
 tc class add dev $IFACE parent 1: classid 1:1 htb rate ${CEIL}kbit ceil ${CEIL}kbit $ADSLL
 tc class add dev $IFACE parent 1:1 classid 1:10 htb rate ${CEIL}kbit ceil ${CEIL}kbit prio 0 $ADSLL
 tc class add dev $IFACE parent 1:1 classid 1:11 htb rate 128kbit ceil ${PRIO_RATE}kbit prio 1 $ADSLL
 tc class add dev $IFACE parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 $ADSLL
 tc class add dev $IFACE parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 $ADSLL
 
-tc qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 noecn flows `get_flows ${PRIO_RATE}`
-tc qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 noecn flows `get_flows ${BE_RATE}`
-tc qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 noecn flows `get_flows ${BK_RATE}`
+tc qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 $NOECN `get_quantum 300` `get_flows ${PRIO_RATE}`
+tc qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 $NOECN `get_quantum 300` `get_flows ${BE_RATE}`
+tc qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 $NOECN `get_quantum 300` `get_flows ${BK_RATE}`
 
+# Need a catchall rule
+
+tc filter add dev $IFACE parent 1:0 protocol all prio 999 u32 \
+        match ip protocol 0 0x00 flowid 1:12  
+
+# FIXME should probably change the filter here to do pre-nat
+        
 tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 1 fw classid 1:11
 tc filter add dev $IFACE parent 1:0 protocol ip prio 2 handle 2 fw classid 1:12
 tc filter add dev $IFACE parent 1:0 protocol ip prio 3 handle 3 fw classid 1:13
@@ -176,28 +107,26 @@ BE_RATE=`expr $CEIL / 6`   # Min for best effort
 BK_RATE=`expr $CEIL / 6`   # Min for background
 BE_CEIL=`expr $CEIL - 64`  # A little slop at the top
 
-R2Q=""
-
 tc qdisc del dev $IFACE handle ffff: ingress 2> /dev/null
 tc qdisc add dev $IFACE handle ffff: ingress
  
 tc qdisc del dev $DEV root  2> /dev/null
-tc qdisc add dev $DEV root handle 1: htb ${R2Q} default 12
-tc class add dev $DEV parent 1: classid 1:1 htb rate ${CEIL}kbit ceil ${CEIL}kbit $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${CEIL}kbit ceil ${CEIL}kbit prio 0 $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:11 htb rate 32kbit ceil ${PRIO_RATE}kbit prio 1 $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 $ADSLL
-tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 $ADSLL
+tc qdisc add dev $DEV root handle 1: htb `get_rtq $DOWNLINK` default 12
+tc class add dev $DEV parent 1: classid 1:1 htb rate ${CEIL}kbit ceil ${CEIL}kbit
+tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${CEIL}kbit ceil ${CEIL}kbit prio 0
+tc class add dev $DEV parent 1:1 classid 1:11 htb rate 32kbit ceil ${PRIO_RATE}kbit prio 1
+tc class add dev $DEV parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2
+tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 
-tc qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 ecn flows `get_flows ${PRIO_RATE}`
-tc qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 ecn flows `get_flows ${BE_RATE}`
-tc qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 ecn flows `get_flows ${BK_RATE}`
+tc qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 $ECN `get_quantum 500` `get_flows ${PRIO_RATE}`
+tc qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 $ECN `get_quantum 1500` `get_flows ${BE_RATE}`
+tc qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 $ECN `get_quantum 1500` `get_flows ${BK_RATE}`
 
-diffserv
+diffserv $DEV
 
-ifconfig ifb0 up
+ifconfig $DEV up
 
 # redirect all IP packets arriving in $IFACE to ifb0 
 
