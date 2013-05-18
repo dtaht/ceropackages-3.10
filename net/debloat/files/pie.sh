@@ -23,10 +23,10 @@
 UPLINK=2000
 DOWNLINK=20000
 DEV=ifb0
-QDISC=fq_codel # fq_codel is winning universally
+QDISC=pie # pie
 IFACE=ge00
 DEPTH=42
-TC=/usr/sbin/tc
+TC=~d/git/iproute2/tc/tc
 FLOWS=8000
 PERTURB="perturb 0" # Permutation is costly, disable
 FLOWS=16000 # 
@@ -170,9 +170,9 @@ tc class add dev $IFACE parent 1:1 classid 1:11 htb rate 128kbit ceil ${PRIO_RAT
 tc class add dev $IFACE parent 1:1 classid 1:12 htb rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 $ADSLL
 tc class add dev $IFACE parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 $ADSLL
 
-tc qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 quantum 300 noecn
-tc qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 quantum 300 noecn
-tc qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 noecn
+$TC qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 noecn
+$TC qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 noecn
+$TC qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 noecn
 
 tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 1 fw classid 1:11
 tc filter add dev $IFACE parent 1:0 protocol ip prio 2 handle 2 fw classid 1:12
@@ -213,9 +213,9 @@ tc class add dev $DEV parent 1:1 classid 1:13 htb rate ${BK_RATE}kbit ceil ${BE_
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 
-tc qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 ecn
-tc qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 ecn
-tc qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 ecn
+$TC qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 ecn
+$TC qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 ecn
+$TC qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 ecn
 
 diffserv ifb0
 

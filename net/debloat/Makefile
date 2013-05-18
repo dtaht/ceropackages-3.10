@@ -36,6 +36,7 @@ define Package/debloat/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) ./files/debloat.hotplug $(1)/etc/hotplug.d/iface/00-debloat
 	$(INSTALL_BIN) ./files/debloat $(1)/usr/sbin/debloat
+	$(INSTALL_BIN) ./files/pie.sh $(1)/usr/sbin/pie.sh
 	$(INSTALL_BIN) ./files/simple_qos.sh $(1)/usr/sbin/simple_qos.sh
 	$(INSTALL_DATA) ./files/debloat.config $(1)/etc/config/debloat
 endef
