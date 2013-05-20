@@ -27,13 +27,13 @@ tc qdisc add dev $IFACE handle ffff: ingress
  
 tc qdisc del dev $DEV root 2>/dev/null
 tc qdisc add dev $DEV root handle 1: htb `get_rtq $DOWNLINK` default 10
-tc class add dev $DEV parent 1: classid 1:1 htb rate ${CEIL}kbit ceil ${CEIL}kbit
-tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${CEIL}kbit ceil ${CEIL}kbit prio 0
+tc class add dev $DEV parent 1: classid 1:1 htb rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit
+tc class add dev $DEV parent 1:1 classid 1:10 htb rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit prio 0
 
 # FIXME: I'd prefer to use a pre-nat filter but we need to detect if nat is on this interface
 # AND we need to permute by a random number which we can't do from userspace filters
 
-tc qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN `get_flows ${CEIL}`
+tc qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN `get_flows ${DOWNLINK}`
 
 ifconfig $DEV up
 
