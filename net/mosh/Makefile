@@ -92,17 +92,17 @@ CONFIGURE_ARGS += \
 	--without-utempter \
 
 define Package/mosh-client/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/mosh-client $(1)/usr/bin/
 endef
 
 define Package/mosh-server/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/mosh-server $(1)/usr/bin/
 endef
 
 define Package/mosh-full/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/mosh $(1)/usr/bin/
 endef
 
