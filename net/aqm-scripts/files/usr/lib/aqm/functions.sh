@@ -28,8 +28,8 @@ do_modules() {
 [ -z "$QDISC" ] && QDISC=fq_codel
 [ -z "$IFACE" ] && IFACE=ge00
 [ -z "$ADSL" ] && ADSL=0
-[ -z "$AUTOFLOW" ] AUTOFLOW=0
-[ -z "$AUTOECN" ] AUTOECN=1
+[ -z "$AUTOFLOW" ] && AUTOFLOW=0
+[ -z "$AUTOECN" ] && AUTOECN=1
 
 TC=/usr/sbin/tc
 CEIL=$UPLINK
@@ -61,7 +61,7 @@ prio=$(($prio + 1))
 # FIXME: actually you need to get the underlying MTU on PPOE thing
 
 get_mtu() {
-	F=`cat /sys/class/net/$1`
+	F=`cat /sys/class/net/$1/mtu`
 	if [ -z "$F" ]
 	then
 	echo 1500
