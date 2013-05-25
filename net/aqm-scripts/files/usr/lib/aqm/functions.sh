@@ -28,15 +28,16 @@ do_modules() {
 [ -z "$QDISC" ] && QDISC=fq_codel
 [ -z "$IFACE" ] && IFACE=ge00
 [ -z "$ADSL" ] && ADSL=0
+[ -z "$AUTOFLOW" ] AUTOFLOW=0
+[ -z "$AUTOECN" ] AUTOECN=1
 
 TC=/usr/sbin/tc
 CEIL=$UPLINK
-MTU=1500 # FIXME This should come from the link
 ADSLL=""
 
 if [ "$ADSL" == "1" ] 
 then
-	OVERHEAD=40
+	OVERHEAD=10
 	LINKLAYER=adsl
 	ADSLL="linklayer ${LINKLAYER} overhead ${OVERHEAD}"
 fi
@@ -57,12 +58,27 @@ tc filter add dev $interface protocol ipv6 parent $1 prio $prio u32 match ip6 pr
 prio=$(($prio + 1))
 }
 
+# FIXME: actually you need to get the underlying MTU on PPOE thing
+
+get_mtu() {
+	F=`cat /sys/class/net/$1`
+	if [ -z "$F" ]
+	then
+	echo 1500
+	else
+	echo $F
+	fi
+}
+
 # FIXME should also calculate the limit
 # Frankly I think Xfq_codel can pretty much always run with high numbers of flows
 # now that it does fate sharing
 # But right now I'm trying to match the ns2 model behavior better
+# So SET the autoflow variable to 1 if you want the cablelabs behavior
 
 get_flows() {
+	if [ "$AUTOFLOW" == 1 ] 
+	then
 	FLOWS=8
 	[ $1 -gt 999 ] && FLOWS=16
 	[ $1 -gt 2999 ] && FLOWS=32
@@ -76,18 +92,8 @@ get_flows() {
 		codel|ns2_codel|pie) ;;
 		fq_codel|*fq_codel|sfq) echo flows $FLOWS ;;
 	esac
+	fi
 }	
-
-# Feed htb better ideas for burstyness
-# This really needs to be made more robust for higher bandwidths
-# See junk in dmesg
-
-get_rtq() {
-if [ "$1" -lt 1001 ]
-then
-	echo "r2q 1"
-fi
-}
 
 # set quantum parameter if available for this qdisc
 
@@ -104,12 +110,17 @@ get_quantum() {
 ECN=""
 NOECN=""
 
+# ECN is somewhat useful but it helps to have a way
+# to turn it on or off. Note we never do ECN on egress currently.
+
 qdisc_variants() {
+    if [ "$AUTOECN" == 1 ]
+    then
     case $QDISC in
 	*codel|pie) ECN=ecn; NOECN=noecn ;;
 	*) ;;
     esac
-
+    fi
 }
 
 qdisc_variants
