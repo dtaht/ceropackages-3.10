@@ -40,7 +40,9 @@ append_parm() {
 	local _loctmp
 	config_get _loctmp "$section" "$option"
 	[ -z "$_loctmp" ] && return 0
-	append args "$switch $_loctmp"
+	for i in $_loctmp; do
+		append args "$switch $i"
+	done
 }
 
 babel_filter() {
@@ -106,7 +108,7 @@ babel_config() {
 	append_parm "$cfg" 'wired_hello_interval' '-H'
 	append_parm "$cfg" 'idle_hello_interval' '-i'
 	append_parm "$cfg" 'diversity' '-z'
-	append_parm "$cfg" 'smoothed-metric' '-M'
+	append_parm "$cfg" 'smoothed_metric' '-M'
 	append_parm "$cfg" 'kernel_priority' '-k'
 	append_parm "$cfg" 'duplication_priority' '-A'
 	append_parm "$cfg" 'debug' '-d'
