@@ -37,7 +37,7 @@ ADSLL=""
 
 if [ "$ADSL" == "1" ] 
 then
-	OVERHEAD=10
+	OVERHEAD=40
 	LINKLAYER=adsl
 	ADSLL="linklayer ${LINKLAYER} overhead ${OVERHEAD}"
 fi
