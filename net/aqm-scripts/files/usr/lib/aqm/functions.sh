@@ -1,5 +1,5 @@
 insmod() {
-  lsmod | grep -q ^$1 || /sbin/insmod $1
+  lsmod | grep -q ^$1 || $INSMOD $1
 }
 
 ipt() {
@@ -30,12 +30,13 @@ do_modules() {
 [ -z "$ADSL" ] && ADSL=0
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
 [ -z "$AUTOECN" ] && AUTOECN=1
+[ -z "$TC" ] && TC=`which tc`
+[ -z "$INSMOD" ] && INSMOD=`which insmod`
 
-TC=/usr/sbin/tc
 CEIL=$UPLINK
 ADSLL=""
 
-if [ "$ADSL" == "1" ] 
+if [ "$ADSL" -eq "1" ] 
 then
 	OVERHEAD=40
 	LINKLAYER=adsl
@@ -43,18 +44,18 @@ then
 fi
 
 aqm_stop() {
-	tc qdisc del dev $IFACE ingress
-	tc qdisc del dev $IFACE root
-	tc qdisc del dev $DEV root
+	$TC qdisc del dev $IFACE ingress
+	$TC qdisc del dev $IFACE root
+	$TC qdisc del dev $DEV root
 }
 
 # Note this has side effects on the prio variable
 # and depends on the interface global too
 
 fc() {
-tc filter add dev $interface protocol ip parent $1 prio $prio u32 match ip tos $2 0xfc classid $3
+$TC filter add dev $interface protocol ip parent $1 prio $prio u32 match ip tos $2 0xfc classid $3
 prio=$(($prio + 1))
-tc filter add dev $interface protocol ipv6 parent $1 prio $prio u32 match ip6 priority $2 0xfc classid $3
+$TC filter add dev $interface protocol ipv6 parent $1 prio $prio u32 match ip6 priority $2 0xfc classid $3
 prio=$(($prio + 1))
 }
 
@@ -77,7 +78,7 @@ get_mtu() {
 # So SET the autoflow variable to 1 if you want the cablelabs behavior
 
 get_flows() {
-	if [ "$AUTOFLOW" == 1 ] 
+	if [ "$AUTOFLOW" -eq "1" ] 
 	then
 	FLOWS=8
 	[ $1 -gt 999 ] && FLOWS=16
@@ -114,10 +115,10 @@ NOECN=""
 # to turn it on or off. Note we never do ECN on egress currently.
 
 qdisc_variants() {
-    if [ "$AUTOECN" == 1 ]
+    if [ "$AUTOECN" -eq "1" ]
     then
     case $QDISC in
-	*codel|pie) ECN=ecn; NOECN=noecn ;;
+	*codel|*pie) ECN=ecn; NOECN=noecn ;;
 	*) ;;
     esac
     fi
@@ -134,7 +135,7 @@ prio=1
 
 # Catchall
 
-tc filter add dev $interface parent 1:0 protocol all prio 999 u32 \
+$TC filter add dev $interface parent 1:0 protocol all prio 999 u32 \
         match ip protocol 0 0x00 flowid 1:12
 
 # Find the most common matches fast
@@ -148,6 +149,6 @@ fc 1:0 0xe0 1:11 # CS6
 fc 1:0 0x90 1:11 # AF42 (mosh)
 
 # Arp traffic
-tc filter add dev $interface parent 1:0 protocol arp prio $prio handle 1 fw classid 1:11
+$TC filter add dev $interface parent 1:0 protocol arp prio $prio handle 1 fw classid 1:11
 prio=$(($prio + 1))
 }

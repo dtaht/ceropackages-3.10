@@ -12,11 +12,11 @@ egress() {
 
 LQ="quantum `get_mtu $IFACE`"
  
-tc qdisc del dev $IFACE root 2>/dev/null
-tc qdisc add dev $IFACE root handle 1: htb default 10
-tc class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit $ADSLL
-tc class add dev $IFACE parent 1:1 classid 1:10 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit prio 0 $ADSLL
-tc qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 target 3ms interval 15ms $NOECN `get_flows ${UPLINK}`
+$TC qdisc del dev $IFACE root 2>/dev/null
+$TC qdisc add dev $IFACE root handle 1: htb default 10
+$TC class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit $ADSLL
+$TC class add dev $IFACE parent 1:1 classid 1:10 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit prio 0 $ADSLL
+$TC qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 $NOECN `get_flows ${UPLINK}`
 
 }
 
@@ -24,22 +24,22 @@ tc qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 target 3ms inte
 
 ingress() {
 
-tc qdisc del dev $IFACE handle ffff: ingress 2>/dev/null
-tc qdisc add dev $IFACE handle ffff: ingress
+$TC qdisc del dev $IFACE handle ffff: ingress 2>/dev/null
+$TC qdisc add dev $IFACE handle ffff: ingress
 
 LQ="quantum `get_mtu $IFACE`"
  
-tc qdisc del dev $DEV root 2>/dev/null
-tc qdisc add dev $DEV root handle 1: htb default 10
-tc class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit
-tc class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit prio 0
+$TC qdisc del dev $DEV root 2>/dev/null
+$TC qdisc add dev $DEV root handle 1: htb default 10
+$TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit
+$TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit prio 0
 
 # FIXME: I'd prefer to use a pre-nat filter but we need to detect if nat is on this interface
 # AND we need to permute by a random number which we can't do from userspace filters
 
 # Most high rate flows are REALLY close. This stomps on those harder, but hurts on high rate long distance
-#tc qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN interval 20ms target 3ms `get_flows ${DOWNLINK}`
-tc qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN `get_flows ${DOWNLINK}`
+#$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN interval 20ms target 3ms `get_flows ${DOWNLINK}`
+$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN `get_flows ${DOWNLINK}`
 
 ifconfig $DEV up
 
