@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=babeld
-PKG_VERSION:=20130526-git-1
-PKG_RELEASE:=2
+PKG_VERSION:=20130629-git-1
+PKG_RELEASE:=1
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=http://www.pps.jussieu.fr/~jch/software/files/
 #PKG_MD5SUM:=c3d2a632d5ad1944d4767960109c867f04e09d5d
 
-PKG_REV:=47ef572268fbe2cadace17d4983b23950f9f7208
+PKG_REV:=6134ce59d3e35232c923f0b11a23315a3954fe20
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://github.com/jech/babeld.git
