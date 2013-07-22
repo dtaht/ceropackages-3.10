@@ -1,0 +1,13 @@
+--- a/conf/owampd.conf
++++ b/conf/owampd.conf
+@@ -21,8 +21,8 @@
+ 
+ # run as group/user - only used if effective uid is root.
+ # (defaults to nil)
+-user		owamp
+-group		owamp
++user		network
++group		network
+ 
+ # not really used, but what the heck.
+ # (defaults to !verbose)
