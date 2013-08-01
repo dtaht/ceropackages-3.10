@@ -1,6 +1,6 @@
 --- a/config.h.in
 +++ b/config.h.in
-@@ -365,6 +365,9 @@
+@@ -371,6 +371,9 @@
  /* Use Rendezvous/DNS-SD registration */
  #undef HAVE_DNSREGISTRATION
  
@@ -10,7 +10,7 @@
  /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
  #undef HAVE_DOPRNT
  
-@@ -1516,6 +1519,28 @@ typedef unsigned int	uintptr_t;
+@@ -1531,6 +1534,28 @@ typedef unsigned int	uintptr_t;
  /* Must we have a CTTY for fsetown? */
  #undef USE_FSETOWNCTTY
  
@@ -39,7 +39,7 @@
  /* Can we use SIGPOLL for tty IO? */
  #undef USE_TTY_SIGPOLL
  
-@@ -1568,9 +1593,6 @@ typedef unsigned int	uintptr_t;
+@@ -1583,9 +1608,6 @@ typedef unsigned int	uintptr_t;
  /* enable thread safety */
  #undef _THREAD_SAFE
  
@@ -49,7 +49,7 @@
  /* Are we _special_? */
  #undef __APPLE_USE_RFC_3542
  
-@@ -1579,28 +1601,6 @@ typedef unsigned int	uintptr_t;
+@@ -1594,28 +1616,6 @@ typedef unsigned int	uintptr_t;
  # undef __CHAR_UNSIGNED__
  #endif
  
@@ -80,7 +80,7 @@
  
 --- a/configure.ac
 +++ b/configure.ac
-@@ -208,6 +208,28 @@ case "$host" in
+@@ -210,6 +210,28 @@ case "$host" in
      ;;
  esac
  
@@ -99,10 +99,10 @@
 +	fi
 +	AC_CHECK_LIB([val-threads], 
 +				 [val_getaddrinfo],
-+				 [LIBS="-lval-threads -lsres -lcrypto $LIBS"
++				 [LIBS="-lval-threads -lsres -lssl -lcrypto $LIBS"
 +                  AC_DEFINE([HAVE_DNSVAL], [1], [Perform local DNSSEC Validation using dnsval])],
 +				 [AC_MSG_ERROR(["Can't find required libraries for DNSSEC support"])], 
-+				 [-lsres -lcrypto])
++				 [-lsres -lssl -lcrypto])
 +	;;
 +esac
 +
@@ -606,7 +606,7 @@
  	if (HAVE_OPT( JAILDIR )) {
 --- a/ntpd/ntp_config.c
 +++ b/ntpd/ntp_config.c
-@@ -36,6 +36,10 @@
+@@ -33,6 +33,10 @@
  #include <isc/net.h>
  #include <isc/result.h>
  
@@ -617,7 +617,7 @@
  #include "ntp.h"
  #include "ntpd.h"
  #include "ntp_io.h"
-@@ -1669,6 +1673,9 @@ get_next_address(
+@@ -1666,6 +1670,9 @@ get_next_address(
  	sockaddr_u *final_addr;
  	struct addrinfo *ptr;
  	int gai_err;
@@ -627,7 +627,7 @@
  
  	final_addr = emalloc(sizeof(*final_addr));
  
-@@ -1677,15 +1684,34 @@ get_next_address(
+@@ -1674,15 +1681,34 @@ get_next_address(
  			 addr_prefix, curr_addr_num++);
  		printf("Selecting ip address %s for hostname %s\n",
  		       addr_string, addr->address);
@@ -662,7 +662,7 @@
  	memcpy(final_addr, ptr->ai_addr, ptr->ai_addrlen);
  	fprintf(stderr, "Successful in setting ip address of simulated server to: %s\n",
  		stoa(final_addr));
-@@ -2260,6 +2286,9 @@ config_access(
+@@ -2257,6 +2283,9 @@ config_access(
  #else
  	    "mssntp restrict bit ignored, this ntpd was configured without --enable-ntp-signd.";
  #endif
@@ -672,7 +672,7 @@
  
  	/* Configure the mru options */
  	my_opt = HEAD_PFIFO(ptree->mru_opts);
-@@ -2502,16 +2531,36 @@ config_access(
+@@ -2499,16 +2528,36 @@ config_access(
  				hints.ai_protocol = IPPROTO_UDP;
  				hints.ai_socktype = SOCK_DGRAM;
  				hints.ai_family = my_node->addr->type;
@@ -761,7 +761,7 @@
  
 --- a/ntpd/ntpd.c
 +++ b/ntpd/ntpd.c
-@@ -988,6 +988,9 @@ getgroup:
+@@ -990,6 +990,9 @@ getgroup:
  #  ifndef HAVE_SIGNALED_IO
  			rdfdes = activefds;
  #   if !defined(VMS) && !defined(SYS_VXWORKS)
@@ -771,7 +771,7 @@
  			nfound = select(maxactivefd + 1, &rdfdes, NULL,
  					NULL, NULL);
  #   else	/* VMS, VxWorks */
-@@ -997,11 +1000,18 @@ getgroup:
+@@ -999,11 +1002,18 @@ getgroup:
  
  				t1.tv_sec = 1;
  				t1.tv_usec = 0;
@@ -790,7 +790,7 @@
  			if (nfound > 0) {
  				l_fp ts;
  
-@@ -1019,7 +1029,6 @@ getgroup:
+@@ -1021,7 +1031,6 @@ getgroup:
  			}
  #   endif /* DEBUG */
  #  else /* HAVE_SIGNALED_IO */
@@ -1183,7 +1183,7 @@
  	return 0;
 --- a/sntp/config.h.in
 +++ b/sntp/config.h.in
-@@ -77,6 +77,9 @@
+@@ -83,6 +83,9 @@
  /* Define to 1 if you have the <dlfcn.h> header file. */
  #undef HAVE_DLFCN_H
  
@@ -1193,7 +1193,7 @@
  /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
  #undef HAVE_DOPRNT
  
-@@ -811,6 +814,28 @@ typedef unsigned int	uintptr_t;
+@@ -829,6 +832,28 @@ typedef unsigned int	uintptr_t;
  /* What type to use for setsockopt */
  #undef TYPEOF_IP_MULTICAST_LOOP
  
@@ -1222,7 +1222,7 @@
  /* Can we use SIGPOLL for tty IO? */
  #undef USE_TTY_SIGPOLL
  
-@@ -863,9 +888,6 @@ typedef unsigned int	uintptr_t;
+@@ -881,9 +906,6 @@ typedef unsigned int	uintptr_t;
  /* enable thread safety */
  #undef _THREAD_SAFE
  
@@ -1232,7 +1232,7 @@
  /* Are we _special_? */
  #undef __APPLE_USE_RFC_3542
  
-@@ -874,28 +896,6 @@ typedef unsigned int	uintptr_t;
+@@ -892,28 +914,6 @@ typedef unsigned int	uintptr_t;
  # undef __CHAR_UNSIGNED__
  #endif
  
@@ -1263,7 +1263,7 @@
  
 --- a/sntp/configure.ac
 +++ b/sntp/configure.ac
-@@ -108,6 +108,28 @@ dnl NTP_LIBNTP checks for inet_XtoY
+@@ -109,6 +109,28 @@ dnl NTP_LIBNTP checks for inet_XtoY
  dnl AC_SEARCH_LIBS([inet_pton], [nsl])
  AC_SEARCH_LIBS([openlog], [gen syslog])
  
@@ -1282,10 +1282,10 @@
 +	fi
 +	AC_CHECK_LIB([val-threads], 
 +				 [val_getaddrinfo],
-+				 [LIBS="-lval-threads -lsres -lcrypto $LIBS"
++				 [LIBS="-lval-threads -lsres -lssl -lcrypto $LIBS"
 +                  AC_DEFINE([HAVE_DNSVAL], [1], [Perform local DNSSEC Validation using dnsval])],
 +				 [AC_MSG_ERROR(["Can't find required libraries for DNSSEC support"])], 
-+				 [-lsres -lcrypto])
++				 [-lsres -lssl -lcrypto])
 +	;;
 +esac
 +

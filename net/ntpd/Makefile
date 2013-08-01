@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2012 OpenWrt.org
+# Copyright (C) 2006-2013 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,16 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ntp-dev
-PKG_VERSION:=4.2.7p326
+PKG_VERSION:=4.2.7p377
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-dev/
-PKG_MD5SUM:=31a9f646ff594c19763fd9a19fbaa9c5
+PKG_MD5SUM:=157854a0874de8699db0941cc6847cbe
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
-PKG_BUILD_DEPENDS:=libelf
+PKG_BUILD_DEPENDS:=libelf1
 PKG_FIXUP:=autoreconf
 PKG_LIBTOOL_PATHS:=. sntp
 
@@ -144,9 +144,6 @@ endef
 define Package/ntpd/conffiles
 /etc/ntp.conf
 endef
-
-TARGET_CPPFLAGS += \
-	-I$(STAGING_DIR)/usr/include/libelf
 
 TARGET_CFLAGS += \
 	-DHAVE_NO_NICE
