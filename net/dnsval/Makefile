@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011-2012 OpenWrt.org
+# Copyright (C) 2011-2013 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsval
-PKG_VERSION:=1.14
+PKG_VERSION:=2.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.dnssec-tools.org/download
-PKG_MD5SUM:=3fa8b6f0341247248482b79f25b11867
+PKG_MD5SUM:=d1bbb1fa129125cb8466040efc303a95
 
 PKG_BUILD_DEPENDS:=libopenssl
 PKG_INSTALL:=1
