@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011-2012 OpenWrt.org
+# Copyright (C) 2011-2013 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ccnx
-PKG_VERSION:=0.7.0
+PKG_VERSION:=0.7.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.ccnx.org/releases
-PKG_MD5SUM:=839c3c1dd023309aae7f43fb4e3a5e9c
+PKG_MD5SUM:=414c3ccaa6befa4ef849f18e7efcc275
 
 PKG_INSTALL:=1
 
