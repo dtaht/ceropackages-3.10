@@ -1,5 +1,3 @@
-diff --git a/in.ctcs/Makefile b/in.ctcs/Makefile
-index 5765309..ba5b745 100644
 --- a/in.ctcs/Makefile
 +++ b/in.ctcs/Makefile
 @@ -3,7 +3,7 @@ all:	in.ctcs
@@ -11,8 +9,6 @@ index 5765309..ba5b745 100644
  	cp in.ctcs ../bin
  
  clean:
-diff --git a/in.dhcp/Makefile b/in.dhcp/Makefile
-index a37d36a..04054b2 100644
 --- a/in.dhcp/Makefile
 +++ b/in.dhcp/Makefile
 @@ -3,7 +3,7 @@ all:	in.dhcp
@@ -24,8 +20,6 @@ index a37d36a..04054b2 100644
  	cp in.dhcp ../bin
  
  clean:
-diff --git a/in.dns/Makefile b/in.dns/Makefile
-index 627cb00..b108291 100644
 --- a/in.dns/Makefile
 +++ b/in.dns/Makefile
 @@ -3,7 +3,7 @@ all:	in.dns
@@ -37,8 +31,6 @@ index 627cb00..b108291 100644
  	cp in.dns ../bin
  
  clean:
-diff --git a/in.jabberd/Makefile b/in.jabberd/Makefile
-index 957dbe1..1ab7264 100644
 --- a/in.jabberd/Makefile
 +++ b/in.jabberd/Makefile
 @@ -3,7 +3,7 @@ all:	in.jabberd
@@ -50,8 +42,6 @@ index 957dbe1..1ab7264 100644
  	cp in.jabberd ../bin
  
  clean:
-diff --git a/in.mvp/Makefile b/in.mvp/Makefile
-index 70c5e08..0432cb9 100644
 --- a/in.mvp/Makefile
 +++ b/in.mvp/Makefile
 @@ -3,7 +3,7 @@ all:	in.mvp
@@ -63,8 +53,6 @@ index 70c5e08..0432cb9 100644
  	cp in.mvp ../bin
  
  clean:
-diff --git a/in.proxy/Makefile b/in.proxy/Makefile
-index 210f328..9ff4131 100644
 --- a/in.proxy/Makefile
 +++ b/in.proxy/Makefile
 @@ -3,7 +3,7 @@ all:	in.proxy
@@ -76,8 +64,6 @@ index 210f328..9ff4131 100644
  	cp in.proxy ../bin
  
  clean:
-diff --git a/in.smtp/Makefile b/in.smtp/Makefile
-index aee5aaf..8858cc6 100644
 --- a/in.smtp/Makefile
 +++ b/in.smtp/Makefile
 @@ -3,7 +3,7 @@ all:	in.smtp
@@ -89,8 +75,6 @@ index aee5aaf..8858cc6 100644
  	cp in.smtp ../bin
  
  clean:
-diff --git a/in.www/Makefile b/in.www/Makefile
-index a82f71e..99dad51 100644
 --- a/in.www/Makefile
 +++ b/in.www/Makefile
 @@ -3,7 +3,7 @@ all:	in.www

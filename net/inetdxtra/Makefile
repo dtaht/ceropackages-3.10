@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 OpenWrt.org
+# Copyright (C) 2011-2013 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=inetdxtra
-PKG_VERSION:=20100803
+PKG_VERSION:=20130516
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)_src.tar.gz
 PKG_SOURCE_URL:=@SF/inetdxtra
-PKG_MD5SUM:=e6964f3a13a268aeff090f74f9d1d6d8
+PKG_MD5SUM:=ffe46f5f8ea260a30d71611020971930
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
