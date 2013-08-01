@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 OpenWrt.org
+# Copyright (C) 2012-2013 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pyasn1
-PKG_VERSION:=0.1.4
+PKG_VERSION:=0.1.7
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/pyasn1
-PKG_MD5SUM:=92e7fd8a46e97d0814aaec0187690593
+PKG_MD5SUM:=2cbd80fcd4c7b1c82180d3d76fee18c8
 
 TAR_CMD:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components 1 $(TAR_OPTIONS)
 
