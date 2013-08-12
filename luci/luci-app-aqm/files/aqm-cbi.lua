@@ -77,4 +77,21 @@ ul = s:option(Value, "upload", translate("Upload speed (kbit/s)"))
 ul.datatype = "and(uinteger,min(1))"
 ul.rmempty = false
 
+st = s:option(Flag, "stab", translate("Use stab mechanism for linklayer and overhead"))
+st.rmempty = false
+
+ll = s:option(ListValue, "linklayer", translate("Which linklayer, select ATM for ADSL")) -- Creates an element list (select box)
+ll:value("ethernet")
+ll:value("adsl")
+ll:value("atm")
+ll.default = "ethernet"
+
+po = s:option(Value, "overhead", translate("Per Packet Overhead (byte), subtract 14 if shaped connection is ethernet"))
+po.datatype = "and(integer,min(-1500))"
+po.rmempty = false
+
+
+
+
+
 return m
