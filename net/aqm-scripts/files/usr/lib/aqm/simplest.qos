@@ -13,7 +13,7 @@ egress() {
 LQ="quantum `get_mtu $IFACE`"
  
 $TC qdisc del dev $IFACE root 2>/dev/null
-$TC qdisc add dev $IFACE root handle 1: htb default 10
+$TC qdisc add dev $IFACE root handle 1: ${STABSTRING} htb default 10
 $TC class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit $ADSLL
 $TC class add dev $IFACE parent 1:1 classid 1:10 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit prio 0 $ADSLL
 $TC qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 $NOECN `get_flows ${UPLINK}`
@@ -30,7 +30,7 @@ $TC qdisc add dev $IFACE handle ffff: ingress
 LQ="quantum `get_mtu $IFACE`"
  
 $TC qdisc del dev $DEV root 2>/dev/null
-$TC qdisc add dev $DEV root handle 1: htb default 10
+$TC qdisc add dev $DEV root handle 1: ${STABSTRING} htb default 10
 $TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit
 $TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit prio 0
 

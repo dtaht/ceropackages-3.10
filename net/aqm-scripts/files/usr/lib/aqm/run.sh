@@ -16,6 +16,9 @@ run_simple_qos() {
 	export UPLINK=$(config_get "$section" upload)
 	export DOWNLINK=$(config_get "$section" download)
 	export ADSL=$(config_get "$section" adsl)
+	export STAB=$(config_get "$section" stab)
+	export LINKLAYER=$(config_get "$section" linklayer)
+	export OVERHEAD=$(config_get "$section" overhead)
 	export DEV="ifb${IFB_NUM}"
 	IFB_NUM=$(expr $IFB_NUM + 1)
 	export QDISC=$(config_get "$section" qdisc)

@@ -22,12 +22,15 @@ do_modules() {
                                                                                                                   
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
-[ -z "$UPLINK" ] && UPLINK=4000
-[ -z "$DOWNLINK" ] && DOWNLINK=20000
+[ -z "$UPLINK" ] && UPLINK=2302
+[ -z "$DOWNLINK" ] && DOWNLINK=14698
 [ -z "$DEV" ] && DEV=ifb0
 [ -z "$QDISC" ] && QDISC=fq_codel
 [ -z "$IFACE" ] && IFACE=ge00
 [ -z "$ADSL" ] && ADSL=0
+[ -z "$STAB" ] && STAB=0
+[ -z "$LINKLAYER" ] && LINKLAYER=ethernet
+[ -z "$OVERHEAD" ] && OVERHEAD=0
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
 [ -z "$AUTOECN" ] && AUTOECN=1
 [ -z "$TC" ] && TC=`which tc`
@@ -38,10 +41,24 @@ ADSLL=""
 
 if [ "$ADSL" -eq "1" ] 
 then
-	OVERHEAD=40
-	LINKLAYER=adsl
+	#OVERHEAD=40
+	#LINKLAYER=adsl
 	ADSLL="linklayer ${LINKLAYER} overhead ${OVERHEAD}"
 fi
+
+STABSTRING=""
+if [ "$STAB" -eq "1" ] 
+then
+	if [ "$LINKLAYER" -eq "ethernet" ]
+	then
+	    TSIZE=512	# this is the default
+	else
+	    TSIZE=128
+	fi
+	STABSTRING="stab mtu 2048 tsize ${TSIZE} overhead ${OVERHEAD} linklayer ${LINKLAYER}"
+fi
+
+
 
 aqm_stop() {
 	$TC qdisc del dev $IFACE ingress
