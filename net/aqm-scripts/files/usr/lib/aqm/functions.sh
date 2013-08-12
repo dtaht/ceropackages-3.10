@@ -22,8 +22,8 @@ do_modules() {
                                                                                                                   
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
-[ -z "$UPLINK" ] && UPLINK=2302
-[ -z "$DOWNLINK" ] && DOWNLINK=14698
+[ -z "$UPLINK" ] && UPLINK=5300
+[ -z "$DOWNLINK" ] && DOWNLINK=22000
 [ -z "$DEV" ] && DEV=ifb0
 [ -z "$QDISC" ] && QDISC=fq_codel
 [ -z "$IFACE" ] && IFACE=ge00
