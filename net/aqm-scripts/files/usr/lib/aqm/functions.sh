@@ -22,42 +22,42 @@ do_modules() {
                                                                                                                   
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
-[ -z "$UPLINK" ] && UPLINK=5300
-[ -z "$DOWNLINK" ] && DOWNLINK=22000
+[ -z "$UPLINK" ] && UPLINK=2302
+[ -z "$DOWNLINK" ] && DOWNLINK=14698
 [ -z "$DEV" ] && DEV=ifb0
 [ -z "$QDISC" ] && QDISC=fq_codel
 [ -z "$IFACE" ] && IFACE=ge00
-[ -z "$ADSL" ] && ADSL=0
-[ -z "$STAB" ] && STAB=0
+[ -z "$LLAM" ] && LLAM="none"
 [ -z "$LINKLAYER" ] && LINKLAYER=ethernet
 [ -z "$OVERHEAD" ] && OVERHEAD=0
+[ -z "$STAB_MTU" ] && STAB_MTU=2047
+[ -z "$STAB_MPU" ] && STAB_MPU=0
+[ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
 [ -z "$AUTOECN" ] && AUTOECN=1
 [ -z "$TC" ] && TC=`which tc`
+#[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
 
+
+#logger "LLAM: ${LLAM}"
+#logger "LINKLAYER: ${LINKLAYER}"
+
 CEIL=$UPLINK
+
 ADSLL=""
-
-if [ "$ADSL" -eq "1" ] 
+if [ "$LLAM" = "htb_private" ]; 
 then
-	#OVERHEAD=40
-	#LINKLAYER=adsl
-	ADSLL="linklayer ${LINKLAYER} overhead ${OVERHEAD}"
+	# HTB defaults to MTU 1600 and an implicit fixed TSIZE of 256
+	ADSLL="mpu ${STAB_MPU} linklayer ${LINKLAYER} overhead ${OVERHEAD} mtu ${STAB_MTU}"
+	logger "ADSLL: ${ADSLL}"
 fi
 
-STABSTRING=""
-if [ "$STAB" -eq "1" ] 
+if [ "${LLAM}" = "tc_stab" ]; 
 then
-	if [ "$LINKLAYER" -eq "ethernet" ]
-	then
-	    TSIZE=512	# this is the default
-	else
-	    TSIZE=128
-	fi
-	STABSTRING="stab mtu 2048 tsize ${TSIZE} overhead ${OVERHEAD} linklayer ${LINKLAYER}"
+	STABSTRING="stab mtu ${STAB_MTU} tsize ${STAB_TSIZE} mpu ${STAB_MPU} overhead ${OVERHEAD} linklayer ${LINKLAYER}"
+	logger "STAB: ${STABSTRING}"
 fi
-
 
 
 aqm_stop() {

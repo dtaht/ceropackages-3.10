@@ -22,9 +22,6 @@
 . /usr/lib/aqm/functions.sh
 
 
-#EGRESS_STAB_STRING="stab mtu 2048 tsize 128 overhead 26 linklayer atm"
-#INGRESS_STAB_STRING="stab mtu 2048 tsize 128 overhead 40 linklayer atm"
-
 
 ipt_setup() {
 
@@ -124,11 +121,11 @@ $TC qdisc add dev $IFACE handle ffff: ingress
  
 $TC qdisc del dev $DEV root  2> /dev/null
 $TC qdisc add dev $DEV root handle 1: ${STABSTRING} htb default 12
-$TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit
-$TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit prio 0
-$TC class add dev $DEV parent 1:1 classid 1:11 htb $LQ rate 32kbit ceil ${PRIO_RATE}kbit prio 1
-$TC class add dev $DEV parent 1:1 classid 1:12 htb $LQ rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2
-$TC class add dev $DEV parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3
+$TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit $ADSLL
+$TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit prio 0 $ADSLL
+$TC class add dev $DEV parent 1:1 classid 1:11 htb $LQ rate 32kbit ceil ${PRIO_RATE}kbit prio 1 $ADSLL
+$TC class add dev $DEV parent 1:1 classid 1:12 htb $LQ rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 $ADSLL
+$TC class add dev $DEV parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 $ADSLL
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 

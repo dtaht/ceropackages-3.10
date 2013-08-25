@@ -31,8 +31,8 @@ LQ="quantum `get_mtu $IFACE`"
  
 $TC qdisc del dev $DEV root 2>/dev/null
 $TC qdisc add dev $DEV root handle 1: ${STABSTRING} htb default 10
-$TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit
-$TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit prio 0
+$TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit $ADSLL
+$TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit prio 0 $ADSLL
 
 # FIXME: I'd prefer to use a pre-nat filter but we need to detect if nat is on this interface
 # AND we need to permute by a random number which we can't do from userspace filters

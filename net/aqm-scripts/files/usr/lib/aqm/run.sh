@@ -15,10 +15,13 @@ run_simple_qos() {
 	[ $(config_get "$section" enabled) == 1 ] || return 0
 	export UPLINK=$(config_get "$section" upload)
 	export DOWNLINK=$(config_get "$section" download)
-	export ADSL=$(config_get "$section" adsl)
-	export STAB=$(config_get "$section" stab)
+	export LLAM=$(config_get "$section" linklayer_adaptation_mechanism)
 	export LINKLAYER=$(config_get "$section" linklayer)
 	export OVERHEAD=$(config_get "$section" overhead)
+	export STAB_MTU=$(config_get "$section" MTU)
+	export STAB_TSIZE=$(config_get "$section" TSIZE)
+	export STAB_MPU=$(config_get "$section" MPU)
+
 	export DEV="ifb${IFB_NUM}"
 	IFB_NUM=$(expr $IFB_NUM + 1)
 	export QDISC=$(config_get "$section" qdisc)
