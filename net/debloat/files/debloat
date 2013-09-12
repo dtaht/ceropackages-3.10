@@ -29,7 +29,7 @@ params = { "MDISC", "BIGDISC", "NORMDISC", "BINS", "MAX_HWQ_BYTES",
 -- Useful defaults
 
 env = { ["TC"] = "/sbin/tc", 
-	["TCARG"] = "-b", 
+	["TCARG"] = "-b -", 
 	["INSMOD"] = "/sbin/modprobe",
         ["ETHTOOL"] = "/sbin/ethtool", 
 	["LSMOD"] = "/sbin/lsmod",
