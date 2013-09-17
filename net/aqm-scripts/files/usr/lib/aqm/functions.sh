@@ -35,6 +35,7 @@ do_modules() {
 [ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
 [ -z "$AUTOECN" ] && AUTOECN=1
+[ -z "$ALLECN" ] && ALLECN=2
 [ -z "$TC" ] && TC=`which tc`
 #[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
@@ -125,20 +126,33 @@ get_quantum() {
 
 # Set some variables to handle different qdiscs
 
-ECN=""
-NOECN=""
+ECN="ecn"
+NOECN="noecn"
 
 # ECN is somewhat useful but it helps to have a way
-# to turn it on or off. Note we never do ECN on egress currently.
+# to turn it on or off. 
+# To do ECN on egress & ingress set ALLECN=1
+# To not do ECN on egress & ingress set ALLECN=0
+# to do ECN on ingress only set ALLECN=2 (default)
+
 
 qdisc_variants() {
     if [ "$AUTOECN" -eq "1" ]
     then
     case $QDISC in
-	*codel|*pie) ECN=ecn; NOECN=noecn ;;
-	*) ;;
+	*codel|*pie|*red) ECN=ecn; NOECN=noecn ;;
+	*) ECN=""; NOECN="" ;;
     esac
+    if [ "$ALLECN" -eq "1" ]
+    then
+        NOECN=$ECN
     fi
+    if [ "$ALLECN" -eq "0" ]
+    then
+        ECN=$NOECN
+    fi
+    fi
+
 }
 
 qdisc_variants
