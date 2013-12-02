@@ -108,7 +108,7 @@ get_flows() {
 	[ $1 -gt 69999 ] && FLOWS=512
 	[ $1 -gt 99999 ] && FLOWS=1024
 	case $QDISC in
-		codel|ns2_codel|pie) ;;
+		codel|ns2_codel|pie|bfifo) ;;
 		fq_codel|*fq_codel|sfq) echo flows $FLOWS ;;
 	esac
 	fi

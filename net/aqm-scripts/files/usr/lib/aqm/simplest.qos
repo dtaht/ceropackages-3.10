@@ -51,8 +51,8 @@ $TC filter add dev $IFACE parent ffff: protocol all prio 10 u32 \
 }
 
 do_modules
-egress 
-ingress
+[ "$UPLINK" != "0" ] && egress
+[ "$DOWNLINK" != "0" ] && ingress
 
 # References:
 # This alternate shaper attempts to go for 1/u performance in a clever way
