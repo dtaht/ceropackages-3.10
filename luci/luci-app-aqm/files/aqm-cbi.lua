@@ -46,6 +46,9 @@ ul = s:option(Value, "upload", translate("Upload speed (kbit/s)"))
 ul.datatype = "and(uinteger,min(1))"
 ul.rmempty = false
 
+ad = s:option(Flag, "advanced", translate("Advanced Configuration"))
+ad.rmempty = true
+
 c = s:option(ListValue, "qdisc", translate("Queueing discipline"))
 c:value("fq_codel", "fq_codel ("..translate("default")..")")
 c:value("efq_codel")
