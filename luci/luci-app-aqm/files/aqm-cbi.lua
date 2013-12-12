@@ -73,14 +73,6 @@ sc.default = "simple.qos"
 sc.rmempty = false
 sc.description = qos_desc
 
-dl = s:option(Value, "download", translate("Download speed (kbit/s)"))
-dl.datatype = "and(uinteger,min(1))"
-dl.rmempty = false
-
-ul = s:option(Value, "upload", translate("Upload speed (kbit/s)"))
-ul.datatype = "and(uinteger,min(1))"
-ul.rmempty = false
-
 lla = s:option(ListValue, "linklayer_adaptation_mechanism", translate("Which linklayer adaptation mechanism to use")) -- Creates an element list (select box)
 lla:value("none")
 lla:value("htb_private")
