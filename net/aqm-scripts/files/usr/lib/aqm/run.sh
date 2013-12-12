@@ -24,9 +24,15 @@ run_simple_qos() {
 
 	export DEV="ifb${IFB_NUM}"
 	IFB_NUM=$(expr $IFB_NUM + 1)
-	export QDISC=$(config_get "$section" qdisc)
 	export IFACE=$(config_get "$section" interface)
-	SCRIPT=/usr/lib/aqm/$(config_get "$section" script)
+	if [ $(config_get "$section" advanced) -eq 1 ]; then
+		export QDISC=$(config_get "$section" qdisc)
+		SCRIPT=/usr/lib/aqm/$(config_get "$section" script)
+	else
+		export QDISC=fq_codel
+		SCRIPT=/usr/lib/aqm/simple.qos
+		logger "defaulting to simple.qos using fq_codel"	
+	fi
 	[ "$STOP" -eq 1 ] && { /usr/lib/aqm/stop.sh; return 0; }
 	[ -x "$SCRIPT" ] && $SCRIPT
 }
