@@ -39,11 +39,11 @@ e = s:option(Flag, "enabled", translate("Enable"))
 e.rmempty = false
 
 dl = s:option(Value, "download", translate("Download speed (kbit/s)"))
-dl.datatype = "and(uinteger,min(1))"
+dl.datatype = "and(uinteger,min(0))"
 dl.rmempty = false
 
 ul = s:option(Value, "upload", translate("Upload speed (kbit/s)"))
-ul.datatype = "and(uinteger,min(1))"
+ul.datatype = "and(uinteger,min(0))"
 ul.rmempty = false
 
 ad = s:option(Flag, "advanced", translate("Advanced Configuration"))
