@@ -89,30 +89,40 @@ ll:value("ethernet")
 ll:value("adsl")
 ll:value("atm")
 ll.default = "ethernet"
+ll:depends("linklayer_adaptation_mechanism", "htb_private")
+ll:depends("linklayer_adaptation_mechanism", "tc_stab")
 
 po = s:option(Value, "overhead", translate("Per Packet Overhead (byte)"))
 po.datatype = "and(integer,min(-1500))"
 po.default = 0
 po.isnumber = true
 po.rmempty = false
+po:depends("linklayer_adaptation_mechanism", "htb_private")
+po:depends("linklayer_adaptation_mechanism", "tc_stab")
 
 smtu = s:option(Value, "MTU", translate("Maximal Size for size and rate calculations (byte), needs to be >= interface MTU"))
 smtu.datatype = "and(uinteger,min(0))"
 smtu.default = 2047
 smtu.isnumber = true
 smtu.rmempty = false
+smtu:depends("linklayer_adaptation_mechanism", "htb_private")
+smtu:depends("linklayer_adaptation_mechanism", "tc_stab")
 
 stsize = s:option(Value, "TSIZE", translate("Number of entries in size/rate tables, for ATM choose TSIZE = (MTU + 1) / 16"))
 stsize.datatype = "and(uinteger,min(0))"
 stsize.default = 128
 stsize.isnumber = true
 stsize.rmempty = false
+stsize:depends("linklayer_adaptation_mechanism", "htb_private")
+stsize:depends("linklayer_adaptation_mechanism", "tc_stab")
 
 smpu = s:option(Value, "MPU", translate("Minimal packet size (byte), if needs to be >0 for ethernet size tables"))
 smpu.datatype = "and(uinteger,min(0))"
 smpu.default = 0
 smpu.isnumber = true
 smpu.rmempty = false
+smpu:depends("linklayer_adaptation_mechanism", "htb_private")
+smpu:depends("linklayer_adaptation_mechanism", "tc_stab")
 
 
 return m
