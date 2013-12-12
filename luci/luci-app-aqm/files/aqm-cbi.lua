@@ -59,7 +59,8 @@ c:value("ns2_codel")
 c:value("pie")
 c:value("sfq")
 c.default = "fq_codel"
-c.rmempty = false
+c.rmempty = true
+sc:depends("advanced", "1")
 
 local qos_desc = ""
 sc = s:option(ListValue, "script", translate("Queue setup script"))
@@ -73,8 +74,9 @@ for file in fs.dir(path) do
   end
 end
 sc.default = "simple.qos"
-sc.rmempty = false
+sc.rmempty = true
 sc.description = qos_desc
+sc:depends("advanced", "1")
 
 lla = s:option(ListValue, "linklayer_adaptation_mechanism", translate("Which linklayer adaptation mechanism to use")) -- Creates an element list (select box)
 lla:value("none")
