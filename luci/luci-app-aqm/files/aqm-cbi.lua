@@ -35,9 +35,16 @@ for _, iface in ipairs(ifaces) do
 end
 n.rmempty = false
 
-
 e = s:option(Flag, "enabled", translate("Enable"))
 e.rmempty = false
+
+dl = s:option(Value, "download", translate("Download speed (kbit/s)"))
+dl.datatype = "and(uinteger,min(1))"
+dl.rmempty = false
+
+ul = s:option(Value, "upload", translate("Upload speed (kbit/s)"))
+ul.datatype = "and(uinteger,min(1))"
+ul.rmempty = false
 
 c = s:option(ListValue, "qdisc", translate("Queueing discipline"))
 c:value("fq_codel", "fq_codel ("..translate("default")..")")
