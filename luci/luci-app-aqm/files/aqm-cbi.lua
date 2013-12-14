@@ -60,7 +60,6 @@ c:value("pie")
 c:value("sfq")
 c.default = "fq_codel"
 c.rmempty = true
-sc:depends("advanced", "1")
 
 local qos_desc = ""
 sc = s:option(ListValue, "script", translate("Queue setup script"))
