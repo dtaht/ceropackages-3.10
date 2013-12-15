@@ -44,22 +44,26 @@ do_modules() {
 #logger "LLAM: ${LLAM}"
 #logger "LINKLAYER: ${LINKLAYER}"
 
-CEIL=$UPLINK
+get_htb_adsll_string() {
+	ADSLL=""
+	if [ "$LLAM" = "htb_private" ]; 
+	then
+		# HTB defaults to MTU 1600 and an implicit fixed TSIZE of 256, but HTB as of around 3.10.0 does not actually use a table in the kernel
+		ADSLL="mpu ${STAB_MPU} linklayer ${LINKLAYER} overhead ${OVERHEAD} mtu ${STAB_MTU}"
+		logger "ADSLL: ${ADSLL}"
+	fi
+	echo ${ADSLL}
+}
 
-ADSLL=""
-if [ "$LLAM" = "htb_private" ]; 
-then
-	# HTB defaults to MTU 1600 and an implicit fixed TSIZE of 256
-	ADSLL="mpu ${STAB_MPU} linklayer ${LINKLAYER} overhead ${OVERHEAD} mtu ${STAB_MTU}"
-	logger "ADSLL: ${ADSLL}"
-fi
-
-if [ "${LLAM}" = "tc_stab" ]; 
-then
-	STABSTRING="stab mtu ${STAB_MTU} tsize ${STAB_TSIZE} mpu ${STAB_MPU} overhead ${OVERHEAD} linklayer ${LINKLAYER}"
-	logger "STAB: ${STABSTRING}"
-fi
-
+get_stab_string() {
+	STABSTRING=""
+	if [ "${LLAM}" = "tc_stab" ]; 
+	then
+		STABSTRING="stab mtu ${STAB_MTU} tsize ${STAB_TSIZE} mpu ${STAB_MPU} overhead ${OVERHEAD} linklayer ${LINKLAYER}"
+		logger "STAB: ${STABSTRING}"
+	fi
+	echo ${STABSTRING}
+}
 
 aqm_stop() {
 	$TC qdisc del dev $IFACE ingress

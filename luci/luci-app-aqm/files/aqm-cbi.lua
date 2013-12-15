@@ -102,7 +102,7 @@ po = s:taboption("tab_linklayer", Value, "overhead", translate("Per Packet Overh
 po.datatype = "and(integer,min(-1500))"
 po.default = 0
 po.isnumber = true
-po.rmempty = false
+po.rmempty = true
 po:depends("linklayer_adaptation_mechanism", "htb_private")
 po:depends("linklayer_adaptation_mechanism", "tc_stab")
 
