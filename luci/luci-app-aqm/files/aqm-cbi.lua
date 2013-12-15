@@ -24,7 +24,7 @@ m = Map("aqm", translate("Active Queue Management"),
 		"network interfaces."))
 
 s = m:section(TypedSection, "queue", translate("Queues"))
-s.addremove = true
+s.addremove = false
 s.anonymous = true
 
 n = s:option(ListValue, "interface", translate("Interface name"))
