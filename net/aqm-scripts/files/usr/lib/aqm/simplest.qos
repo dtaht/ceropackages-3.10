@@ -5,25 +5,28 @@
 
 # Copyright (C) 2013 Michael D Taht
 # GPLv2
+logger "Starting simplest.qos"
 
 . /usr/lib/aqm/functions.sh
+
+
+
 
 egress() {
 
 LQ="quantum `get_mtu $IFACE`"
- 
+
 $TC qdisc del dev $IFACE root 2>/dev/null
 $TC qdisc add dev $IFACE root handle 1: `get_stab_string` htb default 10
 $TC class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit `get_htb_adsll_string`
 $TC class add dev $IFACE parent 1:1 classid 1:10 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit prio 0 `get_htb_adsll_string`
-$TC qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 $NOECN `get_flows ${UPLINK}`
+$TC qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 `get_egress_ECN` `get_flows ${UPLINK}`
 
 }
 
-# Note: if ingress from ADSL, there is still no need to use HTB's ADSL estimator
 
 ingress() {
-
+logger "ingress"
 $TC qdisc del dev $IFACE handle ffff: ingress 2>/dev/null
 $TC qdisc add dev $IFACE handle ffff: ingress
 
@@ -39,7 +42,7 @@ $TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${DOWNLINK}kbit ceil
 
 # Most high rate flows are REALLY close. This stomps on those harder, but hurts on high rate long distance
 #$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN interval 20ms target 3ms `get_flows ${DOWNLINK}`
-$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN `get_flows ${DOWNLINK}`
+$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 `get_ingress_ECN` `get_flows ${DOWNLINK}`
 
 ifconfig $DEV up
 
@@ -54,20 +57,20 @@ do_modules
 
 if [ "$UPLINK" -ne 0 ];
 then
-<------>egress
-<------>logger "egress shaping activated"
+	egress
+	logger "egress shaping activated"
 else
-<------>logger "egress shaping deactivated"
-<------>tc qdisc del dev $IFACE root 2> /dev/null
+	logger "egress shaping deactivated"
+	tc qdisc del dev $IFACE root 2> /dev/null
 fi
 if [ "$DOWNLINK" -ne 0 ];
 then
-<------>ingress
-<------>logger "ingress shaping activated"
+	ingress
+	logger "ingress shaping activated"
 else
-<------>logger "ingress shaping deactivated"
-<------>tc qdisc del dev $DEV root 2> /dev/null
-<------>tc qdisc del dev $IFACE ingress 2> /dev/null
+	logger "ingress shaping deactivated"
+	tc qdisc del dev $DEV root 2> /dev/null
+	tc qdisc del dev $IFACE ingress 2> /dev/null
 fi
 
 

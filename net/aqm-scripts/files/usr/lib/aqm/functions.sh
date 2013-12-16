@@ -34,8 +34,10 @@ do_modules() {
 [ -z "$STAB_MPU" ] && STAB_MPU=0
 [ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
-[ -z "$AUTOECN" ] && AUTOECN=1
-[ -z "$ALLECN" ] && ALLECN=2
+#[ -z "$AUTOECN" ] && AUTOECN=1
+#[ -z "$ALLECN" ] && ALLECN=2
+[ -z "$INGRESSECN" ] && INGRESSECN="active"
+[ -z "$EGRESSECN" ] && EGRESSECN="inactive"
 [ -z "$TC" ] && TC=`which tc`
 #[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
@@ -75,10 +77,10 @@ aqm_stop() {
 # and depends on the interface global too
 
 fc() {
-$TC filter add dev $interface protocol ip parent $1 prio $prio u32 match ip tos $2 0xfc classid $3
-prio=$(($prio + 1))
-$TC filter add dev $interface protocol ipv6 parent $1 prio $prio u32 match ip6 priority $2 0xfc classid $3
-prio=$(($prio + 1))
+	$TC filter add dev $interface protocol ip parent $1 prio $prio u32 match ip tos $2 0xfc classid $3
+	prio=$(($prio + 1))
+	$TC filter add dev $interface protocol ipv6 parent $1 prio $prio u32 match ip6 priority $2 0xfc classid $3
+	prio=$(($prio + 1))
 }
 
 # FIXME: actually you need to get the underlying MTU on PPOE thing
@@ -102,19 +104,19 @@ get_mtu() {
 get_flows() {
 	if [ "$AUTOFLOW" -eq "1" ] 
 	then
-	FLOWS=8
-	[ $1 -gt 999 ] && FLOWS=16
-	[ $1 -gt 2999 ] && FLOWS=32
-	[ $1 -gt 7999 ] && FLOWS=48
-	[ $1 -gt 9999 ] && FLOWS=64
-	[ $1 -gt 19999 ] && FLOWS=128
-	[ $1 -gt 39999 ] && FLOWS=256
-	[ $1 -gt 69999 ] && FLOWS=512
-	[ $1 -gt 99999 ] && FLOWS=1024
-	case $QDISC in
-		codel|ns2_codel|pie|bfifo) ;;
-		fq_codel|*fq_codel|sfq) echo flows $FLOWS ;;
-	esac
+		FLOWS=8
+		[ $1 -gt 999 ] && FLOWS=16
+		[ $1 -gt 2999 ] && FLOWS=32
+		[ $1 -gt 7999 ] && FLOWS=48
+		[ $1 -gt 9999 ] && FLOWS=64
+		[ $1 -gt 19999 ] && FLOWS=128
+		[ $1 -gt 39999 ] && FLOWS=256
+		[ $1 -gt 69999 ] && FLOWS=512
+		[ $1 -gt 99999 ] && FLOWS=1024
+		case $QDISC in
+			codel|ns2_codel|pie|bfifo) ;;
+			fq_codel|*fq_codel|sfq) echo flows $FLOWS ;;
+		esac
 	fi
 }	
 
@@ -129,9 +131,45 @@ get_quantum() {
 }
 
 # Set some variables to handle different qdiscs
+get_egress_ECN() {
+	eECN_string=""
+	case $QDISC in
+		*codel|*pie|*red) ECN=ecn; NOECN=noecn ;;
+		*) ECN=""; NOECN="" ;;
+	esac
 
-ECN="ecn"
-NOECN="noecn"
+	if [ ${EGRESSECN} == "active" ];
+	then
+		eECN_string=${ECN}
+	else
+		eECN_string=${NOECN}
+	fi
+	#logger "eECN: ${eECN_string}"
+	echo ${eECN_string}
+}
+
+get_ingress_ECN() {
+	iECN_string=""
+	case $QDISC in
+		*codel|*pie|*red) ECN=ecn; NOECN=noecn ;;
+		*) ECN=""; NOECN="" ;;
+	esac
+
+	if [ ${INGRESSECN} == "active" ];
+	then
+		iECN_string=${ECN}
+	else
+		iECN_string=${NOECN}
+	fi
+	#logger "iECN: ${iECN_string}"
+	echo ${iECN_string}
+}
+
+#logger "EGRESSECN: ${EGRESSECN}"
+#logger "INGRESSECN: ${INGRESSECN}"
+
+#ECN="ecn"
+#NOECN="noecn"
 
 # ECN is somewhat useful but it helps to have a way
 # to turn it on or off. 

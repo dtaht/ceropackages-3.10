@@ -21,6 +21,8 @@ run_simple_qos() {
 	export STAB_MTU=$(config_get "$section" MTU)
 	export STAB_TSIZE=$(config_get "$section" TSIZE)
 	export STAB_MPU=$(config_get "$section" MPU)
+	export INGRESSECN=$(config_get "$section" ingress_ecn)
+	export EGRESSECN=$(config_get "$section" egress_ecn)
 
 	export DEV="ifb${IFB_NUM}"
 	IFB_NUM=$(expr $IFB_NUM + 1)
@@ -28,6 +30,7 @@ run_simple_qos() {
 	if [ $(config_get "$section" advanced) -eq 1 ]; then
 		export QDISC=$(config_get "$section" qdisc)
 		SCRIPT=/usr/lib/aqm/$(config_get "$section" script)
+		logger "Queue Setup Script: ${SCRIPT}"
 	else
 		export QDISC=fq_codel
 		SCRIPT=/usr/lib/aqm/simple.qos

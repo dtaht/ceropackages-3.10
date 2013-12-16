@@ -83,6 +83,21 @@ sc.rmempty = true
 sc.description = qos_desc
 sc:depends("advanced", "1")
 
+iecn = s:taboption("tab_qdisc", ListValue, "ingress_ecn", translate("Enable explicit congestion notification (ECN) on inbound packets."))
+iecn:value("active", "active ("..translate("default")..")")
+iecn:value("inactive")
+iecn.default = "active"
+iecn.rmempty = true
+iecn:depends("advanced", "1")
+
+eecn = s:taboption("tab_qdisc", ListValue, "egress_ecn", translate("Enable explicit congestion notification (ECN) on outbound packets."))
+eecn:value("inactive", "inactive ("..translate("default")..")")
+eecn:value("active")
+eecn.default = "inactive"
+eecn.rmempty = true
+eecn:depends("advanced", "1")
+
+
 -- LINKLAYER
 lla = s:taboption("tab_linklayer", ListValue, "linklayer_adaptation_mechanism", translate("Which linklayer adaptation mechanism to use; especially useful for DSL/ATM links:")) -- Creates an element list (select box)
 lla:value("none")
