@@ -21,8 +21,8 @@ run_simple_qos() {
 	export STAB_MTU=$(config_get "$section" MTU)
 	export STAB_TSIZE=$(config_get "$section" TSIZE)
 	export STAB_MPU=$(config_get "$section" MPU)
-	export INGRESSECN=$(config_get "$section" ingress_ecn)
-	export EGRESSECN=$(config_get "$section" egress_ecn)
+	export iECN=$(config_get "$section" ingress_ecn)
+	export eECN=$(config_get "$section" egress_ecn)
 
 	export DEV="ifb${IFB_NUM}"
 	IFB_NUM=$(expr $IFB_NUM + 1)

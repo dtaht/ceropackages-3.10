@@ -20,7 +20,7 @@ $TC qdisc del dev $IFACE root 2>/dev/null
 $TC qdisc add dev $IFACE root handle 1: `get_stab_string` htb default 10
 $TC class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit `get_htb_adsll_string`
 $TC class add dev $IFACE parent 1:1 classid 1:10 htb $LQ rate ${UPLINK}kbit ceil ${UPLINK}kbit prio 0 `get_htb_adsll_string`
-$TC qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 `get_egress_ECN` `get_flows ${UPLINK}`
+$TC qdisc add dev $IFACE parent 1:10 handle 110: $QDISC limit 600 `get_ECN ${eECN}` `get_flows ${UPLINK}`
 
 }
 
@@ -42,7 +42,7 @@ $TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${DOWNLINK}kbit ceil
 
 # Most high rate flows are REALLY close. This stomps on those harder, but hurts on high rate long distance
 #$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 $ECN interval 20ms target 3ms `get_flows ${DOWNLINK}`
-$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 `get_ingress_ECN` `get_flows ${DOWNLINK}`
+$TC qdisc add dev $DEV parent 1:10 handle 110: $QDISC limit 1000 `get_ECN ${iECN}` `get_flows ${DOWNLINK}`
 
 ifconfig $DEV up
 

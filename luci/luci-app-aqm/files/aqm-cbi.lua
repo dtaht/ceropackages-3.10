@@ -83,17 +83,17 @@ sc.rmempty = true
 sc.description = qos_desc
 sc:depends("advanced", "1")
 
-iecn = s:taboption("tab_qdisc", ListValue, "ingress_ecn", translate("Enable explicit congestion notification (ECN) on inbound packets."))
-iecn:value("active", "active ("..translate("default")..")")
-iecn:value("inactive")
-iecn.default = "active"
+iecn = s:taboption("tab_qdisc", ListValue, "ingress_ecn", translate("Explicit congestion notification (ECN) status on inbound packets (ingress):"))
+iecn:value("ECN", "ECN ("..translate("default")..")")
+iecn:value("NOECN")
+iecn.default = "ECN"
 iecn.rmempty = true
 iecn:depends("advanced", "1")
 
-eecn = s:taboption("tab_qdisc", ListValue, "egress_ecn", translate("Enable explicit congestion notification (ECN) on outbound packets."))
-eecn:value("inactive", "inactive ("..translate("default")..")")
-eecn:value("active")
-eecn.default = "inactive"
+eecn = s:taboption("tab_qdisc", ListValue, "egress_ecn", translate("Eexplicit congestion notification (ECN) status on outbound packets (egress)."))
+eecn:value("NOECN", "NOECN ("..translate("default")..")")
+eecn:value("ECN")
+eecn.default = "NOECN"
 eecn.rmempty = true
 eecn:depends("advanced", "1")
 
@@ -105,7 +105,7 @@ lla:value("none")
 lla:value("tc_stab")
 lla.default = "none"
 
-ll = s:taboption("tab_linklayer", ListValue, "linklayer", translate("Which linklayer to account for:")) -- Creates an element list (select box)
+ll = s:taboption("tab_linklayer", ListValue, "linklayer", translate("Which linklayer to account for (for vdsl choose ethernet and specify your overhead):")) -- Creates an element list (select box)
 ll:value("ethernet")
 ll:value("adsl")
 -- ll:value("atm")	-- reduce the options

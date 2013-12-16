@@ -1,3 +1,4 @@
+
 insmod() {
   lsmod | grep -q ^$1 || $INSMOD $1
 }
@@ -36,8 +37,8 @@ do_modules() {
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
 #[ -z "$AUTOECN" ] && AUTOECN=1
 #[ -z "$ALLECN" ] && ALLECN=2
-[ -z "$INGRESSECN" ] && INGRESSECN="active"
-[ -z "$EGRESSECN" ] && EGRESSECN="inactive"
+[ -z "$iECN" ] && iECN="ECN"
+[ -z "$eECN" ] && eECN="NOECN"
 [ -z "$TC" ] && TC=`which tc`
 #[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
@@ -93,6 +94,7 @@ get_mtu() {
 	else
 	echo $F
 	fi
+
 }
 
 # FIXME should also calculate the limit
@@ -118,6 +120,7 @@ get_flows() {
 			fq_codel|*fq_codel|sfq) echo flows $FLOWS ;;
 		esac
 	fi
+
 }	
 
 # set quantum parameter if available for this qdisc
@@ -130,43 +133,40 @@ get_quantum() {
 
 }
 
-# Set some variables to handle different qdiscs
-get_egress_ECN() {
-	eECN_string=""
-	case $QDISC in
-		*codel|*pie|*red) ECN=ecn; NOECN=noecn ;;
-		*) ECN=""; NOECN="" ;;
-	esac
 
-	if [ ${EGRESSECN} == "active" ];
-	then
-		eECN_string=${ECN}
-	else
-		eECN_string=${NOECN}
-	fi
-	#logger "eECN: ${eECN_string}"
-	echo ${eECN_string}
+get_ECN() {
+    curECN=$1
+    #logger curECN: $curECN
+	case ${curECN} in
+		ECN)
+			case $QDISC in
+				*codel|*pie|*red)
+				    curECN=ecn 
+				    ;;
+				*) 
+				    curECN="" 
+				    ;;
+			esac
+			;;
+		NOECN)
+			case $QDISC in
+				*codel|*pie|*red) 
+				    curECN=noecn 
+				    ;;
+				*) 
+				    curECN="" 
+				    ;;
+			esac
+			;;
+		*)
+		    logger "ecn value $1 not handeled"
+		    ;;
+	esac
+	#logger "get_ECN: $1 curECN: ${curECN} iECN: ${iECN} eECN: ${eECN}"
+	echo ${curECN}
+
 }
 
-get_ingress_ECN() {
-	iECN_string=""
-	case $QDISC in
-		*codel|*pie|*red) ECN=ecn; NOECN=noecn ;;
-		*) ECN=""; NOECN="" ;;
-	esac
-
-	if [ ${INGRESSECN} == "active" ];
-	then
-		iECN_string=${ECN}
-	else
-		iECN_string=${NOECN}
-	fi
-	#logger "iECN: ${iECN_string}"
-	echo ${iECN_string}
-}
-
-#logger "EGRESSECN: ${EGRESSECN}"
-#logger "INGRESSECN: ${INGRESSECN}"
 
 #ECN="ecn"
 #NOECN="noecn"
