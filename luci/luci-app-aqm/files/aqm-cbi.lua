@@ -79,7 +79,7 @@ sc.default = "simple.qos"
 sc.rmempty = false
 sc.description = qos_desc
 
-ad = s:taboption("tab_qdisc", Flag, "advanced", translate("Show Advanced Configuration"))
+ad = s:taboption("tab_qdisc", Flag, "qdisc_advanced", translate("Show Advanced Configuration"))
 ad.default = false
 ad.rmempty = true
 
@@ -88,79 +88,79 @@ iecn:value("ECN", "ECN ("..translate("default")..")")
 iecn:value("NOECN")
 iecn.default = "ECN"
 iecn.rmempty = true
-iecn:depends("advanced", "1")
+iecn:depends("qdisc_advanced", "1")
 
 eecn = s:taboption("tab_qdisc", ListValue, "egress_ecn", translate("Explicit congestion notification (ECN) status on outbound packets (egress)."))
 eecn:value("NOECN", "NOECN ("..translate("default")..")")
 eecn:value("ECN")
 eecn.default = "NOECN"
 eecn.rmempty = true
-eecn:depends("advanced", "1")
+eecn:depends("qdisc_advanced", "1")
 
-ad2 = s:taboption("tab_qdisc", Flag, "really_really_advanced", translate("Show Dangerous Configuration"))
+ad2 = s:taboption("tab_qdisc", Flag, "qdisc_really_really_advanced", translate("Show Dangerous Configuration"))
 ad2.default = false
 ad2.rmempty = true
+ad2:depends("qdisc_advanced", "1")
 
 iqdisc_opts = s:taboption("tab_qdisc", Value, "iqdisc_opts", translate("Advanced option string to pass to the ingress queueing disciplines; no error checking, use very carefully."))
 iqdisc_opts.rmempty = true
-iqdisc_opts:depends("really_really_advanced", "1")
+iqdisc_opts:depends("qdisc_really_really_advanced", "1")
 
 eqdisc_opts = s:taboption("tab_qdisc", Value, "eqdisc_opts", translate("Advanced option string to pass to the egress queueing disciplines; no error checking, use very carefully."))
 eqdisc_opts.rmempty = true
-eqdisc_opts:depends("really_really_advanced", "1")
+eqdisc_opts:depends("qdisc_really_really_advanced", "1")
 
 -- LINKLAYER
-lla = s:taboption("tab_linklayer", ListValue, "linklayer_adaptation_mechanism", translate("Which linklayer adaptation mechanism to use; especially useful for DSL/ATM links:")) -- Creates an element list (select box)
-lla:value("none")
--- lla:value("htb_private")
-lla:value("tc_stab")
-lla.default = "none"
-
-ll = s:taboption("tab_linklayer", ListValue, "linklayer", translate("Which linklayer to account for (for vdsl choose ethernet and specify your overhead):")) -- Creates an element list (select box)
-ll:value("ethernet")
-ll:value("adsl")
--- ll:value("atm")	-- reduce the options
-ll.default = "adsl"
-ll:depends("linklayer_adaptation_mechanism", "htb_private")
-ll:depends("linklayer_adaptation_mechanism", "tc_stab")
+ll = s:taboption("tab_linklayer", ListValue, "linklayer", translate("Which link layer to account for:"))
+ll:value("none", "none ("..translate("default")..")")
+ll:value("ethernet", "Ethernet: select for e.g. VDSL2.")
+ll:value("atm", "ATM: select for e.g. ADSL1, ADSL2, ADSL2+.")
+-- ll:value("adsl")	-- reduce the options
+ll.default = "none"
 
 po = s:taboption("tab_linklayer", Value, "overhead", translate("Per Packet Overhead (byte):"))
 po.datatype = "and(integer,min(-1500))"
 po.default = 0
 po.isnumber = true
 po.rmempty = true
-po:depends("linklayer_adaptation_mechanism", "htb_private")
-po:depends("linklayer_adaptation_mechanism", "tc_stab")
+po:depends("linklayer", "ethernet")
+-- po:depends("linklayer", "adsl")
+po:depends("linklayer", "atm")
+
 
 adll = s:taboption("tab_linklayer", Flag, "linklayer_advanced", translate("Show Advanced Linklayer Options, (only needed if MTU > 1500)"))
 adll.rmempty = true
+adll:depends("linklayer", "ethernet")
+-- adll:depends("linklayer", "adsl")
+adll:depends("linklayer", "atm")
 
-smtu = s:taboption("tab_linklayer", Value, "MTU", translate("Maximal Size for size and rate calculations, tcMTU (byte); needs to be >= interface MTU + overhead:"))
+smtu = s:taboption("tab_linklayer", Value, "tcMTU", translate("Maximal Size for size and rate calculations, tcMTU (byte); needs to be >= interface MTU + overhead:"))
 smtu.datatype = "and(uinteger,min(0))"
 smtu.default = 2047
 smtu.isnumber = true
 smtu.rmempty = true
--- smtu:depends("linklayer_adaptation_mechanism", "htb_private")
--- smtu:depends("linklayer_adaptation_mechanism", "tc_stab")
 smtu:depends("linklayer_advanced", "1")
 
-stsize = s:taboption("tab_linklayer", Value, "TSIZE", translate("Number of entries in size/rate tables, TSIZE; for ATM choose TSIZE = (tcMTU + 1) / 16:"))
+stsize = s:taboption("tab_linklayer", Value, "tcTSIZE", translate("Number of entries in size/rate tables, TSIZE; for ATM choose TSIZE = (tcMTU + 1) / 16:"))
 stsize.datatype = "and(uinteger,min(0))"
 stsize.default = 128
 stsize.isnumber = true
 stsize.rmempty = true
--- stsize:depends("linklayer_adaptation_mechanism", "htb_private")
--- stsize:depends("linklayer_adaptation_mechanism", "tc_stab")
 stsize:depends("linklayer_advanced", "1")
 
-smpu = s:taboption("tab_linklayer", Value, "MPU", translate("Minimal packet size, MPU (byte); needs to be > 0 for ethernet size tables:"))
+smpu = s:taboption("tab_linklayer", Value, "tcMPU", translate("Minimal packet size, MPU (byte); needs to be > 0 for ethernet size tables:"))
 smpu.datatype = "and(uinteger,min(0))"
 smpu.default = 0
 smpu.isnumber = true
 smpu.rmempty = true
--- smpu:depends("linklayer_adaptation_mechanism", "htb_private")
--- smpu:depends("linklayer_adaptation_mechanism", "tc_stab")
 smpu:depends("linklayer_advanced", "1")
+
+lla = s:taboption("tab_linklayer", ListValue, "linklayer_adaptation_mechanism", translate("Which linklayer adaptation mechanism to use; for testing only"))
+lla:value("htb_private")
+lla:value("tc_stab", "tc_stab ("..translate("default")..")")
+lla.default = "tc_stab"
+lla.rmempty = true
+lla:depends("linklayer_advanced", "1")
 
 -- PRORITIES?
 
