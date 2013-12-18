@@ -39,10 +39,14 @@ do_modules() {
 #[ -z "$ALLECN" ] && ALLECN=2
 [ -z "$iECN" ] && iECN="ECN"
 [ -z "$eECN" ] && eECN="NOECN"
+[ -z "$iqdisc_opts" ] && iqdisc_opts=""
+[ -z "$eqdisc_opts" ] && eqdisc_opts=""
 [ -z "$TC" ] && TC=`which tc`
 #[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
 
+#logger "iqdisc opts: ${iqdisc_opts}"
+#logger "eqdisc opts: ${eqdisc_opts}"
 
 #logger "LLAM: ${LLAM}"
 #logger "LINKLAYER: ${LINKLAYER}"

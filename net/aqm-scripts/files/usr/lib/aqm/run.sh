@@ -23,19 +23,15 @@ run_simple_qos() {
 	export STAB_MPU=$(config_get "$section" MPU)
 	export iECN=$(config_get "$section" ingress_ecn)
 	export eECN=$(config_get "$section" egress_ecn)
+	export iqdisc_opts=$(config_get "$section" iqdisc_opts)
+	export eqdisc_opts=$(config_get "$section" eqdisc_opts)
 
 	export DEV="ifb${IFB_NUM}"
 	IFB_NUM=$(expr $IFB_NUM + 1)
 	export IFACE=$(config_get "$section" interface)
-	if [ $(config_get "$section" advanced) -eq 1 ]; then
-		export QDISC=$(config_get "$section" qdisc)
-		SCRIPT=/usr/lib/aqm/$(config_get "$section" script)
-		logger "Queue Setup Script: ${SCRIPT}"
-	else
-		export QDISC=fq_codel
-		SCRIPT=/usr/lib/aqm/simple.qos
-		logger "defaulting to simple.qos using fq_codel"	
-	fi
+	export QDISC=fq_codel
+	SCRIPT=/usr/lib/aqm/simple.qos
+	logger "Queue Setup Script: ${SCRIPT}"
 	[ "$STOP" -eq 1 ] && { /usr/lib/aqm/stop.sh; return 0; }
 	[ -x "$SCRIPT" ] && $SCRIPT
 }

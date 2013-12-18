@@ -1,1 +1,1 @@
-HTB-limited three-tier prioritisation scheme with fq_codel on each queue.
+HTB-limited three-tier prioritisation scheme with fq_codel on each queue. (default)

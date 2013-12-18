@@ -76,9 +76,9 @@ $TC class add dev $IFACE parent 1:1 classid 1:11 htb $LQ rate 128kbit ceil ${PRI
 $TC class add dev $IFACE parent 1:1 classid 1:12 htb $LQ rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 `get_htb_adsll_string`
 $TC class add dev $IFACE parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 `get_htb_adsll_string`
 
-$TC qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 `get_ECN ${eECN}` `get_quantum 300` `get_flows ${PRIO_RATE}`
-$TC qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 `get_ECN ${eECN}` `get_quantum 300` `get_flows ${BE_RATE}`
-$TC qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 `get_ECN ${eECN}` `get_quantum 300` `get_flows ${BK_RATE}`
+$TC qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit 600 `get_ECN ${eECN}` `get_quantum 300` `get_flows ${PRIO_RATE}` ${eqdisc_opts}
+$TC qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit 600 `get_ECN ${eECN}` `get_quantum 300` `get_flows ${BE_RATE}` ${eqdisc_opts}
+$TC qdisc add dev $IFACE parent 1:13 handle 130: $QDISC limit 600 `get_ECN ${eECN}` `get_quantum 300` `get_flows ${BK_RATE}` ${eqdisc_opts}
 
 
 # Need a catchall rule
@@ -127,9 +127,9 @@ $TC class add dev $DEV parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kbit ceil 
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 
-$TC qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 `get_ECN ${iECN}` `get_quantum 500` `get_flows ${PRIO_RATE}`
-$TC qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 `get_ECN ${iECN}` `get_quantum 1500` `get_flows ${BE_RATE}`
-$TC qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 `get_ECN ${iECN}` `get_quantum 1500` `get_flows ${BK_RATE}`
+$TC qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit 1000 `get_ECN ${iECN}` `get_quantum 500` `get_flows ${PRIO_RATE}` ${iqdisc_opts}
+$TC qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit 1000 `get_ECN ${iECN}` `get_quantum 1500` `get_flows ${BE_RATE}` ${iqdisc_opts}
+$TC qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit 1000 `get_ECN ${iECN}` `get_quantum 1500` `get_flows ${BK_RATE}` ${iqdisc_opts}
 
 diffserv $DEV
 

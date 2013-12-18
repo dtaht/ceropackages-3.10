@@ -42,17 +42,15 @@ for _, iface in ipairs(ifaces) do
 end
 n.rmempty = false
 
-dl = s:taboption("tab_basic", Value, "download", translate("Download speed (kbit/s)"))
+dl = s:taboption("tab_basic", Value, "download", translate("Download speed (kbit/s) (ingress):"))
 dl.datatype = "and(uinteger,min(0))"
 dl.rmempty = false
 
-ul = s:taboption("tab_basic", Value, "upload", translate("Upload speed (kbit/s)"))
+ul = s:taboption("tab_basic", Value, "upload", translate("Upload speed (kbit/s) (egress):"))
 ul.datatype = "and(uinteger,min(0))"
 ul.rmempty = false
 
 -- QDISC
-ad = s:taboption("tab_qdisc", Flag, "advanced", translate("Show Advanced Configuration"))
-ad.rmempty = true
 
 c = s:taboption("tab_qdisc", ListValue, "qdisc", translate("Queueing discipline"))
 c:value("fq_codel", "fq_codel ("..translate("default")..")")
@@ -64,8 +62,7 @@ c:value("ns2_codel")
 c:value("pie")
 c:value("sfq")
 c.default = "fq_codel"
-c.rmempty = true
-c:depends("advanced", "1")
+c.rmempty = false
 
 local qos_desc = ""
 sc = s:taboption("tab_qdisc", ListValue, "script", translate("Queue setup script"))
@@ -79,9 +76,12 @@ for file in fs.dir(path) do
   end
 end
 sc.default = "simple.qos"
-sc.rmempty = true
+sc.rmempty = false
 sc.description = qos_desc
-sc:depends("advanced", "1")
+
+ad = s:taboption("tab_qdisc", Flag, "advanced", translate("Show Advanced Configuration"))
+ad.default = false
+ad.rmempty = true
 
 iecn = s:taboption("tab_qdisc", ListValue, "ingress_ecn", translate("Explicit congestion notification (ECN) status on inbound packets (ingress):"))
 iecn:value("ECN", "ECN ("..translate("default")..")")
@@ -90,13 +90,24 @@ iecn.default = "ECN"
 iecn.rmempty = true
 iecn:depends("advanced", "1")
 
-eecn = s:taboption("tab_qdisc", ListValue, "egress_ecn", translate("Eexplicit congestion notification (ECN) status on outbound packets (egress)."))
+eecn = s:taboption("tab_qdisc", ListValue, "egress_ecn", translate("Explicit congestion notification (ECN) status on outbound packets (egress)."))
 eecn:value("NOECN", "NOECN ("..translate("default")..")")
 eecn:value("ECN")
 eecn.default = "NOECN"
 eecn.rmempty = true
 eecn:depends("advanced", "1")
 
+ad2 = s:taboption("tab_qdisc", Flag, "really_really_advanced", translate("Show Dangerous Configuration"))
+ad2.default = false
+ad2.rmempty = true
+
+iqdisc_opts = s:taboption("tab_qdisc", Value, "iqdisc_opts", translate("Advanced option string to pass to the ingress queueing disciplines; no error checking, use very carefully."))
+iqdisc_opts.rmempty = true
+iqdisc_opts:depends("really_really_advanced", "1")
+
+eqdisc_opts = s:taboption("tab_qdisc", Value, "eqdisc_opts", translate("Advanced option string to pass to the egress queueing disciplines; no error checking, use very carefully."))
+eqdisc_opts.rmempty = true
+eqdisc_opts:depends("really_really_advanced", "1")
 
 -- LINKLAYER
 lla = s:taboption("tab_linklayer", ListValue, "linklayer_adaptation_mechanism", translate("Which linklayer adaptation mechanism to use; especially useful for DSL/ATM links:")) -- Creates an element list (select box)
