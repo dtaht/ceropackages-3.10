@@ -35,6 +35,7 @@ do_modules() {
 [ -z "$STAB_MPU" ] && STAB_MPU=0
 [ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
+[ -z "$LIMIT" ] && LIMIT=1000
 #[ -z "$AUTOECN" ] && AUTOECN=1
 #[ -z "$ALLECN" ] && ALLECN=2
 [ -z "$iECN" ] && iECN="ECN"

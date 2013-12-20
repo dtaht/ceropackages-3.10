@@ -21,6 +21,7 @@ run_simple_qos() {
 	export STAB_MTU=$(config_get "$section" tcMTU)
 	export STAB_TSIZE=$(config_get "$section" tcTSIZE)
 	export STAB_MPU=$(config_get "$section" tcMPU)
+	export LIMIT=$(config_get "$section" limit)
 	export iECN=$(config_get "$section" ingress_ecn)
 	export eECN=$(config_get "$section" egress_ecn)
 	export iqdisc_opts=$(config_get "$section" iqdisc_opts)
