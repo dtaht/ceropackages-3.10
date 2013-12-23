@@ -19,13 +19,15 @@ local ifaces = net:get_interfaces()
 local path = "/usr/lib/sqm"
 
 m = Map("sqm", translate("Active Queue Management"),
-	translate("With <abbr title=\"Active Queue Management\">SQM</abbr> you " ..
-		"can enable traffic shaping and prioritisation on one " ..
+	translate("With <abbr title=\"Smart Queue Management\">SQM</abbr> you " ..
+		"can enable traffic shaping, better mixing (Fair Queueing)," ..
+		" active queue length management (AQM) " ..
+		" and prioritisation on one " ..
 		"network interface."))
 
 s = m:section(TypedSection, "queue", translate("Queues"))
 s:tab("tab_basic", translate("Basic Settings"))
-s:tab("tab_qdisc", translate("Queueing Discipline"))
+s:tab("tab_qdisc", translate("Queue Discipline"))
 s:tab("tab_linklayer", translate("Link Layer Adaptation"))
 s.addremove = false
 s.anonymous = true
