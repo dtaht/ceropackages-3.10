@@ -47,7 +47,7 @@ define Package/babeld/conffiles
 endef
 
 MAKE_FLAGS+= \
-	CFLAGS="$(TARGET_CFLAGS)" \
+	CFLAGS="$(TARGET_CFLAGS) -DIPV6_SUBTREES=1" \
 
 define Package/babeld/install
 	$(INSTALL_DIR) $(1)/usr/sbin
