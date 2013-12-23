@@ -12,15 +12,15 @@ You may obtain a copy of the License at
 $Id$
 ]]--
 
-module("luci.controller.aqm", package.seeall)
+module("luci.controller.sqm", package.seeall)
 
 function index()
-	if not nixio.fs.access("/etc/config/aqm") then
+	if not nixio.fs.access("/etc/config/sqm") then
 		return
 	end
 	
 	local page
 
-	page = entry({"admin", "network", "aqm"}, cbi("aqm"), _("AQM"))
+	page = entry({"admin", "network", "sqm"}, cbi("sqm"), _("SQM"))
 	page.dependent = true
 end

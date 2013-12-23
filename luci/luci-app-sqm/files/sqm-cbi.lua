@@ -16,10 +16,10 @@ local wa = require "luci.tools.webadmin"
 local fs = require "nixio.fs"
 local net = require "luci.model.network".init()
 local ifaces = net:get_interfaces()
-local path = "/usr/lib/aqm"
+local path = "/usr/lib/sqm"
 
-m = Map("aqm", translate("Active Queue Management"),
-	translate("With <abbr title=\"Active Queue Management\">AQM</abbr> you " ..
+m = Map("sqm", translate("Active Queue Management"),
+	translate("With <abbr title=\"Active Queue Management\">SQM</abbr> you " ..
 		"can enable traffic shaping and prioritisation on one " ..
 		"network interface."))
 
