@@ -73,7 +73,7 @@ get_stab_string() {
 	echo ${STABSTRING}
 }
 
-aqm_stop() {
+sqm_stop() {
 	$TC qdisc del dev $IFACE ingress
 	$TC qdisc del dev $IFACE root
 	$TC qdisc del dev $DEV root
@@ -121,7 +121,7 @@ get_flows() {
 		[ $1 -gt 69999 ] && FLOWS=512
 		[ $1 -gt 99999 ] && FLOWS=1024
 		case $QDISC in
-			codel|ns2_codel|pie|bfifo) ;;
+			codel|ns2_codel|pie|*fifo|pfifo_fast) ;;
 			fq_codel|*fq_codel|sfq) echo flows $FLOWS ;;
 		esac
 	fi

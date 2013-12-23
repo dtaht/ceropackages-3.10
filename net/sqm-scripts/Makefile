@@ -7,7 +7,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=aqm-scripts
+PKG_NAME:=sqm-scripts
 PKG_VERSION:=4
 PKG_RELEASE:=2
 
@@ -15,20 +15,20 @@ PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/aqm-scripts
+define Package/sqm-scripts
   SECTION:=net
   CATEGORY:=Base system
   DEPENDS:=+tc +kmod-sched +kmod-ifb +iptables +iptables-mod-filter +iptables-mod-ipopt +iptables-mod-conntrack-extra
-  TITLE:=AQM Scripts
+  TITLE:=SQM Scripts
   PKGARCH:=all
 endef
 
-define Package/aqm-scripts/description
- A set of scripts that does simple AQM configuration.
+define Package/sqm-scripts/description
+ A set of scripts that does simple SQM configuration.
 endef
 
-define Package/aqm-scripts/conffiles
-/etc/config/aqm
+define Package/sqm-scripts/conffiles
+/etc/config/sqm
 endef
 
 define Build/Prepare
@@ -40,9 +40,9 @@ endef
 define Build/Compile
 endef
 
-define Package/aqm-scripts/install
+define Package/sqm-scripts/install
 	$(INSTALL_DIR) $(1)
 	$(CP) ./files/* $(1)/
 endef
 
-$(eval $(call BuildPackage,aqm-scripts))
+$(eval $(call BuildPackage,sqm-scripts))

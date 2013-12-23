@@ -1,8 +1,8 @@
 #!/bin/sh
 
-. /usr/lib/aqm/functions.sh
+. /usr/lib/sqm/functions.sh
 
-aqm_stop() {
+sqm_stop() {
 	tc qdisc del dev $IFACE ingress 2> /dev/null
 	tc qdisc del dev $IFACE root 2> /dev/null
 	tc qdisc del dev $DEV root 2> /dev/null
@@ -18,5 +18,5 @@ ipt_stop() {
 }
 
 
-aqm_stop
+sqm_stop
 ipt_stop

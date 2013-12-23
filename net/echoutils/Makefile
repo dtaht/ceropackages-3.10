@@ -7,13 +7,12 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_RELEASE:=1
-
 #If we need to go back to tracking svn versions in the future
 #This is what we would do
 PKG_NAME:=echoutils
 PKG_VERSION:=1.0.0
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
+PKG_RELEASE:=1
 
 # Checksum
 

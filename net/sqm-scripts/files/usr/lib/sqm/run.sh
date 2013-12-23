@@ -6,7 +6,7 @@ STOP=0
 
 [ "$1" == "stop" ] && STOP=1
 
-config_load aqm
+config_load sqm
 
 IFB_NUM=0
 
@@ -31,9 +31,9 @@ run_simple_qos() {
 	IFB_NUM=$(expr $IFB_NUM + 1)
 	export IFACE=$(config_get "$section" interface)
 	export QDISC=fq_codel
-	SCRIPT=/usr/lib/aqm/simple.qos
+	SCRIPT=/usr/lib/sqm/simple.qos
 	logger "Queue Setup Script: ${SCRIPT}"
-	[ "$STOP" -eq 1 ] && { /usr/lib/aqm/stop.sh; return 0; }
+	[ "$STOP" -eq 1 ] && { /usr/lib/sqm/stop.sh; return 0; }
 	[ -x "$SCRIPT" ] && $SCRIPT
 }
 

@@ -7,7 +7,7 @@
 # GPLv2
 logger "Starting simplest.qos"
 
-. /usr/lib/aqm/functions.sh
+. /usr/lib/sqm/functions.sh
 
 
 

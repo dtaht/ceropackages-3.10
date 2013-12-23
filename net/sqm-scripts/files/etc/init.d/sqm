@@ -4,7 +4,7 @@ START=50
 
 reload()
 {
-/usr/lib/aqm/run.sh
+/usr/lib/sqm/run.sh
 }
 
 restart()
@@ -19,5 +19,5 @@ reload
 
 stop()
 {
-/usr/lib/aqm/run.sh stop
+/usr/lib/sqm/run.sh stop
 }

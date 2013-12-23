@@ -16,7 +16,7 @@
 
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
-. /usr/lib/aqm/functions.sh
+. /usr/lib/sqm/functions.sh
 
 
 
