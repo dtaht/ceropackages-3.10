@@ -20,7 +20,7 @@ define Package/luci-app-sqm
   TITLE:=SQM script LuCI interface
   MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
   PKGARCH:=all
-  DEPENDS:= lua luci-lib-core sqm-scripts
+  DEPENDS:= lua luci-lib-core +sqm-scripts
   SUBMENU:=3. Applications
 endef
 
@@ -38,6 +38,8 @@ define Package/luci-app-sqm/install
 	$(INSTALL_DIR) $(1)$(LUCI_DIR)/controller $(1)$(LUCI_DIR)/model/cbi
 	$(INSTALL_DATA) ./files/sqm-controller.lua $(1)$(LUCI_DIR)/controller/sqm.lua
 	$(INSTALL_DATA) ./files/sqm-cbi.lua $(1)$(LUCI_DIR)/model/cbi/sqm.lua
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/uci-defaults-sqm $(1)/etc/uci-defaults/luci-sqm
 endef
 
 define Package/luci-app-sqm/postinst
