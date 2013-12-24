@@ -100,6 +100,15 @@ $TC filter add dev $IFACE parent 1:0 protocol ipv6 prio 6 handle 3 fw classid 1:
 
 $TC filter add dev $IFACE parent 1:0 protocol arp prio 7 handle 1 fw classid 1:11
 
+# ICMP traffic - Don't impress your friends. Deoptimize to manage ping floods
+# better instead
+
+$TC filter add dev $IFACE parent 1:0 protocol ip prio 8 \
+	 u32 match ip protocol 1 0xff flowid 1:13
+
+$TC filter add dev $IFACE parent 1:0 protocol ipv6 prio 9 \
+	 u32 match ip protocol 1 0xff flowid 1:13
+
 }
 
 ingress() {
