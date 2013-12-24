@@ -20,7 +20,7 @@ do_modules() {
 	insmod cls_fw                                          
 	insmod sch_htb                                              
 }
-                                                                                                                  
+
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
 [ -z "$UPLINK" ] && UPLINK=2302
@@ -43,7 +43,7 @@ do_modules() {
 [ -z "$iqdisc_opts" ] && iqdisc_opts=""
 [ -z "$eqdisc_opts" ] && eqdisc_opts=""
 [ -z "$TC" ] && TC=`which tc`
-#[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
+[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
 
 #logger "iqdisc opts: ${iqdisc_opts}"
@@ -54,9 +54,10 @@ do_modules() {
 
 get_htb_adsll_string() {
 	ADSLL=""
-	if [ "$LLAM" = "htb_private" ]; 
+	if [ "$LLAM" = "htb_private" -a "$LINKLAYER" != "none" ]; 
 	then
-		# HTB defaults to MTU 1600 and an implicit fixed TSIZE of 256, but HTB as of around 3.10.0 does not actually use a table in the kernel
+		# HTB defaults to MTU 1600 and an implicit fixed TSIZE of 256, but HTB as of around 3.10.0
+		# does not actually use a table in the kernel
 		ADSLL="mpu ${STAB_MPU} linklayer ${LINKLAYER} overhead ${OVERHEAD} mtu ${STAB_MTU}"
 		logger "ADSLL: ${ADSLL}"
 	fi
@@ -65,7 +66,7 @@ get_htb_adsll_string() {
 
 get_stab_string() {
 	STABSTRING=""
-	if [ "${LLAM}" = "tc_stab" ]; 
+	if [ "${LLAM}" = "tc_stab" -a "$LINKLAYER" != "none" ]; 
 	then
 		STABSTRING="stab mtu ${STAB_MTU} tsize ${STAB_TSIZE} mpu ${STAB_MPU} overhead ${OVERHEAD} linklayer ${LINKLAYER}"
 		logger "STAB: ${STABSTRING}"
@@ -164,7 +165,7 @@ get_ECN() {
 			esac
 			;;
 		*)
-		    logger "ecn value $1 not handeled"
+		    logger "ecn value $1 not handled"
 		    ;;
 	esac
 	#logger "get_ECN: $1 curECN: ${curECN} iECN: ${iECN} eECN: ${eECN}"
@@ -181,7 +182,6 @@ get_ECN() {
 # To do ECN on egress & ingress set ALLECN=1
 # To not do ECN on egress & ingress set ALLECN=0
 # to do ECN on ingress only set ALLECN=2 (default)
-
 
 qdisc_variants() {
     if [ "$AUTOECN" -eq "1" ]

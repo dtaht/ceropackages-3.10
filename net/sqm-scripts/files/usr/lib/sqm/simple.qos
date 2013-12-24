@@ -18,8 +18,6 @@
 
 . /usr/lib/sqm/functions.sh
 
-
-
 ipt_setup() {
 
 ipt -t mangle -N QOS_MARK_${IFACE}
@@ -64,17 +62,17 @@ CEIL=${UPLINK}
 PRIO_RATE=`expr $CEIL / 3` # Ceiling for prioirty
 BE_RATE=`expr $CEIL / 6`   # Min for best effort
 BK_RATE=`expr $CEIL / 6`   # Min for background
-BE_CEIL=`expr $CEIL - 64`  # A little slop at the top
+BE_CEIL=`expr $CEIL - 16`  # A little slop at the top
 
 LQ="quantum `get_mtu $IFACE`"
 
 $TC qdisc del dev $IFACE root 2> /dev/null
 $TC qdisc add dev $IFACE root handle 1: `get_stab_string` htb default 12
-$TC class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit `get_htb_adsll_string`
-$TC class add dev $IFACE parent 1:1 classid 1:10 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit prio 0 `get_htb_adsll_string`
-$TC class add dev $IFACE parent 1:1 classid 1:11 htb $LQ rate 128kbit ceil ${PRIO_RATE}kbit prio 1 `get_htb_adsll_string`
-$TC class add dev $IFACE parent 1:1 classid 1:12 htb $LQ rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 `get_htb_adsll_string`
-$TC class add dev $IFACE parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 `get_htb_adsll_string`
+$TC class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${CEIL}kibit ceil ${CEIL}kibit `get_htb_adsll_string`
+$TC class add dev $IFACE parent 1:1 classid 1:10 htb $LQ rate ${CEIL}kibit ceil ${CEIL}kibit prio 0 `get_htb_adsll_string`
+$TC class add dev $IFACE parent 1:1 classid 1:11 htb $LQ rate 128kibit ceil ${PRIO_RATE}kibit prio 1 `get_htb_adsll_string`
+$TC class add dev $IFACE parent 1:1 classid 1:12 htb $LQ rate ${BE_RATE}kibit ceil ${BE_CEIL}kibit prio 2 `get_htb_adsll_string`
+$TC class add dev $IFACE parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kibit ceil ${BE_CEIL}kibit prio 3 `get_htb_adsll_string`
 
 $TC qdisc add dev $IFACE parent 1:11 handle 110: $QDISC limit $LIMIT `get_ECN ${eECN}` `get_quantum 300` `get_flows ${PRIO_RATE}` ${eqdisc_opts}
 $TC qdisc add dev $IFACE parent 1:12 handle 120: $QDISC limit $LIMIT `get_ECN ${eECN}` `get_quantum 300` `get_flows ${BE_RATE}` ${eqdisc_opts}
@@ -110,7 +108,7 @@ CEIL=$DOWNLINK
 PRIO_RATE=`expr $CEIL / 3` # Ceiling for prioirty
 BE_RATE=`expr $CEIL / 6`   # Min for best effort
 BK_RATE=`expr $CEIL / 6`   # Min for background
-BE_CEIL=`expr $CEIL - 64`  # A little slop at the top
+BE_CEIL=`expr $CEIL - 16`  # A little slop at the top
 
 LQ="quantum `get_mtu $IFACE`"
 
@@ -119,17 +117,17 @@ $TC qdisc add dev $IFACE handle ffff: ingress
  
 $TC qdisc del dev $DEV root  2> /dev/null
 $TC qdisc add dev $DEV root handle 1: `get_stab_string` htb default 12
-$TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit `get_htb_adsll_string`
-$TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit prio 0 `get_htb_adsll_string`
-$TC class add dev $DEV parent 1:1 classid 1:11 htb $LQ rate 32kbit ceil ${PRIO_RATE}kbit prio 1 `get_htb_adsll_string`
-$TC class add dev $DEV parent 1:1 classid 1:12 htb $LQ rate ${BE_RATE}kbit ceil ${BE_CEIL}kbit prio 2 `get_htb_adsll_string`
-$TC class add dev $DEV parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kbit ceil ${BE_CEIL}kbit prio 3 `get_htb_adsll_string`
+$TC class add dev $DEV parent 1: classid 1:1 htb $LQ rate ${CEIL}kibit ceil ${CEIL}kibit `get_htb_adsll_string`
+$TC class add dev $DEV parent 1:1 classid 1:10 htb $LQ rate ${CEIL}kibit ceil ${CEIL}kibit prio 0 `get_htb_adsll_string`
+$TC class add dev $DEV parent 1:1 classid 1:11 htb $LQ rate 32kibit ceil ${PRIO_RATE}kibit prio 1 `get_htb_adsll_string`
+$TC class add dev $DEV parent 1:1 classid 1:12 htb $LQ rate ${BE_RATE}kibit ceil ${BE_CEIL}kibit prio 2 `get_htb_adsll_string`
+$TC class add dev $DEV parent 1:1 classid 1:13 htb $LQ rate ${BK_RATE}kibit ceil ${BE_CEIL}kibit prio 3 `get_htb_adsll_string`
 
 # I'd prefer to use a pre-nat filter but that causes permutation...
 
 $TC qdisc add dev $DEV parent 1:11 handle 110: $QDISC limit $LIMIT `get_ECN ${iECN}` `get_quantum 500` `get_flows ${PRIO_RATE}` ${iqdisc_opts}
 $TC qdisc add dev $DEV parent 1:12 handle 120: $QDISC limit $LIMIT `get_ECN ${iECN}` `get_quantum 1500` `get_flows ${BE_RATE}` ${iqdisc_opts}
-$TC qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit $LIMIT `get_ECN ${iECN}` `get_quantum 1500` `get_flows ${BK_RATE}` ${iqdisc_opts}
+$TC qdisc add dev $DEV parent 1:13 handle 130: $QDISC limit $LIMIT `get_ECN ${iECN}` `get_quantum 300` `get_flows ${BK_RATE}` ${iqdisc_opts}
 
 diffserv $DEV
 
