@@ -43,8 +43,10 @@ do_modules() {
 [ -z "$iqdisc_opts" ] && iqdisc_opts=""
 [ -z "$eqdisc_opts" ] && eqdisc_opts=""
 [ -z "$TC" ] && TC=`which tc`
-[ -z "$TC" ] && TC="logger tc"	# this redirects all tc calls into the log
+# [ -z "$TC" ] && TC="logger tc"# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
+[ -z "TARGET" ] && TARGET="5ms"
+[ -z "SQUASH_INGRESS" ] && SQUASH_INGRESS=1
 
 #logger "iqdisc opts: ${iqdisc_opts}"
 #logger "eqdisc opts: ${eqdisc_opts}"
@@ -127,6 +129,13 @@ get_flows() {
 		esac
 	fi
 
+}	
+
+get_target() {
+	# calculate target correctly for lower bandwidths somehow FIXME
+	case $QDISC in
+		*codel|*pie) echo target $TARGET ;;
+	esac
 }	
 
 # set quantum parameter if available for this qdisc
