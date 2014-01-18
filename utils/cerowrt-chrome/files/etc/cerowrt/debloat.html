@@ -15,11 +15,11 @@
         "end-to-end." Debloating is a "work in progress" industry wide and will
         take years. Ultimately, all buffering/queuing in operating systems needs
         to be carefully managed and
-        be <a href="http://gettys.wordpress.com/2011/07/06/rant-warning-there-is-no-single-right-answer-for-buffering-ever/">
+        be <a href="http://gettys.wordpress.com/2013/07/10/low-latency-requires-smart-queuing-traditional-aqm-is-not-enough/">
         automatically adaptive</a> to the data transfer rates. All network
         routers (and operating systems!) should be running
-        with <a href="http://en.wikipedia.org/wiki/Active_queue_management"><abbr title="Active
-        Queue Management">AQM</abbr></a> including home routers. Unfortunately,
+        with better <a href="http://datatracker.ietf.org/wg/aqm/charter/">Packet Scheduling"> and <a href="http://en.wikipedia.org/wiki/Active_queue_management"><abbr title="Active
+        Queue Management">AQM</abbr></a> including home routers (<a href="http://www.bufferbloat.net/projects/cerowrt/wiki/Smart_Queue_Management"><abbr title="Smart Queue Management">SQM</abbr></a>). Unfortunately,
         existing algorithms such
         as <a href="http://en.wikipedia.org/wiki/Random_early_detection"><abbr title="Random
         Early Detection">RED</abbr></a> are difficult to tune,
@@ -29,9 +29,9 @@
         used these techniques at all.</p>
 
     <p>
-      CeroWrt is the test platform for improved AQM algorithms. To achieve
+      CeroWrt is the test platform for improved SQM algorithms. To achieve
       ultimate latencies under load across the high bandwidth variation of
-      802.11 and broadband, new AQM algorithms need testing in addition to more
+      802.11 and broadband, new SQM algorithms need testing in addition to more
       complex changes in internal buffering; these will take time and therefore
       debloating will be a work in progress for an extended period.</p>
 
@@ -45,8 +45,8 @@
       in a particular direction, so bufferbloat in one direction <b>can</b>
       result in bad performance (poor latency) in the other direction. If you
       run Linux, you can help with debloating by working with those working on
-      the <a href="http://lwn.net/Articles/429943/">debloat-testing</a> work
-      going on on <a href="http://bufferbloat.net">bufferbloat.net</a>. On other
+      the work
+      going on at <a href="http://bufferbloat.net">bufferbloat.net</a>. On other
       operating systems, you should contact your operating system vendor and
       complain. Be gentle (but insistent), however: before 2011, bufferbloat was
       not understood to be a general problem, and it will take time to
@@ -62,7 +62,8 @@
       bandwidth shaping
       and <a href="http://en.wikipedia.org/wiki/Quality_of_service"><abbr title="Quality
       of Service">QoS</abbr></a> to avoid the consequences of bufferbloat in
-      that hop as best you can).</p>
+      that hop as best you can). We have found, however, that many QoS systems
+      are badly broken as they do not also do SQM.</p>
 
     <h2>Home Routers</h2>
     <p>
@@ -94,7 +95,7 @@
     </ol>
 
     <p>
-      We can therefore cut the buffering in the router greatly, since there are
+      We can now manage the buffering in the router better now, since there are
       never high bandwidth, high delay paths through these devices. If we've
       done this correctly, you'll never see lower bandwidth, but will see much
       better latency. Please let us know if you see any performance
@@ -106,16 +107,22 @@
       ("controlled delay") algorithm for minimizing the delay of packets in
       queues waiting to be sent. Their initial work has been validated
       theoretically as well as by implementations in CeroWrt. The algorithm, and
-      its fq_codel as implemented by Eric Dumazet has also been incorporated
+      the combination with "Flow queueing" - fq_codel - as implemented by Eric Dumazet has also been incorporated
       into recent Linux kernels, where it is can be used as the default queue
       discipline.</p>
 
     <p>
       fq_codel has nearly eliminated bufferbloat for all wired interfaces.
+    </p>
+    <p>
+
       Wireless interfaces have a more complicated queueing structure, with
       packet aggregation that can confuse the CoDel algorithms. Although CeroWrt
       dramatically improves latency for wireless interfaces, more research is
       necessary for further improvements on wireless links.</p>
+
+    <p>Cerowrt also contains an implementation of the AQM <abbr title="Pi Integral Enhanced">PIE</abbr>,
+       which is the upcoming standard in DOCSIS 3.1</p>
 
   </div>
   <div class="menu">
