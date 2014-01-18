@@ -49,6 +49,7 @@ define Package/cerowrt-chrome/install
 	$(INSTALL_DIR) $(1)/etc/lighttpd
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/etc/default
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_DIR) $(1)/etc/www
 	$(INSTALL_DIR) $(1)/etc/bgi-bin
 	$(INSTALL_DIR) $(1)/mnt/disk1/www
@@ -58,6 +59,8 @@ define Package/cerowrt-chrome/install
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/cerowrt/* $(1)/etc/cerowrt/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/www/* $(1)/etc/www/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/bgi-bin/* $(1)/etc/bgi-bin/
+	$(CP) -rp $(PKG_BUILD_DIR)/etc/make-webcerts.sh * $(1)/etc/
+	$(CP) -rp $(PKG_BUILD_DIR)/etc/uci-defaults/make-certs.sh * $(1)/etc/uci-defaults
 endef
 
 $(eval $(call BuildPackage,cerowrt-chrome))
