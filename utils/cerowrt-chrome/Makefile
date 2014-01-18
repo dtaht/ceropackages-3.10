@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cerowrt-chrome
 PKG_VERSION:=1
-PKG_RELEASE:=11
+PKG_RELEASE:=12
 #PKG_REV:=2693afcf4c08c41067ac11177a1da3a033d6c6c0
 # PKG_VERSION:=20110517
 
@@ -59,8 +59,8 @@ define Package/cerowrt-chrome/install
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/cerowrt/* $(1)/etc/cerowrt/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/www/* $(1)/etc/www/
 	$(CP) -rp $(PKG_BUILD_DIR)/etc/bgi-bin/* $(1)/etc/bgi-bin/
-	$(CP) -rp $(PKG_BUILD_DIR)/etc/make-webcerts.sh * $(1)/etc/
-	$(CP) -rp $(PKG_BUILD_DIR)/etc/uci-defaults/make-certs.sh * $(1)/etc/uci-defaults
+	$(CP) -rp $(PKG_BUILD_DIR)/etc/make-webcerts.sh $(1)/etc/
+	$(CP) -rp $(PKG_BUILD_DIR)/etc/uci-defaults/make-certs.sh $(1)/etc/uci-defaults
 endef
 
 $(eval $(call BuildPackage,cerowrt-chrome))
