@@ -14,18 +14,12 @@ ipt() {
 }
 
 do_modules() {
-	insmod sch_$QDISC                                          
-	insmod sch_ingress                                      
-	insmod act_mirred                                         
-	insmod cls_fw                                          
-	insmod sch_htb                                              
-# there is seemingly a race condition, try again
-	sleep 1
-	insmod sch_$QDISC                                          
-	insmod sch_ingress                                      
-	insmod act_mirred                                         
-	insmod cls_fw                                          
-	insmod sch_htb                                              
+	insmod act_ipt
+	insmod sch_$QDISC
+	insmod sch_ingress
+	insmod act_mirred
+	insmod cls_fw
+	insmod sch_htb
 }
 
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
