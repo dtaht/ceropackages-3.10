@@ -6,7 +6,7 @@ key=/etc/lighttpd/lighttpd.key
 cert=/etc/lighttpd/lighttpd.crt
 pem=/etc/lighttpd/lighttpd.pem
 country=US
-state=Maine
+state=California
 location=Erewhon
 commonname=gw.home.lan
 
@@ -14,8 +14,10 @@ commonname=gw.home.lan
 #HS=`hostname`
 
 #if [ "$HL" == "$HS" ]; then
+#    commonname=$HS.home.lan
 #    hosts="DNS:gw.home.lan,DNS:$HS.local,DNS:$HS"
 #else
+#    commonname=$HL
 #    hosts="DNS:gw.home.lan,DNS:$HS.local,DNS:$HS,DNS:$HL"
 #fi
 
