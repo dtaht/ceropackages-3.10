@@ -102,14 +102,37 @@ fc() {
 # FIXME: actually you need to get the underlying MTU on PPOE thing
 
 get_mtu() {
+	BW=$2
 	F=`cat /sys/class/net/$1/mtu`
 	if [ -z "$F" ]
 	then
-	echo 1500
-	else
-	echo $F
+	F=1500
 	fi
-
+	if [ $BW -gt 20000 ]
+	then
+		F=$(($F * 2))
+	fi
+	if [ $BW -gt 30000 ]
+	then
+		F=$(($F * 2))
+	fi
+	if [ $BW -gt 40000 ]
+	then
+		F=$(($F * 2))
+	fi
+	if [ $BW -gt 50000 ]
+	then
+		F=$(($F * 2))
+	fi
+	if [ $BW -gt 60000 ]
+	then
+		F=$(($F * 2))
+	fi
+	if [ $BW -gt 80000 ]
+	then
+		F=$(($F * 2))
+	fi
+	echo $F
 }
 
 # FIXME should also calculate the limit

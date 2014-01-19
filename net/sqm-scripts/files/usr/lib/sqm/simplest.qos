@@ -14,7 +14,7 @@ logger "Starting simplest.qos"
 
 egress() {
 
-LQ="quantum `get_mtu $IFACE`"
+LQ="quantum `get_mtu $IFACE ${UPLINK}`"
 
 $TC qdisc del dev $IFACE root 2>/dev/null
 $TC qdisc add dev $IFACE root handle 1: `get_stab_string` htb default 10
@@ -30,7 +30,7 @@ logger "ingress"
 $TC qdisc del dev $IFACE handle ffff: ingress 2>/dev/null
 $TC qdisc add dev $IFACE handle ffff: ingress
 
-LQ="quantum `get_mtu $IFACE`"
+LQ="quantum `get_mtu $IFACE ${UPLINK}`"
  
 $TC qdisc del dev $DEV root 2>/dev/null
 $TC qdisc add dev $DEV root handle 1: `get_stab_string` htb default 10
