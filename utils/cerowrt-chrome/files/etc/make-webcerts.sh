@@ -34,4 +34,6 @@ cat $key $cert > $pem
 #openssl req -new -newkey rsa:$bits -x509 -keyout $pem -out $pem -days $days \
 #    -nodes -subj "/C=$country/ST=$state/L=$location/CN=$commonname"
         
-/etc/init.d/lighttpd restart # can get wedged
+/etc/init.d/lighttpd stop # can get wedged
+/etc/init.d/lighttpd start # hopefully unwedged
+
