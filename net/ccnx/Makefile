@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011-2013 OpenWrt.org
+# Copyright (C) 2011-2014 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ccnx
-PKG_VERSION:=0.7.2
+PKG_VERSION:=0.8.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.ccnx.org/releases
-PKG_MD5SUM:=414c3ccaa6befa4ef849f18e7efcc275
+PKG_MD5SUM:=1aade989697e7254f4d4488d3ed9a008
 
 PKG_INSTALL:=1
 
@@ -34,7 +34,7 @@ define Package/ccnx/description
 endef
 
 MAKE_FLAGS += \
-	CPREFLAGS="$(TARGET_CPPFLAGS) -I../include -I.. -D_REENTRANT" \
+	CPREFLAGS="$(TARGET_CPPFLAGS) -I.. -D_REENTRANT" \
 	INSTALL_BASE="/usr" \
 	MORE_LDLIBS="$(TARGET_LDFLAGS)"
 
