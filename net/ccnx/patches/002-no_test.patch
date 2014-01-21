@@ -1,13 +1,14 @@
 --- a/csrc/lib/dir.mk
 +++ b/csrc/lib/dir.mk
-@@ -76,11 +76,8 @@ shlib: $(SHLIBNAME)
+@@ -140,12 +140,8 @@ shlib: $(SHLIBNAME)
  
  lib: libccn.a
  
--test: default encodedecodetest ccnbtreetest
+-test: default encodedecodetest ccnbtreetest nametreetest
 -	./encodedecodetest -o /dev/null
 -	./ccnbtreetest
 -	./ccnbtreetest - < q.dat
+-	./nametreetest - < q.dat
 -	$(RM) -R _bt_*
 +test:
 +	@echo "Sorry, can't run tests when cross compiling"

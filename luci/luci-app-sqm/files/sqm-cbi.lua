@@ -18,7 +18,7 @@ local net = require "luci.model.network".init()
 local ifaces = net:get_interfaces()
 local path = "/usr/lib/sqm"
 
-m = Map("sqm", translate("Active Queue Management"),
+m = Map("sqm", translate("Smart Queue Management"),
 	translate("With <abbr title=\"Smart Queue Management\">SQM</abbr> you " ..
 		"can enable traffic shaping, better mixing (Fair Queueing)," ..
 		" active queue length management (AQM) " ..
