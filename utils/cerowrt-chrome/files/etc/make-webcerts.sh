@@ -1,6 +1,6 @@
 #!/bin/sh
 
-days=3650
+days=21900
 bits=1024
 pem=/etc/lighttpd/lighttpd.pem
 country=US
@@ -14,8 +14,14 @@ IP=`ip addr show dev se00 | awk '/inet / {sub(/\/.*/, "", $2); print $2}'`
 if [ "$HL" == "$HS" ]; then
     HL="$HS.home.lan"
 fi
+
 commonname=$HL
+if [ -n "$IP" ]
+then
 export SAN="DNS:gw.home.lan, DNS:gw, DNS:$HS.local, DNS:$HS, DNS:$HL, IP:$IP"
+else
+export SAN="DNS:gw.home.lan, DNS:gw, DNS:$HS.local, DNS:$HS, DNS:$HL"
+fi
 
 sed '/req_extensions = v3_req/s/^# *//; /SAN/d; /^HOME/i\
 SAN="email:support@cerowrt.org"
