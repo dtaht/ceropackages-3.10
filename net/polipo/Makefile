@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=polipo
-PKG_VERSION:=1.0.5.2
+PKG_VERSION:=1.0.5.3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=git://github.com/jech/polipo.git
-PKG_REV:=ec4d6385fa910cfd50ec099efee25d9e1d4eec23
+PKG_SOURCE_URL:=git://git.wifi.pps.univ-paris-diderot.fr/polipo
+PKG_REV:=2e7967e0814bd21e4d262602dd7cc8a6b7203eaf
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
 
