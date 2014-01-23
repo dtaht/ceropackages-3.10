@@ -8,6 +8,7 @@ PROG=/usr/sbin/pimd
 start_service() {
 	procd_open_instance
 	procd_set_param command "$PROG" -f
+	procd_set_param respawn
 	procd_close_instance	
 }
 
