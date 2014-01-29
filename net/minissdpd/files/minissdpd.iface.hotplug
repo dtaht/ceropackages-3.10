@@ -1,9 +1,0 @@
-#!/bin/sh
-
-/etc/init.d/minissdpd enabled && {
-	local intif="$(uci_get minissdpd config.internal_iface)"
-        [ "$ACTION" = "ifup" ] && [ "$INTERFACE" = "$intif" ] && {
-                logger -t minissdpd-hotplug "ifup for interface '$intif', restart minissdpd"
-                /etc/init.d/minissdpd restart
-        }
-}
