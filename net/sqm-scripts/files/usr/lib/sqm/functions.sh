@@ -173,7 +173,7 @@ get_quantum() {
 }
 
 
-get_ECN() {
+get_ecn() {
     CURECN=$1
     #logger CURECN: $CURECN
 	case ${CURECN} in
