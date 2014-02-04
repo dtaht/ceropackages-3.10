@@ -39,10 +39,10 @@ do_modules() {
 [ -z "$LIMIT" ] && LIMIT=1000
 #[ -z "$AUTOECN" ] && AUTOECN=1
 #[ -z "$ALLECN" ] && ALLECN=2
-[ -z "$iECN" ] && iECN="ECN"
-[ -z "$eECN" ] && eECN="NOECN"
-[ -z "$iqdisc_opts" ] && iqdisc_opts=""
-[ -z "$eqdisc_opts" ] && eqdisc_opts=""
+[ -z "$IECN" ] && IECN="ECN"
+[ -z "$EECN" ] && EECN="NOECN"
+[ -z "$IQDISC_OPTS" ] && IQDISC_OPTS=""
+[ -z "$EQDISC_OPTS" ] && EQDISC_OPTS=""
 [ -z "$TC" ] && TC=`which tc`
 # [ -z "$TC" ] && TC="logger tc"# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
@@ -173,27 +173,27 @@ get_quantum() {
 }
 
 
-get_ECN() {
-    curECN=$1
-    #logger curECN: $curECN
-	case ${curECN} in
+get_ecn() {
+    CURECN=$1
+    #logger CURECN: $CURECN
+	case ${CURECN} in
 		ECN)
 			case $QDISC in
 				*codel|*pie|*red)
-				    curECN=ecn 
+				    CURECN=ecn 
 				    ;;
 				*) 
-				    curECN="" 
+				    CURECN="" 
 				    ;;
 			esac
 			;;
 		NOECN)
 			case $QDISC in
 				*codel|*pie|*red) 
-				    curECN=noecn 
+				    CURECN=noecn 
 				    ;;
 				*) 
-				    curECN="" 
+				    CURECN="" 
 				    ;;
 			esac
 			;;
@@ -201,8 +201,8 @@ get_ECN() {
 		    logger "ecn value $1 not handled"
 		    ;;
 	esac
-	#logger "get_ECN: $1 curECN: ${curECN} iECN: ${iECN} eECN: ${eECN}"
-	echo ${curECN}
+	#logger "get_ECN: $1 CURECN: ${CURECN} IECN: ${IECN} EECN: ${EECN}"
+	echo ${CURECN}
 
 }
 
