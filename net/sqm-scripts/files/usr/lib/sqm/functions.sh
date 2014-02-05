@@ -173,20 +173,6 @@ get_quantum() {
 
 }
 
-
-# only show limits to qdiscs that can handle them...
-get_limit() {
-    CURLIMIT=$1
-    case $QDISC in
-	*codel|*pie|pfifo_fast|sfq|*fifo) echo limit ${CURLIMIT} 
-	    ;;
-	*) logger "${QDISC} does not support a limit"
-	    ;;
-    esac
-    #logger "get_limit: $1 CURLIMIT: ${CURLIMIT}"
-}
-
-
 get_ecn() {
     CURECN=$1
     #logger CURECN: $CURECN
