@@ -36,7 +36,8 @@ do_modules() {
 [ -z "$STAB_MPU" ] && STAB_MPU=0
 [ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
-[ -z "$LIMIT" ] && LIMIT=1000
+[ -z "$ILIMIT" ] && ILIMIT=1000
+[ -z "$ELIMIT" ] && ELIMIT=1000
 #[ -z "$AUTOECN" ] && AUTOECN=1
 #[ -z "$ALLECN" ] && ALLECN=2
 [ -z "$IECN" ] && IECN="ECN"
@@ -170,6 +171,19 @@ get_quantum() {
 	*) ;;
     esac
 
+}
+
+
+# only show limits to qdiscs that can handle them...
+get_limit() {
+    CURLIMIT=$1
+    case $QDISC in
+	*codel|*pie|pfifo_fast|sfq|*fifo) echo limit ${CURLIMIT} 
+	    ;;
+	*) logger "${QDISC} does not support a limit"
+	    ;;
+    esac
+    #logger "get_limit: $1 CURLIMIT: ${CURLIMIT}"
 }
 
 

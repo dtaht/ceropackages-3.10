@@ -104,6 +104,21 @@ ad2.default = false
 ad2.rmempty = true
 ad2:depends("qdisc_advanced", "1")
 
+ilim = s:taboption("tab_qdisc", Value, "ilimit", translate("Hard limit on ingress queues. Default: 1000"))
+ilim.default = 1000
+ilim.isnumber = true
+ilim.datatype = "and(uinteger,min(0))"
+ilim.rmempty = true
+ilim:depends("qdisc_really_really_advanced", "1")
+
+elim = s:taboption("tab_qdisc", Value, "elimit", translate("Hard limit on egress queues. Default: 1000"))
+elim.default = 1000
+elim.isnumber = true
+elim.datatype = "and(uinteger,min(0))"
+elim.rmempty = true
+elim:depends("qdisc_really_really_advanced", "1")
+
+
 iqdisc_opts = s:taboption("tab_qdisc", Value, "iqdisc_opts", translate("Advanced option string to pass to the ingress queueing disciplines; no error checking, use very carefully."))
 iqdisc_opts.rmempty = true
 iqdisc_opts:depends("qdisc_really_really_advanced", "1")
