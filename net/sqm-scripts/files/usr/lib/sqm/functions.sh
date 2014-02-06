@@ -36,7 +36,8 @@ do_modules() {
 [ -z "$STAB_MPU" ] && STAB_MPU=0
 [ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
 [ -z "$AUTOFLOW" ] && AUTOFLOW=0
-[ -z "$LIMIT" ] && LIMIT=1000
+[ -z "$ILIMIT" ] && ILIMIT=1000
+[ -z "$ELIMIT" ] && ELIMIT=1000
 #[ -z "$AUTOECN" ] && AUTOECN=1
 #[ -z "$ALLECN" ] && ALLECN=2
 [ -z "$IECN" ] && IECN="ECN"
@@ -171,7 +172,6 @@ get_quantum() {
     esac
 
 }
-
 
 get_ecn() {
     CURECN=$1
