@@ -29,7 +29,7 @@ s = m:section(TypedSection, "queue", translate("Queues"))
 s:tab("tab_basic", translate("Basic Settings"))
 s:tab("tab_qdisc", translate("Queue Discipline"))
 s:tab("tab_linklayer", translate("Link Layer Adaptation"))
-s.addremove = false
+s.addremove = false -- set to true to allow adding SQM instances in the GUI
 s.anonymous = true
 
 -- BASIC
@@ -104,15 +104,15 @@ ad2.default = false
 ad2.rmempty = true
 ad2:depends("qdisc_advanced", "1")
 
-ilim = s:taboption("tab_qdisc", Value, "ilimit", translate("Hard limit on ingress queues. Default: 1000"))
-ilim.default = 1000
+ilim = s:taboption("tab_qdisc", Value, "ilimit", translate("Hard limit on ingress queues; leave empty for default."))
+-- ilim.default = 1000
 ilim.isnumber = true
 ilim.datatype = "and(uinteger,min(0))"
 ilim.rmempty = true
 ilim:depends("qdisc_really_really_advanced", "1")
 
-elim = s:taboption("tab_qdisc", Value, "elimit", translate("Hard limit on egress queues. Default: 1000"))
-elim.default = 1000
+elim = s:taboption("tab_qdisc", Value, "elimit", translate("Hard limit on egress queues; leave empty for default."))
+-- elim.default = 1000
 elim.isnumber = true
 elim.datatype = "and(uinteger,min(0))"
 elim.rmempty = true
