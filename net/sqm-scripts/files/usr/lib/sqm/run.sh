@@ -23,6 +23,8 @@ run_simple_qos() {
 	export STAB_MPU=$(config_get "$section" tcMPU)
 	export ILIMIT=$(config_get "$section" ilimit)
 	export ELIMIT=$(config_get "$section" elimit)
+	export ITARGET=$(config_get "$section" itarget)
+	export ETARGET=$(config_get "$section" etarget)
 	export IECN=$(config_get "$section" ingress_ecn)
 	export EECN=$(config_get "$section" egress_ecn)
 	export IQDISC_OPTS=$(config_get "$section" iqdisc_opts)
