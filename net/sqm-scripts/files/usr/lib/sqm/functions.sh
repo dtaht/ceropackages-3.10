@@ -39,6 +39,8 @@ do_modules() {
 [ -z "$LIMIT" ] && LIMIT=1001	# sane global default for *LIMIT for fq_codel on a small memory device
 [ -z "$ILIMIT" ] && ILIMIT=
 [ -z "$ELIMIT" ] && ELIMIT=
+[ -z "$ITARGET" ] && ITARGET=
+[ -z "$ETARGET" ] && ETARGET=
 #[ -z "$AUTOECN" ] && AUTOECN=1
 #[ -z "$ALLECN" ] && ALLECN=2
 [ -z "$IECN" ] && IECN="ECN"
@@ -154,18 +156,39 @@ get_flows() {
 			fq_codel|*fq_codel|sfq) echo flows $FLOWS ;;
 		esac
 	fi
-
 }	
 
+# set the target parameter, also try to only take well formed inputs
 get_target() {
+	CUR_TARGET=$1
+	#logger "cur_target: $CUR_TARGET"
+	CUR_TARGET_STRING=
+	# either e.g. 100ms or auto
+	CUR_TARGET_VALUE=$( echo ${CUR_TARGET} | grep -o -e \^'[[:digit:]]\+' )
+	CUR_TARGET_UNIT=$( echo ${CUR_TARGET} | grep -o -e '[[:alpha:]]\+'\$ )
 	# calculate target correctly for lower bandwidths somehow FIXME
 	case $QDISC in
-		*codel|*pie) echo target $TARGET ;;
+		*codel|*pie) 
+			if [ ! -z "${CUR_TARGET_VALUE}" -a ! -z "${CUR_TARGET_UNIT}" ];
+    			then
+    			    case ${CUR_TARGET_UNIT} in
+    				    # permissible units taken from: tc_util.c get_time()
+				    s|sec|secs|ms|msec|msecs|us|usec|usecs) 
+					CUR_TARGET_STRING="target ${CUR_TARGET_VALUE}${CUR_TARGET_UNIT}" 
+					;;
+			    esac
+			fi
+			case ${CUR_TARGET_UNIT} in
+			    # not yet wired up
+			    auto|Auto|AUTO) CUR_TARGET_STRING= ; logger "autotarget: auto" ;;
+			esac
+		    ;;
 	esac
+	logger "target: ${CUR_TARGET_STRING}"
+	echo $CUR_TARGET_STRING
 }	
 
 # set quantum parameter if available for this qdisc
-
 get_quantum() {
     case $QDISC in
 	*fq_codel|fq_pie|drr) echo quantum $1 ;;
