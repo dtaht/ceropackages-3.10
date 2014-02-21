@@ -113,10 +113,21 @@ ilim:depends("qdisc_really_really_advanced", "1")
 
 elim = s:taboption("tab_qdisc", Value, "elimit", translate("Hard limit on egress queues; leave empty for default."))
 -- elim.default = 1000
-elim.isnumber = true
 elim.datatype = "and(uinteger,min(0))"
 elim.rmempty = true
 elim:depends("qdisc_really_really_advanced", "1")
+
+
+itarg = s:taboption("tab_qdisc", Value, "itarget", translate("Latency target for ingress queues, e.g 5ms [units: s, ms, or  us]; leave empty for default."))
+itarg.datatype = "string"
+itarg.rmempty = true
+itarg:depends("qdisc_really_really_advanced", "1")
+
+etarg = s:taboption("tab_qdisc", Value, "etarget", translate("Latency target for egress queues, e.g. 5ms [units: s, ms, or  us]; leave empty for default."))
+etarg.datatype = "string"
+etarg.rmempty = true
+etarg:depends("qdisc_really_really_advanced", "1")
+
 
 
 iqdisc_opts = s:taboption("tab_qdisc", Value, "iqdisc_opts", translate("Advanced option string to pass to the ingress queueing disciplines; no error checking, use very carefully."))
