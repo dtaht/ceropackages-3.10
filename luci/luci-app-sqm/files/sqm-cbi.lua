@@ -118,12 +118,12 @@ elim.rmempty = true
 elim:depends("qdisc_really_really_advanced", "1")
 
 
-itarg = s:taboption("tab_qdisc", Value, "itarget", translate("Latency target for ingress queues, e.g 5ms [units: s, ms, or  us]; leave empty for default."))
+itarg = s:taboption("tab_qdisc", Value, "itarget", translate("Latency target for ingress, e.g 5ms [units: s, ms, or  us]; leave empty for default, or auto for automatic selection."))
 itarg.datatype = "string"
 itarg.rmempty = true
 itarg:depends("qdisc_really_really_advanced", "1")
 
-etarg = s:taboption("tab_qdisc", Value, "etarget", translate("Latency target for egress queues, e.g. 5ms [units: s, ms, or  us]; leave empty for default."))
+etarg = s:taboption("tab_qdisc", Value, "etarget", translate("Latency target for egress, e.g. 5ms [units: s, ms, or  us]; leave empty for default, or auto for automatic selection.."))
 etarg.datatype = "string"
 etarg.rmempty = true
 etarg:depends("qdisc_really_really_advanced", "1")
