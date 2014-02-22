@@ -41,8 +41,6 @@ do_modules() {
 [ -z "$ELIMIT" ] && ELIMIT=
 [ -z "$ITARGET" ] && ITARGET=
 [ -z "$ETARGET" ] && ETARGET=
-#[ -z "$AUTOECN" ] && AUTOECN=1
-#[ -z "$ALLECN" ] && ALLECN=2
 [ -z "$IECN" ] && IECN="ECN"
 [ -z "$EECN" ] && EECN="NOECN"
 [ -z "$IQDISC_OPTS" ] && IQDISC_OPTS=""
@@ -308,37 +306,6 @@ get_ecn() {
 	echo ${CURECN}
 
 }
-
-
-#ECN="ecn"
-#NOECN="noecn"
-
-# ECN is somewhat useful but it helps to have a way
-# to turn it on or off. 
-# To do ECN on egress & ingress set ALLECN=1
-# To not do ECN on egress & ingress set ALLECN=0
-# to do ECN on ingress only set ALLECN=2 (default)
-
-qdisc_variants() {
-    if [ "$AUTOECN" -eq "1" ]
-    then
-    case $QDISC in
-	*codel|*pie|*red) ECN=ecn; NOECN=noecn ;;
-	*) ECN=""; NOECN="" ;;
-    esac
-    if [ "$ALLECN" -eq "1" ]
-    then
-        NOECN=$ECN
-    fi
-    if [ "$ALLECN" -eq "0" ]
-    then
-        ECN=$NOECN
-    fi
-    fi
-
-}
-
-qdisc_variants
 
 # This could be a complete diffserv implementation
 
