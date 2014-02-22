@@ -200,9 +200,12 @@ get_target() {
 			        fi
 			    ;;
 			esac
-			if [ -z "${CUR_TARGET_VALUE}" -o -z "${UNIT_VALID}" ];
-			then 
-			    [ -z "$AUTO_TARGET" ] && logger "${CUR_TARGET} is not a well formed tc target specifier; e.g.: 5ms (or s, us), or the string auto."
+			if [ ! -z "${CUR_TARGET}" ];
+			    then
+			    if [ -z "${CUR_TARGET_VALUE}" -o -z "${UNIT_VALID}" ];
+			    then 
+				[ -z "$AUTO_TARGET" ] && logger "${CUR_TARGET} is not a well formed tc target specifier; e.g.: 5ms (or s, us), or the string auto."
+			    fi
 			fi
 		    ;;
 	esac
