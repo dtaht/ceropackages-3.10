@@ -2,9 +2,9 @@
 
 . /lib/functions.sh
 
-STOP=0
-
-[ "$1" == "stop" ] && STOP=1
+STOP=$1
+ACTIVE_STATE_FILE_DIR="/var/run/SQM"
+mkdir -p ${ACTIVE_STATE_FILE_DIR}
 
 config_load sqm
 
@@ -12,7 +12,21 @@ IFB_NUM=0
 
 run_simple_qos() {
 	local section="$1"
-	[ $(config_get "$section" enabled) == 1 ] || return 0
+	export IFACE=$(config_get "$section" interface)
+	ACTIVE_STATE_FILE_FQN="${ACTIVE_STATE_FILE_DIR}/SQM_active_on_${IFACE}"	# this marks interfaces as active with SQM
+	[ -f "${ACTIVE_STATE_FILE_FQN}" ] && logger "${ACTIVE_STATE_FILE_FQN}"
+
+
+	if [ $(config_get "$section" enabled) -ne 1 ];
+	then
+	    if [ -f "${ACTIVE_STATE_FILE_FQN}" ];
+	    then
+		STOP="stop"	# it seems the user just de-selected enable, so stop the active SQM
+	    else
+		return 0	# since SQM is not active on the current interface nothing to do here
+	    fi
+	fi
+
 	export UPLINK=$(config_get "$section" upload)
 	export DOWNLINK=$(config_get "$section" download)
 	export LLAM=$(config_get "$section" linklayer_adaptation_mechanism)
@@ -31,15 +45,23 @@ run_simple_qos() {
 	export EQDISC_OPTS=$(config_get "$section" eqdisc_opts)
 	export TARGET=$(config_get "$section" target)
 	export SQUASH_INGRESS=$(config_get "$section" squash_ingress)
+
 	export DEV="ifb${IFB_NUM}"
 	IFB_NUM=$(expr $IFB_NUM + 1)
-	export IFACE=$(config_get "$section" interface)
+
 	export QDISC=$(config_get "$section" qdisc)
 	export SCRIPT=/usr/lib/sqm/$(config_get "$section" script)
-	
+
+	if [ "$STOP" == "stop" ];
+	then 
+	     /usr/lib/sqm/stop.sh
+	     [ -f ${ACTIVE_STATE_FILE_FQN} ] && rm ${ACTIVE_STATE_FILE_FQN}	# conditional to avoid errors ACTIVE_STATE_FILE_FQN does not exist anymore
+	     $(config_set "$section" enabled 0)	# this does not save to the config file only to the loaded memory representation
+	     logger "SQM qdiscs on ${IFACE} removed"
+	     return 0
+	fi
 	logger "Queue Setup Script: ${SCRIPT}"
-	[ "$STOP" -eq 1 ] && { /usr/lib/sqm/stop.sh; return 0; }
-	[ -x "$SCRIPT" ] && $SCRIPT
+	[ -x "$SCRIPT" ] && { $SCRIPT ; touch ${ACTIVE_STATE_FILE_FQN}; }
 }
 
 config_foreach run_simple_qos
