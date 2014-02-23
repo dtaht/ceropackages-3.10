@@ -21,7 +21,7 @@ run_simple_qos() {
 	then
 	    if [ -f "${ACTIVE_STATE_FILE_FQN}" ];
 	    then
-		STOP="stop"	# it seems the user just de-selected enable, so stop the active SQM
+		local SECTION_STOP="stop"	# it seems the user just de-selected enable, so stop the active SQM
 	    else
 		return 0	# since SQM is not active on the current interface nothing to do here
 	    fi
@@ -52,7 +52,7 @@ run_simple_qos() {
 	export QDISC=$(config_get "$section" qdisc)
 	export SCRIPT=/usr/lib/sqm/$(config_get "$section" script)
 
-	if [ "$STOP" == "stop" ];
+	if [ "$STOP" == "stop" -o "$SECTION_STOP" == "stop" ];
 	then 
 	     /usr/lib/sqm/stop.sh
 	     [ -f ${ACTIVE_STATE_FILE_FQN} ] && rm ${ACTIVE_STATE_FILE_FQN}	# conditional to avoid errors ACTIVE_STATE_FILE_FQN does not exist anymore
