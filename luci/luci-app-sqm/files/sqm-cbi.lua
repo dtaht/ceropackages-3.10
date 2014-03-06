@@ -141,7 +141,7 @@ eqdisc_opts:depends("qdisc_really_really_advanced", "1")
 -- LINKLAYER
 ll = s:taboption("tab_linklayer", ListValue, "linklayer", translate("Which link layer to account for:"))
 ll:value("none", "none ("..translate("default")..")")
-ll:value("ethernet", "Ethernet: select for e.g. VDSL2.")
+ll:value("ethernet", "Ethernet with overhead: select for e.g. VDSL2.")
 ll:value("atm", "ATM: select for e.g. ADSL1, ADSL2, ADSL2+.")
 -- ll:value("adsl")	-- reduce the options
 ll.default = "none"
