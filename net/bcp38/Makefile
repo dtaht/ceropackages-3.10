@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bcp38
-PKG_VERSION:=1
-PKG_RELEASE:=1
+PKG_VERSION:=2
+PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -31,11 +31,33 @@ define Package/bcp38/conffiles
 /etc/config/bcp38
 endef
 
+define Build/Prepare
+endef
+
+define Build/Configure
+endef
+
+define Build/Compile
+endef
+
 define Package/bcp38/install
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/bcp38.config $(1)/etc/config/bcp38
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/bcp38.init $(1)/etc/init.d/bcp38
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/bcp38.config $(1)/etc/config/bcp38
+	$(INSTALL_DIR) $(1)/usr/lib/bcp38
+	$(INSTALL_BIN) ./files/run.sh $(1)/usr/lib/bcp38/run.sh
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/bcp38.defaults $(1)/etc/uci-defaults/bcp38
+endef
+
+define Package/bcp38/postinst
+#!/bin/sh
+[ -x /etc/uci-defaults/bcp38 ] && /etc/uci-defaults/bcp38
+endef
+
+define Package/bcp38/postrm
+#!/bin/sh
+uci delete firewall.bcp38
+uci commit
 endef
 
 $(eval $(call BuildPackage,bcp38))
