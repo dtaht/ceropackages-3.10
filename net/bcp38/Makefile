@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bcp38
-PKG_VERSION:=2
-PKG_RELEASE:=2
+PKG_VERSION:=4
+PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -41,8 +41,8 @@ define Build/Compile
 endef
 
 define Package/bcp38/install
-#	$(INSTALL_DIR) $(1)/etc/config
-#	$(INSTALL_CONF) ./files/bcp38.config $(1)/etc/config/bcp38
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/bcp38.config $(1)/etc/config/bcp38
 	$(INSTALL_DIR) $(1)/usr/lib/bcp38
 	$(INSTALL_BIN) ./files/run.sh $(1)/usr/lib/bcp38/run.sh
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
