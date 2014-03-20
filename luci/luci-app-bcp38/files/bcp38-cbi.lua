@@ -13,10 +13,8 @@ $Id$
 ]]--
 
 local wa = require "luci.tools.webadmin"
-local fs = require "nixio.fs"
 local net = require "luci.model.network".init()
 local ifaces = net:get_interfaces()
-local path = "/usr/lib/sqm"
 
 m = Map("bcp38", translate("BCP38"),
 	translate("This function blocks packets with private address destinations " ..
@@ -29,6 +27,21 @@ s.anonymous = true
 e = s:option(Flag, "enabled", translate("Enable"))
 e.rmempty = false
 
+a = s:option(Flag, "detect_upstream", translate("Auto-detect upstream IP"),
+				translate("Attempt to automatically detect if the upstream IP " ..
+					"will be blocked by the configuration, and add an exception if it will. " ..
+					"If this does not work correctly, you can add exceptions manually below."))
+a.rmempty = false
+
+n = s:option(ListValue, "interface", translate("Interface name"), translate("Interface to apply the blocking to " ..
+							"(should be the upstream WAN interface)."))
+for _, iface in ipairs(ifaces) do
+     if iface:is_up() then
+	n:value(iface:name())
+     end
+end
+n.rmempty = false
+
 ma = s:option(DynamicList, "match",
 	translate("Blocked IP ranges"))
 
@@ -36,7 +49,8 @@ ma.datatype = "ip4addr"
 
 nm = s:option(DynamicList, "nomatch",
 	translate("Allowed IP ranges"), translate("Takes precedence over blocked ranges. "..
-						  "Use to whitelist your upstream network if you're behind a double NAT."))
+						  "Use to whitelist your upstream network if you're behind a double NAT " ..
+						  "and the auto-detection doesn't work."))
 
 nm.datatype = "ip4addr"
 

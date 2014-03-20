@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bcp38
-PKG_VERSION:=1
+PKG_VERSION:=2
 PKG_RELEASE:=1
 LUCI_DIR:=/usr/lib/lua/luci
 
@@ -44,21 +44,13 @@ endef
 
 define Package/luci-app-bcp38/postinst
 #!/bin/sh
-which uci > /dev/null || exit 0
-uci -q get ucitrack.@bcp38[0] > /dev/null || {
-  uci add ucitrack bcp38 > /dev/null
-  uci add_list ucitrack.@bcp38[0].affects=firewall
-  uci commit
-}
+[ -x /etc/uci-defaults/luci-bcp38 ] && /etc/uci-defaults/luci-bcp38
 endef
 
 define Package/luci-app-bcp38/postrm
 #!/bin/sh
-which uci > /dev/null || exit 0
-uci -q get ucitrack.@bcp38[0] > /dev/null && {
-  uci delete ucitrack.@bcp38[0]
-  uci commit
-}
+uci delete ucitrack.@bcp38[0]
+uci commit
 endef
 
 $(eval $(call BuildPackage,luci-app-bcp38))
