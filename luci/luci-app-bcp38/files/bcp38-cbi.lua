@@ -1,7 +1,7 @@
 --[[
 LuCI - Lua Configuration Interface
 
-Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2014 Toke Høiland-Jørgensen <toke@toke.dk>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ local ifaces = net:get_interfaces()
 m = Map("bcp38", translate("BCP38"),
 	translate("This function blocks packets with private address destinations " ..
 		"from going out onto the internet as per " ..
-		"<abbr title=\"Best Current Practice\">BCP</abbr> 38."))
+		"<a href=\"http://tools.ietf.org/html/bcp38\">BCP 38</a>."))
 
 s = m:section(TypedSection, "bcp38", translate("BCP38 config"))
 s.anonymous = true
