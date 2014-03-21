@@ -44,7 +44,7 @@ endef
 
 define Package/luci-app-bcp38/postinst
 #!/bin/sh
-[ -x /etc/uci-defaults/luci-bcp38 ] && /etc/uci-defaults/luci-bcp38
+[ -x /etc/uci-defaults/luci-bcp38 ] && /etc/uci-defaults/luci-bcp38 || exit 0
 endef
 
 define Package/luci-app-bcp38/postrm

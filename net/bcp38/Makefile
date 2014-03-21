@@ -51,7 +51,7 @@ endef
 
 define Package/bcp38/postinst
 #!/bin/sh
-[ -x /etc/uci-defaults/bcp38 ] && /etc/uci-defaults/bcp38
+[ -x /etc/uci-defaults/bcp38 ] && /etc/uci-defaults/bcp38 || exit 0
 endef
 
 define Package/bcp38/postrm
