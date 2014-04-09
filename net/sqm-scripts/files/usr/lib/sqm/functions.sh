@@ -46,7 +46,7 @@ do_modules() {
 [ -z "$SQUASH_DSCP" ] && SQUASH_DSCP="1"
 [ -z "$IQDISC_OPTS" ] && IQDISC_OPTS=""
 [ -z "$EQDISC_OPTS" ] && EQDISC_OPTS=""
-[ -z "$TC" ] && TC=`echo tc`
+[ -z "$TC" ] && TC=`which tc`
 #[ -z "$TC" ] && TC="logger tc"# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
 [ -z "TARGET" ] && TARGET="5ms"
