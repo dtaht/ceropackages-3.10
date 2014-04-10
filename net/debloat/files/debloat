@@ -1974,7 +1974,7 @@ ECALLBACKS = { ["qfq"] = ethernet_qfq,
 local function wireless(model)
    print(model)
    if WCALLBACKS[model] ~= nil then
-      wireless_qlen()
+      -- wireless_qlen()
       return WCALLBACKS[model]() 
    else
       usage("AQM model not found")
