@@ -1,7 +1,7 @@
 #!/bin/sh
 
 days=21900
-bits=1024
+bits=2048
 pem=/etc/lighttpd/lighttpd.pem
 country=US
 state=California
@@ -11,8 +11,23 @@ HL=`uname -n`
 HS=`hostname`
 IP=`ip addr show dev se00 | awk '/inet / {sub(/\/.*/, "", $2); print $2}'`
 
-if [ "$HL" == "$HS" ]; then
+if [ "$HS" = "(none)" ]
+then
+HS=cerowrt
+fi
+
+if [ "$HL" = "(none)" ]
+then
+HL=cerowrt
+fi
+
+DOTS=`echo $HL | cut -f2 -d.`
+
+if [ -z $DOTS ]
+then
+if [ "$HL" = "$HS" ]; then
     HL="$HS.home.lan"
+fi
 fi
 
 commonname=$HL
