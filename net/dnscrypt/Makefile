@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnscrypt-proxy
 PKG_VERSION:=1.3.3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://download.dnscrypt.org/dnscrypt-proxy \
@@ -63,15 +63,15 @@ MAKE_FLAGS += \
 define Package/dnscrypt-proxy/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(CP) $(PKG_INSTALL_DIR)/usr/sbin/dnscrypt-proxy $(1)/usr/sbin/
-#	$(INSTALL_DIR) $(1)/etc/init.d
-#	$(INSTALL_BIN) ./files/dnscrypt-proxy.init $(1)/etc/init.d/dnscrypt-proxy
-#	$(INSTALL_DIR) $(1)/etc/config
-#	$(INSTALL_CONF) ./files/dnscrypt-proxy.config $(1)/etc/config/dnscrypt-proxy
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/dnscrypt-proxy.init $(1)/etc/init.d/dnscrypt-proxy
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/dnscrypt-proxy.config $(1)/etc/config/dnscrypt-proxy
 endef
 
-#define Package/dnscrypt-proxy/conffiles
-#/etc/config/dnscrypt-proxy
-#endef
+define Package/dnscrypt-proxy/conffiles
+/etc/config/dnscrypt-proxy
+endef
 
 define Package/hostip/install
 	$(INSTALL_DIR) $(1)/usr/bin
