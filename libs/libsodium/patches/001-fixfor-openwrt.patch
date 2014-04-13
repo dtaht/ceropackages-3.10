@@ -1,0 +1,14 @@
+--- a/src/libsodium/sodium/core.c
++++ b/src/libsodium/sodium/core.c
+@@ -11,9 +11,11 @@ sodium_init(void)
+     if (initialized != 0) {
+         return 1;
+     }
++#ifdef HAVE_FENV_H
+     if (crypto_onetimeauth_pick_best_implementation() == NULL) {
+         return -1;
+     }
++#endif
+     randombytes_stir();
+     initialized = 1;
+ 
