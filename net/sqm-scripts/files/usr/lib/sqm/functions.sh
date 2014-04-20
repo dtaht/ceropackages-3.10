@@ -42,19 +42,24 @@ get_lowest_unused_ifb() {
     logger "Currently allowed IFBs: ${CUR_ALLOWED_IFBS}"
     cd ${here}
     # this is the sorted list of the active ifbs
+    # note for 3.10.32 unused and even down IFBs linger on in the tc output, so take $CUR_UP_IFBS instead
+    # a better test might be to check for each allowed IFB whether it is in use
+    # but the only way I figured out doing this means interating over all interfaces and that sounds costly
+    # so instead we rely on stop.sh actually calling ifconfig ${LAST_USED_IFB} down
     CUR_USED_IFBS=$( tc -d qdisc | grep -o -e ifb'[[:digit:]]\+' | sort -u)
     logger "Currently used IFBs: ${CUR_USED_IFBS}"
     # now find the lowest index not in the sorted list
     local CUR_IDX=0
     while [ -z "$LOWEST_FREE_IFB" ]
     do
-        TMP=$( echo "${CUR_USED_IFBS}" | grep -o -e ifb${CUR_IDX} )
+        #TMP=$( echo "${CUR_USED_IFBS}" | grep -o -e ifb${CUR_IDX} )
+        TMP=$( echo "${CUR_UP_IFBS}" | grep -o -e ifb${CUR_IDX} )
         [ -z "$TMP" ] && LOWEST_FREE_IFB="ifb"${CUR_IDX}
         CUR_IDX=$(( $CUR_IDX + 1 ))
     done
     # check whether the number is in the allowed range
     LOWEST_FREE_IFB=$( echo "${CUR_ALLOWED_IFBS}" | grep -o -e ${LOWEST_FREE_IFB} )
-    [ -z "${LOWEST_FREE_IFB}" ] && logger "The IFB candidate ifb${CUR_IDX} is not in the range of allowed IFBs, bailing out..."
+    [ -z "${LOWEST_FREE_IFB}" ] && logger "The IFB candidate ifb$(( ${CUR_IDX} - 1 )) is not in the range of allowed IFBs, bailing out..."
     logger "selected ifb index: ${LOWEST_FREE_IFB}"
     echo ${LOWEST_FREE_IFB}
 }
