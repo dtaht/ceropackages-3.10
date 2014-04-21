@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-sqm
-PKG_VERSION:=2
+PKG_VERSION:=3
 PKG_RELEASE:=1
 LUCI_DIR:=/usr/lib/lua/luci
 
