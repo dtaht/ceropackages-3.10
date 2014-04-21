@@ -22,11 +22,67 @@ do_modules() {
 	insmod sch_htb
 }
 
+# find the ifb device associated with a specific interface, return nothing of no ifb is associated with IF
+get_ifb_associated_with_if() {
+    CUR_IF=$1
+    CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[[:digit:]]\+' )
+    logger "ifb associated with interface ${CUR_IF}: ${CUR_IFB}"
+    echo ${CUR_IFB}
+}
+
+# what is the lowest-index currently not used ifb device
+get_lowest_unused_ifb() {
+    LOWEST_FREE_IFB=
+    # this just returns a list of currently existing IFBs, these need not be associated with any interface
+    CUR_UP_IFBS=$( ifconfig | grep -o -e ifb'[[:digit:]]\+' )
+    # the possible IFBs (N in insmod ifb numifbs=N)
+    here=$( pwd )
+    cd /sys/devices/virtual/net/
+    CUR_ALLOWED_IFBS=$( ls -d ifb* )
+    logger "Currently allowed IFBs: ${CUR_ALLOWED_IFBS}"
+    cd ${here}
+    # this is the sorted list of the active ifbs
+    # note for 3.10.32 unused and even down IFBs linger on in the tc output, so take $CUR_UP_IFBS instead
+    # a better test might be to check for each allowed IFB whether it is in use
+    # but the only way I figured out doing this means interating over all interfaces and that sounds costly
+    # so instead we rely on stop.sh actually calling ifconfig ${LAST_USED_IFB} down
+    CUR_USED_IFBS=$( tc -d qdisc | grep -o -e ifb'[[:digit:]]\+' | sort -u)
+    logger "Currently used IFBs: ${CUR_USED_IFBS}"
+    # now find the lowest index not in the sorted list
+    local CUR_IDX=0
+    while [ -z "$LOWEST_FREE_IFB" ]
+    do
+        #TMP=$( echo "${CUR_USED_IFBS}" | grep -o -e ifb${CUR_IDX} )
+        TMP=$( echo "${CUR_UP_IFBS}" | grep -o -e ifb${CUR_IDX} )
+        [ -z "$TMP" ] && LOWEST_FREE_IFB="ifb"${CUR_IDX}
+        CUR_IDX=$(( $CUR_IDX + 1 ))
+    done
+    # check whether the number is in the allowed range
+    LOWEST_FREE_IFB=$( echo "${CUR_ALLOWED_IFBS}" | grep -o -e ${LOWEST_FREE_IFB} )
+    [ -z "${LOWEST_FREE_IFB}" ] && logger "The IFB candidate ifb$(( ${CUR_IDX} - 1 )) is not in the range of allowed IFBs, bailing out..."
+    logger "selected ifb index: ${LOWEST_FREE_IFB}"
+    echo ${LOWEST_FREE_IFB}
+}
+                        
+# the best match is either the current ifb or the unused ifb with the lowest index number
+get_ifb_for_if() {
+    CUR_IF=$1
+    # if an ifb is already associated return that
+    CUR_IFB=$( get_ifb_associated_with_if ${CUR_IF} )
+    # otherwise find the lowest unused ifb device
+    [ -z "$CUR_IFB" ] && CUR_IFB=$( get_lowest_unused_ifb )
+    [ -z "$CUR_IFB" ] && logger "Could not find existing IFB for ${CUR_IF}, nor an unused one instead..."
+    echo ${CUR_IFB}
+}
+
+
+
 # You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
 
 [ -z "$UPLINK" ] && UPLINK=2302
 [ -z "$DOWNLINK" ] && DOWNLINK=14698
-[ -z "$DEV" ] && DEV=ifb0
+#[ -z "$DEV" ] && DEV=ifb0
+[ -z "$DEV" ] && DEV=$( get_ifb_for_if ${IFACE} )      # automagically get the right IFB device for the IFACE"
 [ -z "$QDISC" ] && QDISC=fq_codel
 [ -z "$IFACE" ] && IFACE=ge00
 [ -z "$LLAM" ] && LLAM="tc_stab"
@@ -334,3 +390,5 @@ fc 1:0 0x90 1:11 # AF42 (mosh)
 $TC filter add dev $interface parent 1:0 protocol arp prio $prio handle 1 fw classid 1:11
 prio=$(($prio + 1))
 }
+
+

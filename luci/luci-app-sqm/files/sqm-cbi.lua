@@ -29,7 +29,7 @@ s = m:section(TypedSection, "queue", translate("Queues"))
 s:tab("tab_basic", translate("Basic Settings"))
 s:tab("tab_qdisc", translate("Queue Discipline"))
 s:tab("tab_linklayer", translate("Link Layer Adaptation"))
-s.addremove = false -- set to true to allow adding SQM instances in the GUI
+s.addremove = true -- set to true to allow adding SQM instances in the GUI
 s.anonymous = true
 
 -- BASIC

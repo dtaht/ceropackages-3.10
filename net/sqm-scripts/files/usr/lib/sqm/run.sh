@@ -8,7 +8,7 @@ mkdir -p ${ACTIVE_STATE_FILE_DIR}
 
 config_load sqm
 
-IFB_NUM=0
+#IFB_NUM=0
 
 run_simple_qos() {
 	local section="$1"
@@ -46,8 +46,8 @@ run_simple_qos() {
 	export TARGET=$(config_get "$section" target)
 	export SQUASH_DSCP=$(config_get "$section" squash_dscp)
 
-	export DEV="ifb${IFB_NUM}"
-	IFB_NUM=$(expr $IFB_NUM + 1)
+#	export DEV="ifb${IFB_NUM}"
+#	IFB_NUM=$(expr $IFB_NUM + 1)
 
 	export QDISC=$(config_get "$section" qdisc)
 	export SCRIPT=/usr/lib/sqm/$(config_get "$section" script)
