@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=isochronous
-PKG_VERSION:=1.0.5.3
+PKG_VERSION:=1.0.5.4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/dtaht/isochronous
-PKG_REV:=3f82575816116e73443394b9175e8ef9f3f9ddee
+PKG_REV:=41b47503d0bcded62ff112e01273916d14625b17
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
 
@@ -30,8 +30,8 @@ define Package/isochronous
 endef
 
 define Package/isochronous/description
-	isoping and udpburst are two tools written by Avery Pennarun
-	and Tim Shepard to analyze bursty network behavior
+	isoping, udpburst, isostream are two tools written by Avery Pennarun,
+	Tim Shepard and myself to generate and analyze bursty network behavior.
 endef
 
 define Build/Compile
@@ -49,6 +49,7 @@ define Package/isochronous/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/isoping $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udpburst $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udpstream $(1)/usr/sbin/
 endef
 
 $(eval $(call BuildPackage,isochronous))
