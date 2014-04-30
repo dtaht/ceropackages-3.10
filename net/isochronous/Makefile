@@ -49,7 +49,7 @@ define Package/isochronous/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/isoping $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udpburst $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udpstream $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/isostream $(1)/usr/sbin/
 endef
 
 $(eval $(call BuildPackage,isochronous))
