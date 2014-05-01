@@ -44,6 +44,12 @@ for _, iface in ipairs(ifaces) do
 end
 n.rmempty = false
 
+-- sm: we need to also show ppp interfaces
+-- s = m:section(TypedSection, "interface", translate("Interfaces"))
+-- s.addremove = true
+-- s.anonymous = false
+
+
 dl = s:taboption("tab_basic", Value, "download", translate("Download speed (kbit/s) (ingress):"))
 dl.datatype = "and(uinteger,min(0))"
 dl.rmempty = false
@@ -123,7 +129,7 @@ itarg.datatype = "string"
 itarg.rmempty = true
 itarg:depends("qdisc_really_really_advanced", "1")
 
-etarg = s:taboption("tab_qdisc", Value, "etarget", translate("Latency target for egress, e.g. 5ms [units: s, ms, or  us]; leave empty for default, or auto for automatic selection.."))
+etarg = s:taboption("tab_qdisc", Value, "etarget", translate("Latency target for egress, e.g. 5ms [units: s, ms, or  us]; leave empty for default, or auto for automatic selection."))
 etarg.datatype = "string"
 etarg.rmempty = true
 etarg:depends("qdisc_really_really_advanced", "1")
