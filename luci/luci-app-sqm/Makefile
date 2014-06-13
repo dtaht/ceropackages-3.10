@@ -20,7 +20,7 @@ define Package/luci-app-sqm
   TITLE:=SQM script LuCI interface
   MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
   PKGARCH:=all
-  DEPENDS:= lua luci-lib-core +sqm-scripts
+  DEPENDS:= lua luci-base +sqm-scripts
   SUBMENU:=3. Applications
 endef
 
