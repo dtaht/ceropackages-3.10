@@ -20,7 +20,7 @@ define Package/luci-app-bcp38
   TITLE:=BCP38 LuCI interface
   MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
   PKGARCH:=all
-  DEPENDS:= lua luci-lib-core +bcp38
+  DEPENDS:= +luci-base +bcp38
   SUBMENU:=3. Applications
 endef
 
