@@ -6,7 +6,6 @@
 #
 
 include $(TOPDIR)/rules.mk
-
 PKG_NAME:=cerowrt-scripts
 PKG_REV:=f5c5a1680c09a80e2d337fe7bc4335f0db19b0df
 PKG_VERSION:=20140507
