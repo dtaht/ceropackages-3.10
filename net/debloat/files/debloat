@@ -1619,7 +1619,7 @@ local function ethernet_fq_codel(queues)
 end
 
 local function ethernet_fq_codel_ll(queues)
-	 qa("handle %x root fq_codel limit 1000 quantum 1000 ",10)
+	 qa("handle %x root fq_codel limit 1000 quantum 1514",10)
 end
 
 local function ethernet_codel(queues)
@@ -1974,7 +1974,7 @@ ECALLBACKS = { ["qfq"] = ethernet_qfq,
 local function wireless(model)
    print(model)
    if WCALLBACKS[model] ~= nil then
-      wireless_qlen()
+      -- wireless_qlen()
       return WCALLBACKS[model]() 
    else
       usage("AQM model not found")
