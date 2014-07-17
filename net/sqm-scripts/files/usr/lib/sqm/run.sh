@@ -45,6 +45,7 @@ run_simple_qos() {
 	export EQDISC_OPTS=$(config_get "$section" eqdisc_opts)
 	export TARGET=$(config_get "$section" target)
 	export SQUASH_DSCP=$(config_get "$section" squash_dscp)
+	export SQUASH_INGRESS=$(config_get "$section" squash_ingress)
 
 #	export DEV="ifb${IFB_NUM}"
 #	IFB_NUM=$(expr $IFB_NUM + 1)

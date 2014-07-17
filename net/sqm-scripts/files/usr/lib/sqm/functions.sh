@@ -9,6 +9,11 @@ ipt() {
 	iptables $d > /dev/null 2>&1
 	ip6tables $d > /dev/null 2>&1
   }
+  d=`echo $* | sed s/-I/-D/g`
+  [ "$d" != "$*" ] && {
+	iptables $d > /dev/null 2>&1
+	ip6tables $d > /dev/null 2>&1
+  }
   iptables $* > /dev/null 2>&1
   ip6tables $* > /dev/null 2>&1
 }
@@ -100,13 +105,13 @@ get_ifb_for_if() {
 [ -z "$IECN" ] && IECN="ECN"
 [ -z "$EECN" ] && EECN="NOECN"
 [ -z "$SQUASH_DSCP" ] && SQUASH_DSCP="1"
+[ -z "SQUASH_INGRESS" ] && SQUASH_INGRESS="1"
 [ -z "$IQDISC_OPTS" ] && IQDISC_OPTS=""
 [ -z "$EQDISC_OPTS" ] && EQDISC_OPTS=""
 [ -z "$TC" ] && TC=`which tc`
 #[ -z "$TC" ] && TC="logger tc"# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
 [ -z "TARGET" ] && TARGET="5ms"
-[ -z "SQUASH_INGRESS" ] && SQUASH_INGRESS=1
 
 #logger "iqdisc opts: ${iqdisc_opts}"
 #logger "eqdisc opts: ${eqdisc_opts}"
@@ -387,7 +392,7 @@ fc 1:0 0xe0 1:11 # CS6
 fc 1:0 0x90 1:11 # AF42 (mosh)
 
 # Arp traffic
-$TC filter add dev $interface parent 1:0 protocol arp prio $prio handle 1 fw classid 1:11
+$TC filter add dev ifb0 protocol arp parent 1:0 prio $prio handle 500 fw flowid 1:11
 prio=$(($prio + 1))
 }
 
