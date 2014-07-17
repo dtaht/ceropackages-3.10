@@ -1,7 +1,8 @@
 --[[
 LuCI - Lua Configuration Interface
 
-Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2014 Steven Barth <steven@midlink.org>
+Copyright 2014 Dave Taht <dave.taht@bufferbloat.net>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -90,6 +91,20 @@ sc.description = qos_desc
 ad = s:taboption("tab_qdisc", Flag, "qdisc_advanced", translate("Show Advanced Configuration"))
 ad.default = false
 ad.rmempty = true
+
+squash_dscp  = s:taboption("tab_qdisc", ListValue, "squash_dscp", translate("Squash DSCP on inbound packets (ingress):"))
+squash_dscp:value("1", "SQUASH")
+squash_dscp:value("0", "DO NOT SQUASH")
+squash_dscp.default = "1"
+squash_dscp.rmempty = true
+squash_dscp:depends("qdisc_advanced", "1")
+
+squash_ingress = s:taboption("tab_qdisc", ListValue, "squash_ingress", translate("Ignore DSCP on ingress:"))
+squash_ingress:value("1", "Ignore")
+squash_ingress:value("0", "Allow")
+squash_ingress.default = "1"
+squash_ingress.rmempty = true
+squash_ingress:depends("qdisc_advanced", "1")
 
 iecn = s:taboption("tab_qdisc", ListValue, "ingress_ecn", translate("Explicit congestion notification (ECN) status on inbound packets (ingress):"))
 iecn:value("ECN", "ECN ("..translate("default")..")")
