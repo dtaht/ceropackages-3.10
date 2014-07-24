@@ -172,7 +172,6 @@ $TC filter add dev $IFACE parent ffff: protocol all prio 10 u32 \
 
 do_modules
 ipt_setup
-diffserv $DEV
 
 if [ "$UPLINK" -ne 0 ];
 then
