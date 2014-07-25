@@ -396,7 +396,7 @@ fc 1:0 0xe0 1:11 # CS6
 fc 1:0 0x90 1:11 # AF42 (mosh)
 
 # Arp traffic
-$TC filter add dev ifb0 protocol arp parent 1:0 prio $prio handle 500 fw flowid 1:11
+$TC filter add dev $interface protocol arp parent 1:0 prio $prio handle 500 fw flowid 1:11
 prio=$(($prio + 1))
 }
 
