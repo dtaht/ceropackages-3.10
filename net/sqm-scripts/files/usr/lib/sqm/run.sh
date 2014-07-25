@@ -14,7 +14,7 @@ run_simple_qos() {
 	local section="$1"
 	export IFACE=$(config_get "$section" interface)
 	ACTIVE_STATE_FILE_FQN="${ACTIVE_STATE_FILE_DIR}/SQM_active_on_${IFACE}"	# this marks interfaces as active with SQM
-	[ -f "${ACTIVE_STATE_FILE_FQN}" ] && logger "${ACTIVE_STATE_FILE_FQN}"
+	[ -f "${ACTIVE_STATE_FILE_FQN}" ] && logger -t SQM -s "${ACTIVE_STATE_FILE_FQN}"
 
 
 	if [ $(config_get "$section" enabled) -ne 1 ];
@@ -58,10 +58,10 @@ run_simple_qos() {
 	     /usr/lib/sqm/stop.sh
 	     [ -f ${ACTIVE_STATE_FILE_FQN} ] && rm ${ACTIVE_STATE_FILE_FQN}	# conditional to avoid errors ACTIVE_STATE_FILE_FQN does not exist anymore
 	     $(config_set "$section" enabled 0)	# this does not save to the config file only to the loaded memory representation
-	     logger "SQM qdiscs on ${IFACE} removed"
+	     logger -t SQM -s "SQM qdiscs on ${IFACE} removed"
 	     return 0
 	fi
-	logger "Queue Setup Script: ${SCRIPT}"
+	logger -t SQM -s "Queue Setup Script: ${SCRIPT}"
 	[ -x "$SCRIPT" ] && { $SCRIPT ; touch ${ACTIVE_STATE_FILE_FQN}; }
 }
 
