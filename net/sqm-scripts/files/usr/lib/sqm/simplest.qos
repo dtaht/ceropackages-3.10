@@ -5,12 +5,9 @@
 
 # Copyright (C) 2013 Michael D Taht
 # GPLv2
-sqm_logger "Starting simplest.qos"
 
 . /usr/lib/sqm/functions.sh
-
-
-
+sqm_logger "Starting simplest.qos"
 
 egress() {
 
