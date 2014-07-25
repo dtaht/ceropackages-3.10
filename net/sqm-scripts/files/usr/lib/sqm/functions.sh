@@ -1,5 +1,5 @@
 #improve the logread output
-sqm_sqm_logger() {
+sqm_logger() {
     logger -t SQM -s
 }
 
