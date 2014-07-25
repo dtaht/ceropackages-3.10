@@ -12,7 +12,7 @@ sqm_stop() {
 	tc qdisc del dev $IFACE ingress 2> /dev/null
 	tc qdisc del dev $IFACE root 2> /dev/null
 	[ ! -z "$CUR_IFB" ] && tc qdisc del dev $CUR_IFB root 2> /dev/null
-        [ ! -z "$CUR_IFB" ] && logger "${CUR_IFB} deleted"
+        [ ! -z "$CUR_IFB" ] && sqm_logger "${CUR_IFB} deleted"
 }
 
 ipt_stop() {
