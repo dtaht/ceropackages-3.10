@@ -1,3 +1,7 @@
+#improve the logread output
+sqm_sqm_logger() {
+    logger -t SQM -s
+}
 
 insmod() {
   lsmod | grep -q ^$1 || $INSMOD $1
@@ -31,7 +35,7 @@ do_modules() {
 get_ifb_associated_with_if() {
     CUR_IF=$1
     CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[[:digit:]]\+' )
-    logger "ifb associated with interface ${CUR_IF}: ${CUR_IFB}"
+    sqm_logger "ifb associated with interface ${CUR_IF}: ${CUR_IFB}"
     echo ${CUR_IFB}
 }
 
@@ -44,7 +48,7 @@ get_lowest_unused_ifb() {
     here=$( pwd )
     cd /sys/devices/virtual/net/
     CUR_ALLOWED_IFBS=$( ls -d ifb* )
-    logger "Currently allowed IFBs: ${CUR_ALLOWED_IFBS}"
+    sqm_logger "Currently allowed IFBs: ${CUR_ALLOWED_IFBS}"
     cd ${here}
     # this is the sorted list of the active ifbs
     # note for 3.10.32 unused and even down IFBs linger on in the tc output, so take $CUR_UP_IFBS instead
@@ -52,7 +56,7 @@ get_lowest_unused_ifb() {
     # but the only way I figured out doing this means interating over all interfaces and that sounds costly
     # so instead we rely on stop.sh actually calling ifconfig ${LAST_USED_IFB} down
     CUR_USED_IFBS=$( tc -d qdisc | grep -o -e ifb'[[:digit:]]\+' | sort -u)
-    logger "Currently used IFBs: ${CUR_USED_IFBS}"
+    sqm_logger "Currently used IFBs: ${CUR_USED_IFBS}"
     # now find the lowest index not in the sorted list
     local CUR_IDX=0
     while [ -z "$LOWEST_FREE_IFB" ]
@@ -64,8 +68,8 @@ get_lowest_unused_ifb() {
     done
     # check whether the number is in the allowed range
     LOWEST_FREE_IFB=$( echo "${CUR_ALLOWED_IFBS}" | grep -o -e ${LOWEST_FREE_IFB} )
-    [ -z "${LOWEST_FREE_IFB}" ] && logger "The IFB candidate ifb$(( ${CUR_IDX} - 1 )) is not in the range of allowed IFBs, bailing out..."
-    logger "selected ifb index: ${LOWEST_FREE_IFB}"
+    [ -z "${LOWEST_FREE_IFB}" ] && sqm_logger "The IFB candidate ifb$(( ${CUR_IDX} - 1 )) is not in the range of allowed IFBs, bailing out..."
+    sqm_logger "selected ifb index: ${LOWEST_FREE_IFB}"
     echo ${LOWEST_FREE_IFB}
 }
                         
@@ -76,7 +80,7 @@ get_ifb_for_if() {
     CUR_IFB=$( get_ifb_associated_with_if ${CUR_IF} )
     # otherwise find the lowest unused ifb device
     [ -z "$CUR_IFB" ] && CUR_IFB=$( get_lowest_unused_ifb )
-    [ -z "$CUR_IFB" ] && logger "Could not find existing IFB for ${CUR_IF}, nor an unused one instead..."
+    [ -z "$CUR_IFB" ] && sqm_logger "Could not find existing IFB for ${CUR_IF}, nor an unused one instead..."
     echo ${CUR_IFB}
 }
 
@@ -109,15 +113,15 @@ get_ifb_for_if() {
 [ -z "$IQDISC_OPTS" ] && IQDISC_OPTS=""
 [ -z "$EQDISC_OPTS" ] && EQDISC_OPTS=""
 [ -z "$TC" ] && TC=`which tc`
-#[ -z "$TC" ] && TC="logger tc"# this redirects all tc calls into the log
+#[ -z "$TC" ] && TC="sqm_logger tc"# this redirects all tc calls into the log
 [ -z "$INSMOD" ] && INSMOD=`which insmod`
 [ -z "TARGET" ] && TARGET="5ms"
 
-#logger "iqdisc opts: ${iqdisc_opts}"
-#logger "eqdisc opts: ${eqdisc_opts}"
+#sqm_logger "iqdisc opts: ${iqdisc_opts}"
+#sqm_logger "eqdisc opts: ${eqdisc_opts}"
 
-#logger "LLAM: ${LLAM}"
-#logger "LINKLAYER: ${LINKLAYER}"
+#sqm_logger "LLAM: ${LLAM}"
+#sqm_logger "LINKLAYER: ${LINKLAYER}"
 
 get_htb_adsll_string() {
 	ADSLL=""
@@ -126,7 +130,7 @@ get_htb_adsll_string() {
 		# HTB defaults to MTU 1600 and an implicit fixed TSIZE of 256, but HTB as of around 3.10.0
 		# does not actually use a table in the kernel
 		ADSLL="mpu ${STAB_MPU} linklayer ${LINKLAYER} overhead ${OVERHEAD} mtu ${STAB_MTU}"
-		logger "ADSLL: ${ADSLL}"
+		sqm_logger "ADSLL: ${ADSLL}"
 	fi
 	echo ${ADSLL}
 }
@@ -136,7 +140,7 @@ get_stab_string() {
 	if [ "${LLAM}" = "tc_stab" -a "$LINKLAYER" != "none" ]; 
 	then
 		STABSTRING="stab mtu ${STAB_MTU} tsize ${STAB_TSIZE} mpu ${STAB_MPU} overhead ${OVERHEAD} linklayer ${LINKLAYER}"
-		logger "STAB: ${STABSTRING}"
+		sqm_logger "STAB: ${STABSTRING}"
 	fi
 	echo ${STABSTRING}
 }
@@ -224,13 +228,13 @@ get_flows() {
 get_target() {
 	local CUR_TARGET=${1}
 	local CUR_LINK_KBPS=${2}
-	[ ! -z "$CUR_TARGET" ] && logger "cur_target: ${CUR_TARGET} cur_bandwidth: ${CUR_LINK_KBPS}"
+	[ ! -z "$CUR_TARGET" ] && sqm_logger "cur_target: ${CUR_TARGET} cur_bandwidth: ${CUR_LINK_KBPS}"
 	CUR_TARGET_STRING=
 	# either e.g. 100ms or auto
 	CUR_TARGET_VALUE=$( echo ${CUR_TARGET} | grep -o -e \^'[[:digit:]]\+' )
 	CUR_TARGET_UNIT=$( echo ${CUR_TARGET} | grep -o -e '[[:alpha:]]\+'\$ )
-#	[ ! -z "$CUR_TARGET" ] && logger "CUR_TARGET_VALUE: $CUR_TARGET_VALUE"
-#	[ ! -z "$CUR_TARGET" ] && logger "CUR_TARGET_UNIT: $CUR_TARGET_UNIT"
+#	[ ! -z "$CUR_TARGET" ] && sqm_logger "CUR_TARGET_VALUE: $CUR_TARGET_VALUE"
+#	[ ! -z "$CUR_TARGET" ] && sqm_logger "CUR_TARGET_UNIT: $CUR_TARGET_UNIT"
 	
 	AUTO_TARGET=
 	UNIT_VALID=
@@ -256,7 +260,7 @@ get_target() {
 				    CUR_TARGET_STRING="target ${TMP_TARGET_US}us ${TMP_INTERVAL_STRING}"
 				    AUTO_TARGET="1"
 			    	else
-			    	    logger "required link bandwidth in kbps not passed to get_target()." 
+			    	    sqm_logger "required link bandwidth in kbps not passed to get_target()." 
 			        fi
 			    ;;
 			esac
@@ -264,12 +268,12 @@ get_target() {
 			    then
 			    if [ -z "${CUR_TARGET_VALUE}" -o -z "${UNIT_VALID}" ];
 			    then 
-				[ -z "$AUTO_TARGET" ] && logger "${CUR_TARGET} is not a well formed tc target specifier; e.g.: 5ms (or s, us), or the string auto."
+				[ -z "$AUTO_TARGET" ] && sqm_logger "${CUR_TARGET} is not a well formed tc target specifier; e.g.: 5ms (or s, us), or the string auto."
 			    fi
 			fi
 		    ;;
 	esac
-#	logger "target: ${CUR_TARGET_STRING}"
+#	sqm_logger "target: ${CUR_TARGET_STRING}"
 	echo $CUR_TARGET_STRING
 }	
 
@@ -325,10 +329,10 @@ get_limit() {
         ;;
     bfifo) [ -z "$CURLIMIT" ] && [ ! -z "$LIMIT" ] && CURLIMIT=$(( ${LIMIT} * $( cat /sys/class/net/${IFACE}/mtu ) ))	# bfifo defaults to txquelength * MTU, 
         ;;
-    *) logger "${QDISC} does not support a limit"
+    *) sqm_logger "${QDISC} does not support a limit"
         ;;
     esac
-    logger "get_limit: $1 CURLIMIT: ${CURLIMIT}"
+    sqm_logger "get_limit: $1 CURLIMIT: ${CURLIMIT}"
     
     if [ ! -z "$CURLIMIT" ]
     then
@@ -338,7 +342,7 @@ get_limit() {
 
 get_ecn() {
     CURECN=$1
-    #logger CURECN: $CURECN
+    #sqm_logger CURECN: $CURECN
 	case ${CURECN} in
 		ECN)
 			case $QDISC in
@@ -361,10 +365,10 @@ get_ecn() {
 			esac
 			;;
 		*)
-		    logger "ecn value $1 not handled"
+		    sqm_logger "ecn value $1 not handled"
 		    ;;
 	esac
-	#logger "get_ECN: $1 CURECN: ${CURECN} IECN: ${IECN} EECN: ${EECN}"
+	#sqm_logger "get_ECN: $1 CURECN: ${CURECN} IECN: ${IECN} EECN: ${EECN}"
 	echo ${CURECN}
 
 }
