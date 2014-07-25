@@ -5,7 +5,7 @@
 
 # Copyright (C) 2013 Michael D Taht
 # GPLv2
-logger "Starting simplest.qos"
+sqm_logger "Starting simplest.qos"
 
 . /usr/lib/sqm/functions.sh
 
@@ -26,7 +26,7 @@ $TC qdisc add dev $IFACE parent 1:10 handle 110: $QDISC `get_limit ${ELIMIT}` `g
 
 
 ingress() {
-logger "ingress"
+sqm_logger "ingress"
 $TC qdisc del dev $IFACE handle ffff: ingress 2>/dev/null
 $TC qdisc add dev $IFACE handle ffff: ingress
 
@@ -58,17 +58,17 @@ do_modules
 if [ "$UPLINK" -ne 0 ];
 then
 	egress
-	logger "egress shaping activated"
+	sqm_logger "egress shaping activated"
 else
-	logger "egress shaping deactivated"
+	sqm_logger "egress shaping deactivated"
 	tc qdisc del dev $IFACE root 2> /dev/null
 fi
 if [ "$DOWNLINK" -ne 0 ];
 then
 	ingress
-	logger "ingress shaping activated"
+	sqm_logger "ingress shaping activated"
 else
-	logger "ingress shaping deactivated"
+	sqm_logger "ingress shaping deactivated"
 	tc qdisc del dev $DEV root 2> /dev/null
 	tc qdisc del dev $IFACE ingress 2> /dev/null
 fi
