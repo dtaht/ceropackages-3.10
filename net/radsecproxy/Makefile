@@ -25,6 +25,7 @@ define Package/radsecproxy
   DEPENDS:=+libopenssl +libpthread
   TITLE:=radsecproxy
   URL:=http://software.uninett.no/radsecproxy
+  MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
 endef
 
 define Package/radsecproxy/description
