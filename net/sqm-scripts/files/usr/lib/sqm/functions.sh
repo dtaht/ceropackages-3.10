@@ -31,16 +31,51 @@ do_modules() {
 	insmod sch_htb
 }
 
+
+# You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
+
+[ -z "$UPLINK" ] && UPLINK=2302
+[ -z "$DOWNLINK" ] && DOWNLINK=14698
+[ -z "$IFACE" ] && IFACE=ge00
+[ -z "$QDISC" ] && QDISC=fq_codel
+[ -z "$LLAM" ] && LLAM="tc_stab"
+[ -z "$LINKLAYER" ] && LINKLAYER="none"
+[ -z "$OVERHEAD" ] && OVERHEAD=0
+[ -z "$STAB_MTU" ] && STAB_MTU=2047
+[ -z "$STAB_MPU" ] && STAB_MPU=0
+[ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
+[ -z "$AUTOFLOW" ] && AUTOFLOW=0
+[ -z "$LIMIT" ] && LIMIT=1001	# sane global default for *LIMIT for fq_codel on a small memory device
+[ -z "$ILIMIT" ] && ILIMIT=
+[ -z "$ELIMIT" ] && ELIMIT=
+[ -z "$ITARGET" ] && ITARGET=
+[ -z "$ETARGET" ] && ETARGET=
+[ -z "$IECN" ] && IECN="ECN"
+[ -z "$EECN" ] && EECN="NOECN"
+[ -z "$SQUASH_DSCP" ] && SQUASH_DSCP="1"
+[ -z "SQUASH_INGRESS" ] && SQUASH_INGRESS="1"
+[ -z "$IQDISC_OPTS" ] && IQDISC_OPTS=""
+[ -z "$EQDISC_OPTS" ] && EQDISC_OPTS=""
+[ -z "$TC" ] && TC=`which tc`
+#[ -z "$TC" ] && TC="sqm_logger tc"# this redirects all tc calls into the log
+[ -z "$IP" ] && IP=$( which ip )
+[ -z "$INSMOD" ] && INSMOD=`which insmod`
+[ -z "TARGET" ] && TARGET="5ms"
+
+
+
+
 # find the ifb device associated with a specific interface, return nothing of no ifb is associated with IF
 get_ifb_associated_with_if() {
     CUR_IF=$1
     # CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[[:digit:]]\+' )
-    CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[^)]\+' )
+    CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[^)]\+' )	# my editor's syntax coloration is limitied so I need a single quote in this line (between eiditor and s)
     sqm_logger "ifb associated with interface ${CUR_IF}: ${CUR_IFB}"
     echo ${CUR_IFB}
 }
 
 # what is the lowest-index currently not used ifb device
+#sm: hopefully this is not required any longer, and can be deleted after a bit more testing...
 get_lowest_unused_ifb() {
     LOWEST_FREE_IFB=
     # this just returns a list of currently existing IFBs, these need not be associated with any interface
@@ -73,50 +108,43 @@ get_lowest_unused_ifb() {
     sqm_logger "selected ifb index: ${LOWEST_FREE_IFB}"
     echo ${LOWEST_FREE_IFB}
 }
-                        
-# the best match is either the current ifb or the unused ifb with the lowest index number
+
+# instead of playing around with indices just create a named IFB
+# ATTENTION, IFB names can only be 15 chararcters, so we chop of excessive characters at the start of the interface name 
+# if required
+create_new_ifb_for_if() {
+    CUR_IF=$1
+    MAX_IF_NAME_LENGTH=15
+    IFB_PREFIX="ifb4"
+    NEW_IFB="${IFB_PREFIX}${CUR_IF}"
+    IFB_NAME_LENGTH=${#NEW_IFB}
+    if [ ${IFB_NAME_LENGTH} -gt ${MAX_IF_NAME_LENGTH} ]; 
+    then
+	sqm_logger "The requsted IFB name ${NEW_IFB} is longer than the allowed 15 characters, trying to make it shorter"
+	OVERLIMIT=$(( ${#NEW_IFB} - ${MAX_IF_NAME_LENGTH} ))
+	NEW_IFB=${IFB_PREFIX}${CUR_IF:${OVERLIMIT}:$(( ${MAX_IF_NAME_LENGTH} - ${#IFB_PREFIX} ))}
+    fi
+    sqm_logger "trying to create new IFB: ${NEW_IFB}"
+    $IP link add ${NEW_IFB} type ifb #>/dev/null 2>&1	# better be verbose
+    echo ${NEW_IFB}
+}
+
+# the best match is either the IFB already associated with the current interface or a new named IFB
 get_ifb_for_if() {
     CUR_IF=$1
     # if an ifb is already associated return that
     CUR_IFB=$( get_ifb_associated_with_if ${CUR_IF} )
     # otherwise find the lowest unused ifb device
-    [ -z "$CUR_IFB" ] && CUR_IFB=$( get_lowest_unused_ifb )
-    [ -z "$CUR_IFB" ] && sqm_logger "Could not find existing IFB for ${CUR_IF}, nor an unused one instead..."
+    #[ -z "$CUR_IFB" ] && CUR_IFB=$( get_lowest_unused_ifb )
+    [ -z "$CUR_IFB" ] && CUR_IFB=$( create_new_ifb_for_if ${CUR_IF} )
+    [ -z "$CUR_IFB" ] && sqm_logger "Could not find existing IFB for ${CUR_IF}, nor create a new IFB instead..."
     echo ${CUR_IFB}
 }
 
-
-
-# You need to jiggle these parameters. Note limits are tuned towards a <10Mbit uplink <60Mbup down
-
-[ -z "$UPLINK" ] && UPLINK=2302
-[ -z "$DOWNLINK" ] && DOWNLINK=14698
-#[ -z "$DEV" ] && DEV=ifb0
+#sm: we need the functions above before trying to set the ingress IFB device
 [ -z "$DEV" ] && DEV=$( get_ifb_for_if ${IFACE} )      # automagically get the right IFB device for the IFACE"
-[ -z "$QDISC" ] && QDISC=fq_codel
-[ -z "$IFACE" ] && IFACE=ge00
-[ -z "$LLAM" ] && LLAM="tc_stab"
-[ -z "$LINKLAYER" ] && LINKLAYER="none"
-[ -z "$OVERHEAD" ] && OVERHEAD=0
-[ -z "$STAB_MTU" ] && STAB_MTU=2047
-[ -z "$STAB_MPU" ] && STAB_MPU=0
-[ -z "$STAB_TSIZE" ] && STAB_TSIZE=512
-[ -z "$AUTOFLOW" ] && AUTOFLOW=0
-[ -z "$LIMIT" ] && LIMIT=1001	# sane global default for *LIMIT for fq_codel on a small memory device
-[ -z "$ILIMIT" ] && ILIMIT=
-[ -z "$ELIMIT" ] && ELIMIT=
-[ -z "$ITARGET" ] && ITARGET=
-[ -z "$ETARGET" ] && ETARGET=
-[ -z "$IECN" ] && IECN="ECN"
-[ -z "$EECN" ] && EECN="NOECN"
-[ -z "$SQUASH_DSCP" ] && SQUASH_DSCP="1"
-[ -z "SQUASH_INGRESS" ] && SQUASH_INGRESS="1"
-[ -z "$IQDISC_OPTS" ] && IQDISC_OPTS=""
-[ -z "$EQDISC_OPTS" ] && EQDISC_OPTS=""
-[ -z "$TC" ] && TC=`which tc`
-#[ -z "$TC" ] && TC="sqm_logger tc"# this redirects all tc calls into the log
-[ -z "$INSMOD" ] && INSMOD=`which insmod`
-[ -z "TARGET" ] && TARGET="5ms"
+
+
 
 #sqm_logger "iqdisc opts: ${iqdisc_opts}"
 #sqm_logger "eqdisc opts: ${eqdisc_opts}"
