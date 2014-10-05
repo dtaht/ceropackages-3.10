@@ -34,7 +34,8 @@ do_modules() {
 # find the ifb device associated with a specific interface, return nothing of no ifb is associated with IF
 get_ifb_associated_with_if() {
     CUR_IF=$1
-    CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[[:digit:]]\+' )
+    # CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[[:digit:]]\+' )
+    CUR_IFB=$( tc -p filter show parent ffff: dev ${CUR_IF} | grep -o -e ifb'[^)]\+' )
     sqm_logger "ifb associated with interface ${CUR_IF}: ${CUR_IFB}"
     echo ${CUR_IFB}
 }
