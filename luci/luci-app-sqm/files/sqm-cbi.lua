@@ -16,7 +16,9 @@ $Id$
 local wa = require "luci.tools.webadmin"
 local fs = require "nixio.fs"
 local net = require "luci.model.network".init()
-local ifaces = net:get_interfaces()
+local sys = require "luci.sys"
+--local ifaces = net:get_interfaces()
+local ifaces = sys.net:devices()
 local path = "/usr/lib/sqm"
 
 m = Map("sqm", translate("Smart Queue Management"),
@@ -38,17 +40,16 @@ e = s:taboption("tab_basic", Flag, "enabled", translate("Enable"))
 e.rmempty = false
 
 n = s:taboption("tab_basic", ListValue, "interface", translate("Interface name"))
+-- sm lifted from luci-app-wol, the original implementation failed to show pppoe-ge00 type interface names
 for _, iface in ipairs(ifaces) do
-     if iface:is_up() then
-	n:value(iface:name())
-     end
+--     if iface:is_up() then
+--	n:value(iface:name())
+--     end
+	if iface ~= "lo" then 
+		n:value(iface) 
+	end
 end
 n.rmempty = false
-
--- sm: we need to also show ppp interfaces
--- s = m:section(TypedSection, "interface", translate("Interfaces"))
--- s.addremove = true
--- s.anonymous = false
 
 
 dl = s:taboption("tab_basic", Value, "download", translate("Download speed (kbit/s) (ingress):"))
