@@ -3,7 +3,8 @@
 . /usr/lib/sqm/functions.sh
 
 # allow passing in the IFACE as first command line argument
-[ ! -z "$1" ] && IFACE=${1}
+[ ! -z ${1} ] && IFACE=${1}
+sqm_logger "${0} Stopping ${IFACE}"
 
 # make sure to only delete the ifb associated with the current interface
 CUR_IFB=$( get_ifb_associated_with_if ${IFACE} )
