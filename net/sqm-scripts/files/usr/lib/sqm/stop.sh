@@ -13,7 +13,7 @@ sqm_stop() {
 	tc qdisc del dev $IFACE ingress 2> /dev/null
 	tc qdisc del dev $IFACE root 2> /dev/null
 	[ ! -z "$CUR_IFB" ] && tc qdisc del dev $CUR_IFB root 2> /dev/null
-        [ ! -z "$CUR_IFB" ] && sqm_logger "${CUR_IFB} deleted"
+        [ ! -z "$CUR_IFB" ] && sqm_logger "${CUR_IFB} shaper deleted"
 }
 
 ipt_stop() {
@@ -29,5 +29,7 @@ ipt_stop() {
 sqm_stop
 ipt_stop
 [ ! -z "$CUR_IFB" ] && ifconfig ${CUR_IFB} down
+[ ! -z "$CUR_IFB" ] && ip link delete ${CUR_IFB} type ifb
+[ ! -z "$CUR_IFB" ] && sqm_logger "${CUR_IFB} interface deleted"
 
 exit 0
