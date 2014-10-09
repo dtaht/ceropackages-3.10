@@ -125,7 +125,7 @@ create_new_ifb_for_if() {
 	NEW_IFB=${IFB_PREFIX}${CUR_IF:${OVERLIMIT}:$(( ${MAX_IF_NAME_LENGTH} - ${#IFB_PREFIX} ))}
     fi
     sqm_logger "trying to create new IFB: ${NEW_IFB}"
-    $IP link add ${NEW_IFB} type ifb #>/dev/null 2>&1	# better be verbose
+    $IP link add name ${NEW_IFB} type ifb #>/dev/null 2>&1	# better be verbose
     echo ${NEW_IFB}
 }
 
