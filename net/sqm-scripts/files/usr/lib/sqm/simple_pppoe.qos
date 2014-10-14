@@ -128,92 +128,161 @@ $TC filter add dev $IFACE parent 1:0 protocol ipv6 prio 9 \
 # PPPoE encapsulated packets traversing the router (e.g.: the router does PPPoE termination but we shape 
 # on the underlaying ethernet interface instead of the pppoe device)
 
+PPPOE_SESSION_ETHERTYPE="0x8864"
+PPPOE_DISCOVERY_ETHERTYPE="0x8863"
 PPP_PROTO_IP4="0x0021"
 PPP_PROTO_IP6="0x0057"
+ARP_PROTO_IP4="0x0806"
+
 # NOTE it seems prio can not be reused?
 #$TC filter add dev $IFACE protocol 0x8863 parent 1:0 prio 1 u32 flowid 1:14
 # PPPoE can be selected for by ether_type, the encapsulated IP version from the PPP (0x0021 IPv4, 0x0057 IPv6)
-#U32_PREFIX="$TC filter add dev $IFACE" parent 1:0 protocol 0x8864"
-#BE
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 400 u32 \
-	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
-	match u8 0x00 0xfb at 9 \
-	flowid 1:12
+#U32_PREFIX="$TC filter add dev $IFACE" parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE}"
+
+#BE: 1:12 is the default anyway, but this will catch all non marked packets
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 400 u32 \
+#	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
+#	match u8 0x00 0xfb at 9 \
+#	flowid 1:12
+
 #AF42
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 401 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 401 u32 \
 	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
 	match u8 0x90 0xfb at 9 \
 	flowid 1:11
 #EF
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 402 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 402 u32 \
 	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
 	match u8 0xb8 0xfb at 9 \
 	flowid 1:11
 #CS1
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 403 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 403 u32 \
 	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
 	match u8 0x20 0xf0 at 9 \
 	flowid 1:13
 #IMM
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 404 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 404 u32 \
 	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
 	match u8 0x10 0xf0 at 9 \
 	flowid 1:11
 #CS3
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 405 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 405 u32 \
 	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
 	match u8 0xc0 0xf0 at 9 \
 	flowid 1:11
 #CS6
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 406 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 406 u32 \
 	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
 	match u8 0xe0 0xf0 at 9 \
 	flowid 1:11
 
 
-#IPV6
-#BE
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 600 u32 \
+## Arp traffic
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 409 u32 \
+#	match u16 ${ARP_PROTO_IP4} 0xffff at 6 \
+#	flowid 1:14
+
+# ICMP traffic - Don't impress your friends. Deoptimize to manage ping floods
+# better instead; sm: really only deprio echo requestst and echo replies instead?
+# ECHO request, the rest stays in best effort
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 410 u32 \
+	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
+	match u8 0x01 0xff at 17 \
+	match u8 0x08 0xff at 28 \
+	flowid 1:13
+# ECHO reply
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 410 u32 \
+	match u16 ${PPP_PROTO_IP4} 0xffff at 6 \
+	match u8 0x01 0xff at 17 \
+	match u8 0x00 0xff at 28 \
+	flowid 1:13
+
+## ICMPv6 133-137 (NDP) is equivalent to IPv4 ARP, so only push echo request and reply into the bulk class
+## 133
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 610 u32 \
+#	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
+#	match u8 0x85 0xff at 48 \
+#	match u8 0x3a 0xff at 14 \
+#	flowid 1:14
+## 134
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 610 u32 \
+#	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
+#	match u8 0x86 0xff at 48 \
+#	match u8 0x3a 0xff at 14 \
+#	flowid 1:14
+## 135
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 610 u32 \
+#	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
+#	match u8 0x87 0xff at 48 \
+#	match u8 0x3a 0xff at 14 \
+#	flowid 1:14
+## 136
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 610 u32 \
+#	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
+#	match u8 0x88 0xff at 48 \
+#	match u8 0x3a 0xff at 14 \
+#	flowid 1:14
+## 137
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 610 u32 \
+#	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
+#	match u8 0x89 0xff at 48 \
+#	match u8 0x3a 0xff at 14 \
+#	flowid 1:14
+
+# ICMPv6 echo request
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 610 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0000 0x0fb0 at 8 \
-	flowid 1:12
+	match u8 0x3a 0xff at 14 \
+	match u8 0x80 0xff at 48 \
+	flowid 1:13
+# ICMPv6 echo reply
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 610 u32 \
+	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
+	match u8 0x3a 0xff at 14 \
+	match u8 0x81 0xff at 48 \
+	flowid 1:13
+
+
+
+
+#IPV6
+#BE: careful, will override ICMP
+#$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 600 u32 \
+#	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
+#	match u16 0x0000 0x0fb0 at 8 \
+#	flowid 1:12
 #AF42
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 601 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 601 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
 	match u16 0x0900 0x0fb0 at 8 \
 	flowid 1:11
 #EF
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 602 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 602 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
 	match u16 0x0b80 0x0fb0 at 8 \
 	flowid 1:11
 #CS1
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 603 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 603 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
 	match u16 0x0200 0x0fb0 at 8 \
 	flowid 1:13
 #IMM
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 604 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 604 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
 	match u16 0x0100 0x0fb0 at 8 \
 	flowid 1:11
 #CS3
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 605 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 605 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
 	match u16 0x0c00 0x0fb0 at 8 \
 	flowid 1:11
 #CS6
-$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 606 u32 \
+$TC filter add dev $IFACE parent 1:0 protocol ${PPPOE_SESSION_ETHERTYPE} prio 606 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
 	match u16 0x0e00 0x0fb0 at 8 \
 	flowid 1:11
 
 
-
-
-#$TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 600 u32 \
-#	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-#	flowid 1:14
 
 
 #diffserv $IFACE
