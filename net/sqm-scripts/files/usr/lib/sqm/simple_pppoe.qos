@@ -175,37 +175,37 @@ $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 406 u32 \
 #BE
 $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 600 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0000 0x0ff0 at 8 \
+	match u16 0x0000 0x0fb0 at 8 \
 	flowid 1:12
 #AF42
 $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 601 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0900 0x0ff0 at 8 \
+	match u16 0x0900 0x0fb0 at 8 \
 	flowid 1:11
 #EF
 $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 602 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0b80 0x0ff0 at 8 \
+	match u16 0x0b80 0x0fb0 at 8 \
 	flowid 1:11
 #CS1
 $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 603 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0200 0x0ff0 at 8 \
+	match u16 0x0200 0x0fb0 at 8 \
 	flowid 1:13
 #IMM
 $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 604 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0100 0x0ff0 at 8 \
+	match u16 0x0100 0x0fb0 at 8 \
 	flowid 1:11
 #CS3
 $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 605 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0c00 0x0ff0 at 8 \
+	match u16 0x0c00 0x0fb0 at 8 \
 	flowid 1:11
 #CS6
 $TC filter add dev $IFACE parent 1:0 protocol 0x8864 prio 606 u32 \
 	match u16 ${PPP_PROTO_IP6} 0xffff at 6 \
-	match u16 0x0e00 0x0ff0 at 8 \
+	match u16 0x0e00 0x0fb0 at 8 \
 	flowid 1:11
 
 
