@@ -426,7 +426,17 @@ fc 1:0 0x90 1:11 # AF42 (mosh)
 
 # Arp traffic
 $TC filter add dev $interface protocol arp parent 1:0 prio $prio handle 500 fw flowid 1:11
+# PPPoE Discovery packets should be high priority
+#$TC filter add dev $interface protocol 0x8863 parent 1:0 prio $prio handle 500 fw flowid 1:11
+# PPPoE encapsulated ARPs is that required?
+#$TC filter add dev $interface protocol 0x8864 parent 1:0 prio $prio u32 \
+#match u32   #sm now find the arp 
+#\flowid 1:11
+
+
 prio=$(($prio + 1))
+
+
 }
 
 
