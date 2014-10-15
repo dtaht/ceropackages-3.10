@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010 OpenWrt.org
+# Copyright (C) 2014 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -17,7 +17,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/luci-app-sqm
   SECTION:=luci
   CATEGORY:=LuCI
-  TITLE:=SQM script LuCI interface
+  TITLE:=SQM Scripts - LuCI interface
   MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
   PKGARCH:=all
   DEPENDS:= lua luci-base +sqm-scripts
