@@ -1,5 +1,5 @@
 # 
-# Copyright (C) 2006-2011 OpenWrt.org
+# Copyright (C) 2014 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -18,9 +18,11 @@ include $(INCLUDE_DIR)/package.mk
 define Package/sqm-scripts
   SECTION:=net
   CATEGORY:=Base system
-  DEPENDS:=+tc +kmod-sched +ip +kmod-ifb iptables +iptables-mod-filter +iptables-mod-ipopt +iptables-mod-conntrack-extra
-  TITLE:=SQM Scripts
+  DEPENDS:=+tc +kmod-sched +kmod-ifb iptables +ip \
+	+iptables-mod-filter +iptables-mod-ipopt +iptables-mod-conntrack-extra
+  TITLE:=SQM Scripts (QoS)
   PKGARCH:=all
+  MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
 endef
 
 define Package/sqm-scripts/description
