@@ -6,11 +6,12 @@
 #
 #       Copyright (C) 2012-4 Michael D. Taht, Toke Høiland-Jørgensen, Sebastian Moeller
 
-. /usr/lib/sqm/functions.sh
-
 # allow passing in the IFACE as first command line argument
 [ ! -z ${1} ] && IFACE=${1}
-sqm_logger "${0} Stopping ${IFACE}"
+# now IFACE is defined so we can source functions.sh without creating a spurious ifb4ge00
+. /usr/lib/sqm/functions.sh
+# sqm_logger is defined in functions.sh...
+sqm_logger "${0}: Stopping ${IFACE}"
 
 # make sure to only delete the ifb associated with the current interface
 CUR_IFB=$( get_ifb_associated_with_if ${IFACE} )
@@ -19,7 +20,7 @@ sqm_stop() {
 	tc qdisc del dev $IFACE ingress 2> /dev/null
 	tc qdisc del dev $IFACE root 2> /dev/null
 	[ ! -z "$CUR_IFB" ] && tc qdisc del dev $CUR_IFB root 2> /dev/null
-        [ ! -z "$CUR_IFB" ] && sqm_logger "${CUR_IFB} shaper deleted"
+        [ ! -z "$CUR_IFB" ] && sqm_logger "${0}: ${CUR_IFB} shaper deleted"
 }
 
 ipt_stop() {
@@ -36,6 +37,6 @@ sqm_stop
 ipt_stop
 [ ! -z "$CUR_IFB" ] && ifconfig ${CUR_IFB} down
 [ ! -z "$CUR_IFB" ] && ip link delete ${CUR_IFB} type ifb
-[ ! -z "$CUR_IFB" ] && sqm_logger "${CUR_IFB} interface deleted"
+[ ! -z "$CUR_IFB" ] && sqm_logger "${0}: ${CUR_IFB} interface deleted"
 
 exit 0
