@@ -1,15 +1,14 @@
 #
-# Copyright (C) 2014 OpenWrt.org
+# Copyright (C) 2014 Openwrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-# Please note this is not an officially released version of bcp38
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bcp38
 PKG_VERSION:=4
 PKG_RELEASE:=1
+PKG_LICENCE:=GPLv3
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -17,14 +16,14 @@ define Package/bcp38
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Routing and Redirection
-  TITLE:=BCP38 compliance 
-  URL:=http://www.github.com/dtaht/bcp38
-  MAINTAINER:=Dave Taht <d+bcp38@taht.net>
+  TITLE:=BCP38 compliance
+  URL:=https://github.com/dtaht/ceropackages-3.10
+  MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
   DEPENDS:=+ipset
 endef
 
 define Package/bcp38/description
- bcp38 implements rfc bcp 38 for home routers.
+ bcp38 implements IETF BCP38 for home routers. See https://tools.ietf.org/html/bcp38.
 endef
 
 define Package/bcp38/conffiles
