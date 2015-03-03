@@ -46,6 +46,8 @@ endef
 define Package/sqm-scripts/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/etc/init.d/sqm $(1)/etc/init.d/sqm
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_BIN) ./files/etc/hotplug.d/iface/11-sqm $(1)/etc/hotplug.d/iface/11-sqm
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DATA) ./files/etc/config/sqm $(1)/etc/config/sqm
 	$(INSTALL_DIR) $(1)/usr/lib/sqm
