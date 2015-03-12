@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# teach SQM to re-enable itself when an interface re-appears
+#echo "${IFACE} does currently not exist, not even trying starting SQM on nothing." > /dev/kmsg
+#logger -t SQM -s "hotplug on interface: ${DEVICE} action: ${ACTION}"
+
+[ "$ACTION" = ifup ] && /usr/lib/sqm/run.sh interface ${DEVICE}
+
