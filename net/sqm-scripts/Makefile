@@ -20,7 +20,7 @@ define Package/sqm-scripts
   SECTION:=net
   CATEGORY:=Base system
   DEPENDS:=+tc +kmod-sched +kmod-ifb iptables +ip \
-	+iptables-mod-filter +iptables-mod-ipopt +iptables-mod-conntrack-extra
+	+iptables-mod-ipopt +iptables-mod-conntrack-extra
   TITLE:=SQM Scripts (QoS)
   PKGARCH:=all
   MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
