@@ -13,7 +13,7 @@ PKG_VERSION:=2015-git
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=git://github.com/dtaht/sch_fq_pie
+PKG_SOURCE_URL:=git://github.com/dtaht/sched_fq_pie
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_VERSION:=d5dfc7657c5187d0eabf97e84b5f414df8e9cc34
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
