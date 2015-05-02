@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=iproute2
 PKG_VERSION:=4.0.0
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://kernel.org/pub/linux/utils/net/iproute2/
@@ -50,7 +50,7 @@ endef
 define Package/tc
 $(call Package/iproute2/Default)
   TITLE:=Traffic control utility
-  DEPENDS:=+kmod-sched-core +kmod-sched-cake
+  DEPENDS:=+kmod-sched-core +kmod-sched-cake +kmod-sched-fq_pie
 endef
 
 define Package/genl
