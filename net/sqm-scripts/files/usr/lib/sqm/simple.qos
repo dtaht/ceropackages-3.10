@@ -88,7 +88,7 @@ LQ="quantum `get_mtu $IFACE $CEIL`"
 
 $TC qdisc del dev $IFACE root 2> /dev/null
 case $QDISC in
-	cake*) $TC qdisc add dev $IFACE root $QDISC bandwidth ${CEIL}kbit $CAKE_OPTS;;
+	cake*) $TC qdisc add dev $IFACE root $QDISC bandwidth ${CEIL}kbit ;;
 	*) 	
 $TC qdisc add dev $IFACE root handle 1: `get_stab_string` htb default 12
 $TC class add dev $IFACE parent 1: classid 1:1 htb $LQ rate ${CEIL}kbit ceil ${CEIL}kbit `get_htb_adsll_string`
