@@ -7,22 +7,25 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=iproute2
-PKG_VERSION:=4.0.0
-PKG_RELEASE:=3
+PKG_NAME:=tc-adv
+PKG_VERSION:=4.1.0-git
+PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=http://kernel.org/pub/linux/utils/net/iproute2/
-PKG_MD5SUM:=3adc263ade4ee76c35032e8f50b54108
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=git://github.com/dtaht/tc-adv
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_VERSION:=4167c76d7f0601b34f46ed15e139b573fdeb6efe
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+
 PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
+# PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/iproute2/Default
-  TITLE:=Routing control utility ($(2))
+define Package/tc-adv/Default
+  TITLE:=Advanced bufferbloat qdisc tc control utility ($(2))
   SECTION:=net
   CATEGORY:=Network
   URL:=http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2
@@ -32,40 +35,10 @@ define Package/iproute2/Default
   VARIANT:=$(1)
 endef
 
-define Package/ip
-$(call Package/iproute2/Default,tiny,Minimal)
-  CONFLICTS:=ip-full
-endef
-
-Package/ip-full=$(call Package/iproute2/Default,full,Full)
-
-define Package/ip/conffiles
-/etc/iproute2/rt_tables
-endef
-
-define Package/ip-$(BUILD_VARIANT)/conffiles
-$(Package/ip/conffiles)
-endef
-
-define Package/tc
-$(call Package/iproute2/Default)
-  TITLE:=Traffic control utility
+define Package/tc-adv
+$(call Package/tc-adv/Default)
+  TITLE:=Traffic control utility with support for cake and fq_pie
   DEPENDS:=+kmod-sched-core +kmod-sched-cake +kmod-sched-fq_pie
-endef
-
-define Package/genl
-$(call Package/iproute2/Default)
-  TITLE:=General netlink utility frontend
-endef
-
-define Package/ip-bridge
-$(call Package/iproute2/Default)
-  TITLE:=Bridge configuration utility from iproute2
-endef
-
-define Package/ss
-$(call Package/iproute2/Default)
-  TITLE:=Socket statistics utility
 endef
 
 ifeq ($(BUILD_VARIANT),tiny)
@@ -110,42 +83,11 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/lib/libnetlink.a $(1)/usr/lib/
 endef
 
-define Package/ip/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_DIR) $(1)/etc/iproute2
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/etc/iproute2/rt_tables $(1)/etc/iproute2
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ip/ip $(1)/usr/sbin/
-endef
-
-define Package/ip-$(BUILD_VARIANT)/install
-	$(Package/ip/install)
-endef
-
-define Package/tc/install
+define Package/tc-adv/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tc/tc $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_BIN) ./files/15-teql $(1)/etc/hotplug.d/iface/
 endef
 
-define Package/genl/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/genl/genl $(1)/usr/sbin/
-endef
-
-define Package/ip-bridge/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bridge/bridge $(1)/usr/sbin/
-endef
-
-define Package/ss/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/misc/ss $(1)/usr/sbin/
-endef
-
-$(eval $(call BuildPackage,ip))
-$(eval $(call BuildPackage,ip-full))
-$(eval $(call BuildPackage,tc))
-$(eval $(call BuildPackage,genl))
-$(eval $(call BuildPackage,ip-bridge))
-$(eval $(call BuildPackage,ss))
+$(eval $(call BuildPackage,tc-adv))
