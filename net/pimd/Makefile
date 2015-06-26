@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pimd
-PKG_VERSION:=2.1.8
-PKG_RELEASE:=2
+PKG_VERSION:=2.2.1
+PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://github.com/troglobit/pimd/archive/
-PKG_MD5SUM:=85517b894aa524c702bdd69e4cf814b3
+PKG_SOURCE:=$(PKG_VERSION).tar.bz2
+PKG_SOURCE_URL:=ftp://troglobit.com/pimd/
+PKG_MD5SUM:=1e2262032b557948ffc2ecad81ee13f6
 
 PKG_INSTALL:=1
 
