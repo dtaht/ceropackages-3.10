@@ -121,11 +121,11 @@ run_simple_qos() {
 	# in case of spurious hotplug events, try double check whether the interface is really up
 	if [ ! -d /sys/class/net/${IFACE} ] ;
 	then
-	    echo "${IFACE} does currently not exist, not even trying starting SQM on nothing." > /dev/kmsg
-	    logger -t SQM -s "${IFACE} does currently not exist, not even trying starting SQM on nothing."
+	    echo "${IFACE} does currently not exist, not even trying to start SQM on nothing." > /dev/kmsg
+	    logger -t SQM -s "${IFACE} does currently not exist, not even trying to start SQM on nothing."
 	    return 0
 	fi
-	
+
 	logger -t SQM -s "${0} Queue Setup Script: ${SCRIPT}"
 	[ -x "$SCRIPT" ] && { $SCRIPT ; touch ${ACTIVE_STATE_FILE_FQN}; }
 }
