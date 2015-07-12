@@ -21,7 +21,7 @@ PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 include $(INCLUDE_DIR)/package.mk
 
 define KernelPackage/sched-fq_pie
-  SUBMENU:=Other modules
+  SUBMENU:=Network Support
   TITLE:=sch_fq pie
   URL:=https://github.com/dtaht/sch_fq_pie
   FILES:=$(PKG_BUILD_DIR)/sch_fq_pie.ko

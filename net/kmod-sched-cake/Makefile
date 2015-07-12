@@ -21,7 +21,7 @@ PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 include $(INCLUDE_DIR)/package.mk
 
 define KernelPackage/sched-cake
-  SUBMENU:=Other modules
+  SUBMENU:=Network Support
   TITLE:=Cake fq_codel derived shaper
   URL:=https://github.com/dtaht/sch_cake
   FILES:=$(PKG_BUILD_DIR)/sch_cake.ko
