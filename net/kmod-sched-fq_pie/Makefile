@@ -26,7 +26,7 @@ define KernelPackage/sched-fq_pie
   URL:=https://github.com/dtaht/sch_fq_pie
   FILES:=$(PKG_BUILD_DIR)/sch_fq_pie.ko
   VERSION:=$(LINUX_VERSION)-$(LINUX_RELEASE)
-  AUTOLOAD:=$(call AutoLoad,30,sch_fq_pie)
+  AUTOLOAD:=$(call AutoLoad,75,sch_fq_pie)
 endef
 
 include $(INCLUDE_DIR)/kernel-defaults.mk

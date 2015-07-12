@@ -26,7 +26,7 @@ define KernelPackage/sched-cake
   URL:=https://github.com/dtaht/sch_cake
   FILES:=$(PKG_BUILD_DIR)/sch_cake.ko
   VERSION:=$(LINUX_VERSION)-$(LINUX_RELEASE)
-  AUTOLOAD:=$(call AutoLoad,30,sch_cake)
+  AUTOLOAD:=$(call AutoLoad,75,sch_cake)
 endef
 
 include $(INCLUDE_DIR)/kernel-defaults.mk
