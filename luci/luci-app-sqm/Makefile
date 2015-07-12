@@ -10,6 +10,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=luci-app-sqm
 PKG_VERSION:=3
 PKG_RELEASE:=5
+PKG_LICENSE:=GPLv2
 LUCI_DIR:=/usr/lib/lua/luci
 
 include $(INCLUDE_DIR)/package.mk
