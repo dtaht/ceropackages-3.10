@@ -19,7 +19,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/sqm-scripts
   SECTION:=net
   CATEGORY:=Base system
-  DEPENDS:=+tc +kmod-sched +kmod-ifb iptables +ip \
+  DEPENDS:=@(PACKAGE_tc||PACKAGE_tc-adv) +kmod-sched +kmod-ifb iptables +ip \
 	+iptables-mod-ipopt +iptables-mod-conntrack-extra
   TITLE:=SQM Scripts (QoS)
   PKGARCH:=all
