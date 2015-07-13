@@ -8,11 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sqm-scripts
-PKG_VERSION:=8
+PKG_SOURCE_VERSION:=b6473bb248183b1ba4b412b69187829e8e20b948
+PKG_VERSION:=20150713
 PKG_RELEASE:=7
 PKG_LICENSE:=GPLv2
 
-PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.xz
+PKG_SOURCE_URL:=git://github.com/tohojo/sqm-scripts.git
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
+PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -32,28 +37,14 @@ endef
 
 define Package/sqm-scripts/conffiles
 /etc/config/sqm
-endef
-
-define Build/Prepare
-endef
-
-define Build/Configure
+/etc/sqm/sqm.conf
 endef
 
 define Build/Compile
 endef
 
 define Package/sqm-scripts/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/etc/init.d/sqm $(1)/etc/init.d/sqm
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-	$(INSTALL_BIN) ./files/etc/hotplug.d/iface/11-sqm $(1)/etc/hotplug.d/iface/11-sqm
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/etc/config/sqm $(1)/etc/config/sqm
-	$(INSTALL_DIR) $(1)/usr/lib/sqm
-	$(INSTALL_BIN) ./files/usr/lib/sqm/*.sh $(1)/usr/lib/sqm/
-	$(INSTALL_BIN) ./files/usr/lib/sqm/*.qos $(1)/usr/lib/sqm/
-	$(INSTALL_DATA) ./files/usr/lib/sqm/*.help $(1)/usr/lib/sqm/
+	make -C $(PKG_BUILD_DIR) DESTDIR=$(1) PLATFORM=openwrt install
 endef
 
 $(eval $(call BuildPackage,sqm-scripts))
