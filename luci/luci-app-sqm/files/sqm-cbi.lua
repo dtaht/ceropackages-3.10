@@ -84,21 +84,21 @@ ul.rmempty = false
 
 -- QDISC
 
-c = s:taboption("tab_qdisc", ListValue, "qdisc", translate("Queueing discipline"))
-c:value("fq_codel", "fq_codel ("..translate("default")..")")
-c:value("efq_codel")
-c:value("nfq_codel")
-c:value("sfq")
-c:value("codel")
-c:value("ns2_codel")
-c:value("pie")
-c:value("sfq")
-c:value("cake")
-c.default = "fq_codel"
-c.rmempty = false
+--c = s:taboption("tab_qdisc", ListValue, "qdisc", translate("Queueing discipline"))
+--c:value("fq_codel", "fq_codel ("..translate("default")..")")
+--c:value("efq_codel")
+--c:value("nfq_codel")
+--c:value("sfq")
+--c:value("codel")
+--c:value("ns2_codel")
+--c:value("pie")
+--c:value("sfq")
+--c:value("cake")
+--c.default = "fq_codel"
+--c.rmempty = false
 
 local val_qdisc_name = ""
-c2 = s:taboption("tab_qdisc", ListValue, "verified_qdisc", translate("Queuing disciplines useable on this system; instantiated only after first successful start of SQM."))
+c2 = s:taboption("tab_qdisc", ListValue, "verified_qdisc", translate("Queuing disciplines useable on this system; instantiated only after first successful start of SQM. You need to start a new GUI session to see updates!"))
 c2:value("fq_codel", "fq_codel ("..translate("default")..")")
 
 local f = io.open(run_path)
