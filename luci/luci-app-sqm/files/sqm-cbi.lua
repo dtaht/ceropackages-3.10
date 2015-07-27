@@ -20,6 +20,7 @@ local sys = require "luci.sys"
 --local ifaces = net:get_interfaces()
 local ifaces = sys.net:devices()
 local path = "/usr/lib/sqm"
+local run_path = "/tmp/run/sqm/USEABLE_QDISCS"
 
 m = Map("sqm", translate("Smart Queue Management"),
 	translate("With <abbr title=\"Smart Queue Management\">SQM</abbr> you " ..
@@ -95,6 +96,25 @@ c:value("sfq")
 c:value("cake")
 c.default = "fq_codel"
 c.rmempty = false
+
+local val_qdisc_name = ""
+c2 = s:taboption("tab_qdisc", ListValue, "verified_qdisc", translate("Queuing disciplines useable on this system; instantiated only after first successful start of SQM."))
+c2:value("fq_codel", "fq_codel ("..translate("default")..")")
+
+local f = io.open(run_path)
+if f then
+  f:close()
+  for file in fs.dir(run_path) do
+    if string.find(file, ".useable$") then
+      val_qdisc_name = file:gsub(".useable$", "")
+      c2:value( val_qdisc_name )
+    end
+  end
+end
+c2.default = "fq_codel"
+c2.rmempty = false
+
+
 
 local qos_desc = ""
 sc = s:taboption("tab_qdisc", ListValue, "script", translate("Queue setup script"))
