@@ -88,15 +88,7 @@ local val_qdisc_name = ""
 c = s:taboption("tab_qdisc", ListValue, "qdisc", translate("Queuing disciplines useable on this system; instantiated only after first successful start of SQM. You need to start a new GUI session to see updates!"))
 c:value("fq_codel", "fq_codel ("..translate("default")..")")
 
-local f = io.open(run_path)
-if f then
-  f:close()
---  for file in fs.dir(run_path) do
---    if string.find(file, ".useable$") then
---      val_qdisc_name = file:gsub(".useable$", "")
---      c:value( val_qdisc_name )
---    end
---  end
+if fs.stat(run_path) then
   for file in fs.dir(run_path) do
     c:value( file )
   end
