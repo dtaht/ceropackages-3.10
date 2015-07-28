@@ -20,8 +20,7 @@ local sys = require "luci.sys"
 --local ifaces = net:get_interfaces()
 local ifaces = sys.net:devices()
 local path = "/usr/lib/sqm"
-local run_path = "/var/run/sqm/available_qdiscs"
-local all_qdiscs = {"efq_codel", "nfq_codel", "sfq", "codel", "ns2_codel", "pie", "sfq", "cake"}
+local run_path = "/tmp/run/sqm/available_qdiscs"
 
 m = Map("sqm", translate("Smart Queue Management"),
 	translate("With <abbr title=\"Smart Queue Management\">SQM</abbr> you " ..
@@ -85,15 +84,27 @@ ul.rmempty = false
 
 -- QDISC
 
-c = s:taboption("tab_qdisc", ListValue, "qdisc", translate("Queueing discipline. Only shows those qdiscs that have been determined to be available on the system. A reboot may be necessary to update this list after changes to kernel modules are made."))
+local val_qdisc_name = ""
+c = s:taboption("tab_qdisc", ListValue, "qdisc", translate("Queuing disciplines useable on this system; instantiated only after first successful start of SQM. You need to start a new GUI session to see updates!"))
 c:value("fq_codel", "fq_codel ("..translate("default")..")")
-for _,v in ipairs(all_qdiscs) do
-   if fs.stat(run_path.."/"..v) then
-      c.value(v)
-   end
+
+local f = io.open(run_path)
+if f then
+  f:close()
+--  for file in fs.dir(run_path) do
+--    if string.find(file, ".useable$") then
+--      val_qdisc_name = file:gsub(".useable$", "")
+--      c:value( val_qdisc_name )
+--    end
+--  end
+  for file in fs.dir(run_path) do
+    c:value( file )
+  end
 end
 c.default = "fq_codel"
 c.rmempty = false
+
+
 
 local qos_desc = ""
 sc = s:taboption("tab_qdisc", ListValue, "script", translate("Queue setup script"))
