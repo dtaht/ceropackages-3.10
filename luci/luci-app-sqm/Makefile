@@ -8,10 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-sqm
-PKG_VERSION:=4
+PKG_SOURCE_VERSION:=aa5ce645728e4281add31a4476cdea346f7fa158
+PKG_VERSION:=20150730
 PKG_RELEASE:=1
 PKG_LICENSE:=GPLv2
-LUCI_DIR:=/usr/lib/lua/luci
+
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.xz
+PKG_SOURCE_URL:=git://github.com/tohojo/sqm-scripts.git
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
+PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -36,11 +42,7 @@ define Build/Configure
 endef
 
 define Package/luci-app-sqm/install
-	$(INSTALL_DIR) $(1)$(LUCI_DIR)/controller $(1)$(LUCI_DIR)/model/cbi
-	$(INSTALL_DATA) ./files/sqm-controller.lua $(1)$(LUCI_DIR)/controller/sqm.lua
-	$(INSTALL_DATA) ./files/sqm-cbi.lua $(1)$(LUCI_DIR)/model/cbi/sqm.lua
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/uci-defaults-sqm $(1)/etc/uci-defaults/luci-sqm
+	make -C $(PKG_BUILD_DIR) DESTDIR=$(1) PLATFORM=openwrt install-luci
 endef
 
 define Package/luci-app-sqm/postinst
