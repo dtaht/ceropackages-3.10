@@ -34,8 +34,9 @@ define Package/tahoe-lafs
   SUBMENU:=Python
   TITLE:=The Least-Authority File System
   URL:=https://tahoe-lafs.org/
-  DEPENDS:=+python +python-crypto +python-foolscap +python-mock +python-nevow \
-	+python-sqlite3 +python-zfec +pyasn1 +pycryptopp +pyopenssl +simplejson
+  DEPENDS:=+python +python-pyasn1 +python-crypto +python-foolscap +python-mock \
+	+python-nevow +python-sqlite3 +python-zfec +pycryptopp +pyopenssl \
+	+simplejson
 endef
 
 define Package/tahoe-lafs/description
