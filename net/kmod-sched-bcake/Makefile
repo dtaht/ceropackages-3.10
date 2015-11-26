@@ -40,4 +40,4 @@ define Build/Compile
 	$(MAKE) $(KERNEL_MAKEOPTS) SUBDIRS="$(PKG_BUILD_DIR)" modules
 endef
 
-$(eval $(call KernelPackage,sched-cake))
+$(eval $(call KernelPackage,sched-bcake))
