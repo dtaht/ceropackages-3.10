@@ -27,7 +27,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/libasio
   SECTION:=libs
   CATEGORY:=Libraries
-  DEFAULT:=m
+  DEFAULT:=n
   TITLE:=libasio
   URL:=http://think-async.com/
   DEPENDS:=+boost

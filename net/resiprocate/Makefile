@@ -30,7 +30,7 @@ define Package/resiprocate/Default
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Telephony
-  DEFAULT:=m
+  DEFAULT:=n
   TITLE:=reSIProcate
   URL:=http://www.resiprocate.org/
   DEPENDS:=+libopenssl +libdb47 +libcares +boost +libstdcpp
