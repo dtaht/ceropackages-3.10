@@ -9,8 +9,8 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=sched-cake
-PKG_VERSION:=2015-git
-PKG_RELEASE:=15
+PKG_VERSION:=2016-git
+PKG_RELEASE:=16
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://github.com/dtaht/sch_cake
